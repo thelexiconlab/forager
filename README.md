@@ -50,10 +50,13 @@ The idea is as follows:
     a) This will allow you to develop independently from the main branch, which can always be reverted to if something goes wrong on your individual branch
 
 2) Submit a Pull Request
-    a) Pull Requests can either be done from command line or from the web browser. I recommend reading the documentation linked above regarding creating a pull request. From the command line, it can be as easy as ``` gh pr create ```.
+    a) Pull Requests can either be done from command line or from the web browser. I recommend reading the documentation linked above regarding creating a pull request. From the command line, it can be as easy as ` gh pr create `.
     b) You can perform the same action via your web browser by going to the repository, choose the branch your code was committed to (do not push), and open a pull request.
 
 Either method of performing pull request is fairly simple.
+
+When there is an update in the codebase (main branch) that you would like to bring to your local, you can do so by the command line command:
+``` git pull origin main ```
 
 ### Unit Testing
 - See: https://realpython.com/python-testing/
@@ -70,3 +73,9 @@ Every time you develop a new method, you should think of the
 
 Utilize `pip install -e PROJECT_PACKAGE_NAME` command to install it as an
 "editable" package that does not require reinstallation after changes. Other external libraries can be installed here as well.
+
+One thing to note here, is that you would perform pip install in the directory that this git repository is located in, not within the git repository itself. 
+
+For example, my git repository is located in `../larry/semforage/ `. I execute `pip install -e semforage` in `../larry/`, which will allow you to pip install your local editable repository. 
+
+Every time you update your local codebase, the semforage package will have every new functionality added enabled.
