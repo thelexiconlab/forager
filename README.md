@@ -53,8 +53,6 @@ The idea is as follows:
     a) Pull Requests can either be done from command line or from the web browser. I recommend reading the documentation linked above regarding creating a pull request. From the command line, it can be as easy as ` gh pr create `.
     b) You can perform the same action via your web browser by going to the repository, choose the branch your code was committed to (do not push), and open a pull request.
 
-    <br>
-
     Some additional notes here:
     * Create your branch: you can use the browser to do this by clicking on the "master" drop down and typing in a new branch name, OR via command line using 
     ```
