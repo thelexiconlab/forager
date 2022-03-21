@@ -25,6 +25,11 @@ def wordbreak(s):
     return None
 
 def normalized_sim(w1, w2):
-  return 1-nltk.edit_distance(w1,w2)/(max(len(w1), len(w2)))
+    '''
+    a function that returns the normalized similarity between any two strings
+    '''
+    return 1-nltk.edit_distance(w1,w2)/(max(len(w1), len(w2)))
+
+
 
   
