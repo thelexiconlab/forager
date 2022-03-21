@@ -53,6 +53,26 @@ The idea is as follows:
     a) Pull Requests can either be done from command line or from the web browser. I recommend reading the documentation linked above regarding creating a pull request. From the command line, it can be as easy as ` gh pr create `.
     b) You can perform the same action via your web browser by going to the repository, choose the branch your code was committed to (do not push), and open a pull request.
 
+    <br>
+
+    Some additional notes here:
+    * Create your branch: you can use the browser to do this by clicking on the "master" drop down and typing in a new branch name, OR via command line using 
+    ```
+    git checkout -b name-of-branch
+    ```
+    This will do two things: create a new branch (name-of-branch) and automatically take you to this new branch
+    * Next, you can make any changes you want within this branch. Once you are ready, you should add, commit, and push your changes to this branch
+    ```
+    git add - A
+    git commit -m "explain your changes"
+    git push
+    ```
+    * Finally, you can create a new pull request that you'd like to be merged with the main branch:
+    ```
+    git pr create --base master --head name-of-branch
+    ```
+
+
 Either method of performing pull request is fairly simple.
 
 When there is an update in the codebase (main branch) that you would like to bring to your local, you can do so by the command line command:
