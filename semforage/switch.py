@@ -57,7 +57,7 @@ def switch_troyer(fluency_list,norms):
     troyer = []
 
     for k in range(len(fluency_list)):
-        if (k > 0 and k < (len(fluency_list)-1)):
+        if k > 0:
             item1 = fluency_list[k]
             item2 = fluency_list[k-1]
             category1 = norms[norms['Animal'] == item1]['Category'].values.tolist()
@@ -84,9 +84,7 @@ def switch_multimodal(fluency_list,semantic_similarity,phonological_similarity,a
             alpha (int): alpha parameter that dictates the weight of semantic vs. phonological cue
 
         Returns:
-    '''
-    multimodal_switches = []
-    
+    '''    
     #Check if alpha is between 0 and 1
     
     if alpha > 1 or alpha < 0:

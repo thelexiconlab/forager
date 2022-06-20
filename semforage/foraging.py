@@ -9,7 +9,7 @@ class forage:
         Forage class model to execute static and dynamic models of Semantic Foraging
     """
 
-    def model_static(beta, freql, freqh, siml, simh):
+    def model_static(beta : list, freql, freqh, siml, simh):
         '''
         Static Foraging Model following proposed approach in Hills, T. T., Jones, M. N., & Todd, P. M. (2012).
             Optimal Foraging in Semantic Memory.

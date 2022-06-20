@@ -1,4 +1,3 @@
-from matplotlib.pyplot import hist
 import pytest
 import pandas as pd
 import numpy as np
@@ -56,18 +55,15 @@ history_vars_regards = create_history_variables(ex_list_1, labels_regards, sim_m
 
 
 
-print(switch_multimodal(ex_list_1, history_vars_regards[0], history_vars_regards[4],0))
-print(switch_multimodal(ex_list_1, history_vars_regards[0], history_vars_regards[4],0.5))
-
 def test_troyer():
     '''
     Test Conditions:
         Generic Case(s):
-            Fluency list is of size > 2 , returns vec of [2,...,...,2]
+            Fluency list is of size > 2 , returns vec of [2,...,...,...]
         Boundary Case(s):
             Fluency list is of size <= 2 : this should raise an exception
     '''
-    assert switch_troyer(ex_list_1,norms) == [2, 0, 1, 0, 1, 2] # Generic Case 1 
+    assert switch_troyer(ex_list_1,norms) == [2, 0, 1, 0, 1, 0] # Generic Case 1 
     
 def test_simdrop():
     '''
