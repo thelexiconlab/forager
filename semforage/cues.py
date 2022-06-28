@@ -1,10 +1,10 @@
 import numpy as np
 
 '''
+
+TODO: Larry 
 Generate Cue History for each type of cue (similarity, frequency, phonology)
 
-
-*** Requires sim_matrix and freq_matrix to have same dimensionality and label order
 '''
 
 
@@ -66,3 +66,8 @@ def create_history_variables(fluency_list, labels, sim_matrix, freq_matrix, phon
                 phon_history.append(phon_matrix[currentwordindex,:])
 
     return sim_list, sim_history, freq_list, freq_history,phon_list, phon_history
+
+'''
+TODO: Abhilasha
+- Add Sim + Freq functions
+'''

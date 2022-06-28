@@ -5,12 +5,16 @@ from semforage import switch
 
 class forage:
     """ 
+
     Class Description: 
         Forage class model to execute static and dynamic models of Semantic Foraging
+
+    TODO: Larry
     """
 
     def model_static(beta : list, freql, freqh, siml, simh):
         '''
+        TODO: Larry
         Static Foraging Model following proposed approach in Hills, T. T., Jones, M. N., & Todd, P. M. (2012).
             Optimal Foraging in Semantic Memory.
 
@@ -48,6 +52,7 @@ class forage:
         
     def model_dynamic(beta, freql, freqh, siml, simh, switchvals):
         '''
+        TODO: Abhilasha 
         Dynamic Foraging Model following proposed approach in Hills, T. T., Jones, M. N., & Todd, P. M. (2012).
             Optimal Foraging in Semantic Memory.
 
@@ -90,6 +95,7 @@ class forage:
 
     def model_static_phon(beta, freql, freqh, siml, simh, phonl, phonh):
         '''
+        TODO: Molly
         Static Foraging Model following proposed approach in Hills, T. T., Jones, M. N., & Todd, P. M. (2012).
             Optimal Foraging in Semantic Memory.
 
@@ -130,6 +136,7 @@ class forage:
 
     def model_dynamic_phon(beta, freql, freqh, siml, simh, phonl, phonh, switchvals, phoncue):
         '''
+        TODO: Abhilasha 
         Dynamic Foraging Model following proposed approach in Hills, T. T., Jones, M. N., & Todd, P. M. (2012).
             Optimal Foraging in Semantic Memory.
 

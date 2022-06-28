@@ -28,7 +28,8 @@ Methods for calculating switches in Semantic Foraging methods.
 
 def switch_simdrop(fluency_list, semantic_similarity):
     '''
-    
+        TODO: Molly 
+        
         Args:
 
         Returns:
@@ -50,6 +51,7 @@ def switch_simdrop(fluency_list, semantic_similarity):
 
 def switch_troyer(fluency_list,norms):
     '''
+        TODO: Larry
         Args:
 
         Returns:
@@ -76,7 +78,7 @@ def switch_troyer(fluency_list,norms):
 
 def switch_multimodal(fluency_list,semantic_similarity,phonological_similarity,alpha):
     '''
-        
+        TODO: Abhilasha
         Args:
             fluency_list (list, size = N): fluency list to predict switches on
             semantic_similarity ():
@@ -104,17 +106,11 @@ def switch_multimodal(fluency_list,semantic_similarity,phonological_similarity,a
 
     return multimodalsimdrop
 
-# def switch_semanticscent():
-#     '''
-#         TODO : Implement Semantic Scent Switch Method
-        
-#         Args:
-
-#         Returns:
-#     '''
 def switch_delta(fluency_list, semantic_similarity, rise_thresh, fall_thresh):
     '''
-        TODO: Implement Delta Switch Method
+        TODO: Molly
+        Delta Switch Method
+        
         Args:
 
         Returns:
@@ -168,3 +164,13 @@ def switch_delta(fluency_list, semantic_similarity, rise_thresh, fall_thresh):
         previousState = currentState
 
     return switchVector
+
+
+# def switch_semanticscent():
+#     '''
+#         TODO : Implement Semantic Scent Switch Method
+        
+#         Args:
+
+#         Returns:
+#     '''
