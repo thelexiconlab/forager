@@ -78,14 +78,16 @@ def switch_troyer(fluency_list,norms):
 
 def switch_multimodal(fluency_list,semantic_similarity,phonological_similarity,alpha):
     '''
-        TODO: Abhilasha
         Args:
-            fluency_list (list, size = N): fluency list to predict switches on
-            semantic_similarity ():
-            phonological_similarity ():
-            alpha (int): alpha parameter that dictates the weight of semantic vs. phonological cue
-
+            fluency_list (list, size = L): fluency list to predict switches on
+            semantic_similarity (list, size = L): a list of semantic similarities between items in the fluency list, obtained via create_history_variables
+            phonological_similarity (list, size = L): a list of phonological similarities between items in the fluency list obtained via create_history_variables
+            alpha (float): alpha parameter that dictates the weight of semantic vs. phonological cue, between 0 and 1
         Returns:
+            multimodalsimdrop (list, size = L): a list of switches, where 0 = no switch, 1 = switch, 2 = boundary case
+        
+        Raises:
+            Exception: if alpha is not between 0 and 1
     '''    
     #Check if alpha is between 0 and 1
     

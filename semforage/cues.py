@@ -1,4 +1,10 @@
 import numpy as np
+import scipy
+import pandas as pd
+import nltk
+from functools import lru_cache
+from itertools import product as iterprod
+import re
 
 '''
 
@@ -18,16 +24,12 @@ def create_history_variables(fluency_list, labels, sim_matrix, freq_matrix, phon
             (5) fluency_list: items produced by a participant (list of size L)
 
         Returns: 
-            (1) sim_list: semantic similarities between each item in fluency_list (list of size L)
-            (2) sim_history: semantic similarities of each word with all items in labels
-                 (list of L arrays of size N)
-            (3) phon_list: phonological similarities between each item in fluency_list
-                 (list of size L)
-            (4) phon_history: phonological similarities of each word with all items in labels
-                 (list of L arrays of size N)
-            (5) freq_list: frequencies of each item in fluency_list (list of size L)
-            (6) freq_history: frequencies of all items in labels repeated L items
-                 (list of L arrays of size N)
+            (1) sim_list (list, size: L): semantic similarities between each item in fluency_list 
+            (2) sim_history(list, size: L arrays of size N): semantic similarities of each word in fluency_list with all items in labels
+            (3) phon_list (list, size: L): phonological similarities between each item in fluency_list 
+            (4) phon_history (list, size: L arrays of size N): phonological similarities of each word in fluency_list with all items in labels
+            (5) freq_list (list, size: L): frequencies of each item in fluency_list (list of size L)
+            (6) freq_history  (list, size: L arrays of size N): frequencies of all word in fluency_list repeated N times
 
 
     '''
@@ -67,7 +69,96 @@ def create_history_variables(fluency_list, labels, sim_matrix, freq_matrix, phon
 
     return sim_list, sim_history, freq_list, freq_history,phon_list, phon_history
 
-'''
-TODO: Abhilasha
-- Add Sim + Freq functions
-'''
+def create_semantic_matrix(path_to_embeddings):
+    '''
+        Args:
+            (1) path_to_embeddings: path to a .csv file containing N word embeddings of size D each (DxN array)
+        Returns: 
+            (1) semantic_matrix: semantic similarity matrix (NxN np.array)
+    '''
+    embeddings = pd.read_csv(path_to_embeddings, encoding="unicode-escape").transpose().values
+    N = len(embeddings.columns)
+    
+    semantic_matrix = 1-scipy.spatial.distance.cdist(embeddings, embeddings, 'cosine').reshape(-1)
+    semantic_matrix = semantic_matrix.reshape((N,N))
+    return semantic_matrix
+
+class phonology_funcs:
+    '''
+        Description: 
+            This class contains functions to generate phonemes from a list of words and create a phonological similarity matrix.
+            Code has been adapted from the following link: https://stackoverflow.com/questions/33666557/get-phonemes-from-any-word-in-python-nltk-or-other-modules
+        Functions:
+            (1) load_arpabet(): loads and returns the arpabet dictionary from the NLTK CMU dictionary
+            (2) wordbreak(s, arpabet): takes in a word (str) and an arpabet dictionary and returns a list of phonemes
+            (3) normalized_edit_distance(w1, w2): takes in two strings (w1, w2) and returns the normalized edit distance between them
+            (3) create_phonological_matrix: takes in a list of labels (size N) and returns a phonological similarity matrix (NxN np.array)
+    '''
+    def load_arpabet():
+        '''
+            Description:
+                Loads and returns the arpabet dictionary from the NLTK CMU dictionary
+            Args:
+                None
+            Returns:
+                (1) arpabet (str: str): dictionary of arpabet phonemes 
+        '''
+        try:
+            arpabet = nltk.corpus.cmudict.dict()
+        except LookupError:
+            nltk.download('cmudict')
+            arpabet = nltk.corpus.cmudict.dict()
+        return arpabet
+
+    @lru_cache()
+    def wordbreak(s, arpabet):
+        '''
+            Description:
+                Takes in a word (str) and an arpabet dictionary and returns a list of phonemes
+            Args:
+                (1) s (str): string to be broken into phonemes
+                (2) arpabet (dict): arpabet dictionary (dict)
+            Returns:
+                (1) phonemes (list, size: variable): list of phonemes in s 
+        '''
+        s = s.lower()
+        if s in arpabet:
+            return arpabet[s]
+        middle = len(s)/2
+        partition = sorted(list(range(len(s))), key=lambda x: (x-middle)**2-x)
+        for i in partition:
+            pre, suf = (s[:i], s[i:])
+            if pre in arpabet and phonology_funcs.wordbreak(suf) is not None:
+                return [x+y for x,y in iterprod(arpabet[pre], phonology_funcs.wordbreak(suf))]
+        return None
+
+    def normalized_edit_distance(w1, w2):
+        '''
+            Description: 
+                Takes in two strings (w1, w2) and returns the normalized edit distance between them
+            Args:
+                (1) w1 (str): first word
+                (2) w2 (str): second word
+            Returns:
+                (1) normalized_edit_distance (float): normalized edit distance between w1 and w2
+        '''
+        return 1-nltk.edit_distance(w1,w2)/(max(len(w1), len(w2)))
+
+
+    def create_phonological_matrix(labels):
+        '''
+            Description:
+                Takes in a list of labels (size N) and returns a phonological similarity matrix (NxN np.array)
+            Args:
+                (1) labels: a list of words matching the size of your search space (list of length N)
+            Returns: 
+                (1) phonological_matrix: phonological similarity matrix (NxN np.array)
+        '''
+        N = len(labels)
+        arpabet = phonology_funcs.load_arpabet()
+        labels = [re.sub('[^a-zA-Z]+', '', str(v)) for v in labels]
+        phonological_matrix = np.array([phonology_funcs.normalized_edit_distance(phonology_funcs.wordbreak(w1,arpabet)[0], phonology_funcs.wordbreak(w2,arpabet)[0]) for w1 in labels for w2 in labels]).reshape((N,N))
+        return phonological_matrix
+
+
+
