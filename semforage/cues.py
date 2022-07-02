@@ -69,10 +69,29 @@ def create_history_variables(fluency_list, labels, sim_matrix, freq_matrix, phon
 
     return sim_list, sim_history, freq_list, freq_history,phon_list, phon_history
 
+def get_labels_and_frequencies(path_to_frequencies):
+    '''
+        Description:
+            Returns search space of words and their log-frequencies
+        Args:
+            (1) path_to_frequencies (str): path to a .csv file containing N words (the full search space) and its log-frequencies (Nx2 array)
+        Returns: 
+            (1) labels (list, size: N): the space of words
+            (2) freq_matrix (np.array, Nx1): a np.array of the frequencies of each word in labels
+    '''
+
+    freq_matrix = pd.read_csv(path_to_frequencies, header = None)
+    labels = list(freq_matrix[0])
+    freq_matrix = np.array(freq_matrix[1])
+
+    return labels, freq_matrix
+
 def create_semantic_matrix(path_to_embeddings):
     '''
+        Description:
+            Takes in N word embeddings and returns a semantic similarity matrix (NxN np.array)
         Args:
-            (1) path_to_embeddings: path to a .csv file containing N word embeddings of size D each (DxN array)
+            (1) path_to_embeddings (str): path to a .csv file containing N word embeddings of size D each (DxN array)
         Returns: 
             (1) semantic_matrix: semantic similarity matrix (NxN np.array)
     '''
