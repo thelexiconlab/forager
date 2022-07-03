@@ -28,7 +28,8 @@ Methods for calculating switches in Semantic Foraging methods.
 
 def switch_simdrop(fluency_list, semantic_similarity):
     '''
-
+        Similarity Drop Switch Method
+        
         Args:
             fluency_list (list, size = L): fluency list to predict switches on
             semantic_similarity (list, size = L): a list of semantic similarities between items in the fluency list, obtained via create_history_variables
@@ -110,8 +111,7 @@ def switch_multimodal(fluency_list,semantic_similarity,phonological_similarity,a
 
 def switch_delta(fluency_list, semantic_similarity, rise_thresh, fall_thresh):
     '''
-        TODO: Molly
-        Delta Switch Method
+        Delta Similarity Switch Method
         
         Args:
             fluency_list (list, size = L): fluency list to predict switches on
