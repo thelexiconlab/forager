@@ -28,11 +28,13 @@ Methods for calculating switches in Semantic Foraging methods.
 
 def switch_simdrop(fluency_list, semantic_similarity):
     '''
-        TODO: Molly 
-        
+
         Args:
+            fluency_list (list, size = L): fluency list to predict switches on
+            semantic_similarity (list, size = L): a list of semantic similarities between items in the fluency list, obtained via create_history_variables
 
         Returns:
+            a list, size L, of switches, where 0 = no switch, 1 = switch, 2 = boundary case
     '''
     simdrop = []
     for k in range(len(fluency_list)):
@@ -112,8 +114,13 @@ def switch_delta(fluency_list, semantic_similarity, rise_thresh, fall_thresh):
         Delta Switch Method
         
         Args:
+            fluency_list (list, size = L): fluency list to predict switches on
+            semantic_similarity (list, size = L): a list of semantic similarities between items in the fluency list, obtained via create_history_variables
+            rise_thresh (float): after a switch occurs, the threshold that the increase in z-scored similarity must exceed to be a cluster  
+            fall_thresh (float): while in a cluster, the threshold that the decrease in z-scored similarity must exceed to be a switch
 
         Returns:
+            a list, size L, of switches, where 0 = no switch, 1 = switch, 2 = boundary case
     '''
     if rise_thresh > 1 or rise_thresh < 0:
         raise Exception("Rise Threshold parameter must be within range [0,1]")
