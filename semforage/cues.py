@@ -2,9 +2,14 @@ import numpy as np
 
 '''
 
-TODO: Larry 
-Generate Cue History for each type of cue (similarity, frequency, phonology)
+Generate Cue History for each type of cue (similarity, frequency, phonology). Includes
+    additional functions to support the creation of similarity matrices and frequency lists.
 
+    Functions
+        (1) create_history_variables: creates similarity, frequency, and phonology list and history
+        variables to be used by foraging methods in foraging.py
+        (2) create_semantic_matrix: converts a word embedding space into a similarity matrix
+        (3) phonology_funcs: class to execute the creation of a phonological similarity matrix
 '''
 
 

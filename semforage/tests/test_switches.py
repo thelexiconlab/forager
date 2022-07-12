@@ -49,11 +49,10 @@ phon_matrix_regards= pd.read_csv(parentfolder + 'simlabels_phon_matrix.csv',head
 phon_matrix_regards[phon_matrix_regards <= 0] = .0001
 sim_matrix_regards[sim_matrix_regards <= 0] = .0001
 
-
-
+print(ex_list_1)
+print(history_vars[0])
+print(switch_simdrop(ex_list_1,history_vars[0]))    
 history_vars_regards = create_history_variables(ex_list_1, labels_regards, sim_matrix_regards, freq_matrix_regards, phon_matrix_regards)
-
-
 
 def test_troyer():
     '''

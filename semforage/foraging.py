@@ -4,17 +4,32 @@ from scipy.optimize import fmin
 from semforage import switch
 
 class forage:
-    """ 
-
+    ''' 
     Class Description: 
-        Forage class model to execute static and dynamic models of Semantic Foraging
+        Forage class model to execute static and dynamic models of Semantic Foraging, including based models 
+        proposed in Hills TT, Jones MN, Todd PM(2012) and  Hills TT, Todd PM, Jones MN (2015). Includes 
+        phonological extensions proposed by (Insert Abhilasha's paper)
 
-    TODO: Larry
-    """
+    Current Supported Methods: 
+        model_static: The static model follows the implementation mentioned in "Modeling the search process" 
+            section of  Hills TT, Jones MN, Todd PM(2012). As explained, the static model uses the same set of
+            cues over the entire retrieval interval, effectively ignoring patchy structure of the environment.
+        
+        model_dynamic: The dynamic model follows the implementation mentioned in "Modeling the search process" 
+            section of  Hills TT, Jones MN, Todd PM(2012). As explained, the dynamic model exploits the patchy 
+            structure of memory, switching from patch to patch by changing contents of the memory probe where
+            local-to-global transitions occur
+
+        model_static_phon: The phonological static model is an extension of the static model, where the phonological
+            similarity cue is included in the memory probe
+
+        model_dynamic_phon: The phonological dynamic model is an extension of the dynamic model, where the phonological 
+            similarity cue is included in the memory probe, in either solely local, global, or in both local and global
+            transitions
+    '''
 
     def model_static(beta : list, freql, freqh, siml, simh):
         '''
-        TODO: Larry
         Static Foraging Model following proposed approach in Hills, T. T., Jones, M. N., & Todd, P. M. (2012).
             Optimal Foraging in Semantic Memory.
 
@@ -22,11 +37,11 @@ class forage:
              
             Args: 
                 beta (tuple, size: 2): saliency parameter(s) encoding (beta_local, beta_global).
-                freql (list, size: ): frequency list containing frequency value of corresponding items.
-                freqh (list, size: ): frequency history list of containing frequency value list up 
+                freql (list, size: L): frequency list containing frequency value of corresponding items.
+                freqh (list, size: L): frequency history list of containing frequency value list up 
                     to current point.
-                siml (list, size: ): similarity list containing frequency value of corresponding items
-                simh (list, size: ): similarity history list of containing similarity value list up 
+                siml (list, size: L): similarity list containing frequency value of corresponding items
+                simh (list, size: L): similarity history list of containing similarity value list up 
                     to current point.
 
             Returns: 

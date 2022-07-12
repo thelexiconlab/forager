@@ -5,13 +5,17 @@ import statistics
 '''
 Methods for calculating switches in Semantic Foraging methods.
     Current Methods:
-        (1) Simdrop: 
-        (2) Troyer Norms:
-        (3) Multimodal Simdrop:
-    
-    To do:
-        (4) Semantic Scent 
-        (5) Delta Similarity
+        (1) Similarity Drop (simdrop): Switch Heuristic used in Hills TT, Jones MN, Todd (2012), where a switch is 
+            predicted within a series of items A,B,C,D after B if S(A,B) > S(B,C) and S(B,C) < S(C,D)
+
+        (2) Troyer Norms: Switch Method based on Categorization Norms developed in Troyer, AK, Moscovitch, M, & Winocur, G (1997).
+            Switches are predicted when moving from one category from the "Troyer Norms" to another.
+
+        (3) Multimodal Simdrop: An extension of the Similarity Drop Method to include phonological similarity in the heuristic
+
+        (4) Delta Similarity: A method for predicting switches proposed by Nancy Lundin in her dissertation to bypass limitations
+            of simdrop model, and allow for consecutive switches, and accounts for small dips in similarity that simdrop may
+            deem a switch, which may actually be due to "noise" 
 
     Output Format: 
         Each switch method should preserve the same length/general format for returing switch values, 
@@ -36,7 +40,7 @@ def switch_simdrop(fluency_list, semantic_similarity):
     '''
     simdrop = []
     for k in range(len(fluency_list)):
-        if (k > 0 and k < (len(fluency_list)-2)): 
+        if (k > 0 and k < (len(fluency_list)-1)): 
             # simdrop
             if (semantic_similarity[k+1] > semantic_similarity[k]) and (semantic_similarity[k-1] > semantic_similarity[k]):
                 simdrop.append(1)
@@ -51,10 +55,14 @@ def switch_simdrop(fluency_list, semantic_similarity):
 
 def switch_troyer(fluency_list,norms):
     '''
-        TODO: Larry
+        Switch Method Based on Troyer Norms from Troyer, A. K., Moscovitch, M., & Winocur, G. (1997).
+
         Args:
+            fluency_list (list, size = L): fluency list to predict switches on
+            norms (dataframe, size = L x 2): dataframe of norms data matching animals to a categorical classification
 
         Returns:
+            troyer (list, size = L): a list of switches, where 0 = no switch, 1 = switch, 2 = boundary case
     '''
     troyer = []
 
