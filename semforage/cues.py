@@ -96,7 +96,7 @@ def create_semantic_matrix(path_to_embeddings):
             (1) semantic_matrix: semantic similarity matrix (NxN np.array)
     '''
     embeddings = pd.read_csv(path_to_embeddings, encoding="unicode-escape").transpose().values
-    N = len(embeddings.columns)
+    N = len(embeddings)
     
     semantic_matrix = 1-scipy.spatial.distance.cdist(embeddings, embeddings, 'cosine').reshape(-1)
     semantic_matrix = semantic_matrix.reshape((N,N))
@@ -113,33 +113,22 @@ class phonology_funcs:
             (3) normalized_edit_distance(w1, w2): takes in two strings (w1, w2) and returns the normalized edit distance between them
             (3) create_phonological_matrix: takes in a list of labels (size N) and returns a phonological similarity matrix (NxN np.array)
     '''
-    def load_arpabet():
+    @lru_cache()
+    def wordbreak(s):
         '''
             Description:
-                Loads and returns the arpabet dictionary from the NLTK CMU dictionary
+                Takes in a word (str) and an arpabet dictionary and returns a list of phonemes
             Args:
-                None
+                (1) s (str): string to be broken into phonemes
             Returns:
-                (1) arpabet (str: str): dictionary of arpabet phonemes 
+                (1) phonemes (list, size: variable): list of phonemes in s 
         '''
         try:
             arpabet = nltk.corpus.cmudict.dict()
         except LookupError:
             nltk.download('cmudict')
             arpabet = nltk.corpus.cmudict.dict()
-        return arpabet
-
-    @lru_cache()
-    def wordbreak(s, arpabet):
-        '''
-            Description:
-                Takes in a word (str) and an arpabet dictionary and returns a list of phonemes
-            Args:
-                (1) s (str): string to be broken into phonemes
-                (2) arpabet (dict): arpabet dictionary (dict)
-            Returns:
-                (1) phonemes (list, size: variable): list of phonemes in s 
-        '''
+                
         s = s.lower()
         if s in arpabet:
             return arpabet[s]
@@ -161,7 +150,7 @@ class phonology_funcs:
             Returns:
                 (1) normalized_edit_distance (float): normalized edit distance between w1 and w2
         '''
-        return 1-nltk.edit_distance(w1,w2)/(max(len(w1), len(w2)))
+        return round(1-nltk.edit_distance(w1,w2)/(max(len(w1), len(w2))),4)
 
 
     def create_phonological_matrix(labels):
@@ -174,9 +163,8 @@ class phonology_funcs:
                 (1) phonological_matrix: phonological similarity matrix (NxN np.array)
         '''
         N = len(labels)
-        arpabet = phonology_funcs.load_arpabet()
         labels = [re.sub('[^a-zA-Z]+', '', str(v)) for v in labels]
-        phonological_matrix = np.array([phonology_funcs.normalized_edit_distance(phonology_funcs.wordbreak(w1,arpabet)[0], phonology_funcs.wordbreak(w2,arpabet)[0]) for w1 in labels for w2 in labels]).reshape((N,N))
+        phonological_matrix = np.array([phonology_funcs.normalized_edit_distance(phonology_funcs.wordbreak(w1)[0], phonology_funcs.wordbreak(w2)[0]) for w1 in labels for w2 in labels]).reshape((N,N))
         return phonological_matrix
 
 
