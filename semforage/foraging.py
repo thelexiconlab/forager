@@ -33,7 +33,6 @@ class forage:
         Static Foraging Model following proposed approach in Hills, T. T., Jones, M. N., & Todd, P. M. (2012).
             Optimal Foraging in Semantic Memory.
 
-            Description: 
              
             Args: 
                 beta (tuple, size: 2): saliency parameter(s) encoding (beta_local, beta_global).
@@ -66,8 +65,7 @@ class forage:
         return ct
         
     def model_dynamic(beta, freql, freqh, siml, simh, switchvals):
-        '''
-        TODO: Abhilasha 
+        ''' 
         Dynamic Foraging Model based on Hills, T. T., Jones, M. N., & Todd, P. M. (2012).
             Optimal Foraging in Semantic Memory.
 
@@ -111,8 +109,6 @@ class forage:
 
     def model_static_phon(beta, freql, freqh, siml, simh, phonl, phonh):
         '''
-        TODO: Molly # Abhilasha - editing this
-
             Description: 
                 This model is an adapted version of static foraging model proposed by Hills, T. T., Jones, M. N., & Todd, P. M. (2012)
                 that incorporates phonological similarity. This model computes the likelihood of each given item 
@@ -144,8 +140,6 @@ class forage:
 
     def model_dynamic_phon(beta, freql, freqh, siml, simh, phonl, phonh, switchvals, phoncue):
         '''
-        TODO: Abhilasha 
-
             Description: 
                 This model is an adapted version of dynamic foraging model proposed by Hills, T. T., Jones, M. N., & Todd, P. M. (2012)
                 that incorporates phonological similarity in three different ways. This model computes the likelihood of each given item 
@@ -202,18 +196,3 @@ class forage:
                 
             ct += - np.log(numrat/denrat)
         return ct
-
-# TODO: verify this function
-def optimize_model(func, switchvals, histvars, randvars=[np.random.rand(),np.random.rand(),np.random.rand()]):
-    '''
-    
-    Args:
-        func - passes one of the static or dynamic foraging functions
-        switchvals - vector of switch values
-        histvars - history variables
-        randvars - random variables, 
-    Returns: 
-    '''
-    r1,r2,r3 = randvars
-    freql, freqh, siml, simh, phonl, phonh = histvars
-    return fmin(func, [r1,r2,r3], args=(freql, freqh, siml, simh, phonl, phonh, switchvals), ftol = 0.001, full_output=True, disp=False)

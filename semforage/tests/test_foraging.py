@@ -7,10 +7,12 @@ from semforage.cues import create_history_variables
 from semforage.switch import switch_simdrop
 
 #Import Default Data from Psych Review
-sim_matrix = pd.read_csv("psyrev_files/similaritymatrix.csv",header=None).dropna(axis=1).values
-labels = list(pd.read_csv("psyrev_files/similaritylabels.csv",header=None).squeeze().values)
-freq_data = pd.read_csv("psyrev_files/frequencies.csv",header=None).dropna(axis=1)
-psyrev_data = pd.read_csv("psyrev_files/data-psyrev.txt",sep=' ',header=None)
+
+parentfolder = '../../data/'
+sim_matrix = pd.read_csv(parentfolder + "lexical data/archive/psyrev-similaritymatrix.csv",header=None).dropna(axis=1).values
+labels = list(pd.read_csv(parentfolder + "lexical data/archive/psyrev-similaritylabels.csv",header=None).squeeze().values)
+freq_data = pd.read_csv(parentfolder + "lexical data/archive/psyrev-frequencies.csv",header=None).dropna(axis=1)
+psyrev_data = pd.read_csv(parentfolder + "fluency_lists/data-psyrev.txt",sep=' ',header=None)
 #reorder freq_matrix to match sim_matrix
 freq_matrix = []
 for label in labels:
@@ -39,8 +41,3 @@ def test_model_dynamic():
     switches = switch_simdrop(ex_list,history_vars[0])
     nll = forage.model_dynamic(beta = [0,0], freql = history_vars[2], freqh = history_vars[3], siml = history_vars[0], simh = history_vars[1], switchvals = switches)
     assert nll == comparison_nll_dynamic
-
-
-# def test_model_pstatic():
-
-# def test_model_pdynamic():

@@ -32,7 +32,7 @@ Methods for calculating switches in Semantic Foraging methods.
 
 def switch_simdrop(fluency_list, semantic_similarity):
     '''
-        Similarity Drop Switch Method
+        Similarity Drop Switch Method from Hills TT, Jones MN, Todd (2012).
         
         Args:
             fluency_list (list, size = L): fluency list to predict switches on
@@ -89,6 +89,7 @@ def switch_troyer(fluency_list,norms):
 
 def switch_multimodal(fluency_list,semantic_similarity,phonological_similarity,alpha):
     '''
+        Multimodal Similarity Drop based on semantic and phonological cues, extending Hills TT, Jones MN, Todd (2012).
         Args:
             fluency_list (list, size = L): fluency list to predict switches on
             semantic_similarity (list, size = L): a list of semantic similarities between items in the fluency list, obtained via create_history_variables
@@ -108,7 +109,7 @@ def switch_multimodal(fluency_list,semantic_similarity,phonological_similarity,a
     multimodalsimdrop = []
 
     for k in range(len(fluency_list)):
-        if (k > 0 and k < (len(fluency_list) - 2)): 
+        if (k > 0 and k < (len(fluency_list) - 1)): 
             if (simphon[k + 1] > simphon[k]) and (simphon[k - 1] > simphon[k]):
                 multimodalsimdrop.append(1)
             else:
@@ -121,7 +122,7 @@ def switch_multimodal(fluency_list,semantic_similarity,phonological_similarity,a
 
 def switch_delta(fluency_list, semantic_similarity, rise_thresh, fall_thresh):
     '''
-        Delta Similarity Switch Method
+        Delta Similarity Switch Method proposed by Nancy Lundin & Peter Todd. 
         
         Args:
             fluency_list (list, size = L): fluency list to predict switches on
@@ -181,13 +182,3 @@ def switch_delta(fluency_list, semantic_similarity, rise_thresh, fall_thresh):
         previousState = currentState
 
     return switchVector
-
-
-# def switch_semanticscent():
-#     '''
-#         TODO : Implement Semantic Scent Switch Method
-        
-#         Args:
-
-#         Returns:
-#     '''
