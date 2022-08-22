@@ -3,7 +3,7 @@ from semforage.cues import *
 import numpy as np
 import pandas as pd
 
-path_to_embeddings = "psyrev_files/semantic_embeddings.csv"
+path_to_embeddings = "../data/semantic_embeddings.csv"
 path_to_frequencies = "psyrev_files/frequencies.csv"
 embeddings = pd.read_csv(path_to_embeddings, encoding="unicode-escape").transpose().values
 labels = list(pd.read_csv("psyrev_files/similaritylabels.csv",header=None).squeeze().values)
