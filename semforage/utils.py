@@ -5,6 +5,15 @@ import pandas as pd
 
 import difflib
 import nltk
+def trunc(word, df):
+    # function to truncate fluency list at word
+    i = df[df['entry'] == word].index.values[0]
+    sid = df.iloc[i]['SID']
+    sid_rows = df[df['SID'] == sid].index.values
+    j = sid_rows[-1] + 1
+    df.drop(df.index[i:j], inplace=True)
+    df.reset_index(drop=True, inplace=True)
+    return None
 
 def prepareData(path,delimiter = '\t'):
     ### LOAD BEHAVIORAL DATA ###
@@ -35,13 +44,7 @@ def prepareData(path,delimiter = '\t'):
                     else: 
                         # truncate fluency list before instance of OOV item
                         while word in df.values:
-                            i = df[df['entry'] == word].index.values[0]
-                            sid = df.iloc[i]['SID']
-                            sid_rows = df[df['SID'] == sid].index.values
-                            j = sid_rows[-1] + 1
-
-                            df.drop(df.index[i:j], inplace=True)
-                            df.reset_index(drop=True, inplace=True)
+                            trunc(word, df)
                 # replace words within edit distance threshold
                 df.replace(replacements, inplace=True)
                 break
@@ -49,7 +52,12 @@ def prepareData(path,delimiter = '\t'):
                 for x in range(len(oov)):
                     # offer user top 3 matches and option to truncate
                     closest_words = difflib.get_close_matches(oov[x], labels['word'].values, 3)
+                    
                     print("OOV item #"+str(x)+": "+oov[x])
+                    if len(closest_words[0])==0:
+                        print("No close matches found. Truncating list before OOV item.")
+                        trunc(oov[x], df)
+                        continue
                     print("The top three closest matches are:")
                     print("(1)", closest_words[0])
                     print("(2)", closest_words[1])
@@ -61,12 +69,7 @@ def prepareData(path,delimiter = '\t'):
                             df.replace(oov[x], closest_words[y], inplace=True)
                             break
                         elif c == "t":
-                            i = df[df['entry'] == word].index.values[0] # index of row of OOV item (repeats will be deleted as it goes)
-                            sid = df.iloc[i]['SID']
-                            sid_rows = df[df['SID'] == sid].index.values
-                            j = sid_rows[-1] + 1
-                            df.drop(df.index[i:j], inplace=True)
-                            df.reset_index(drop=True, inplace=True)
+                            trunc(oov[x], df)
                             break
                         else:
                             print("Entry invalid. Try again.")
