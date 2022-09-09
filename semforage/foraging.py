@@ -94,7 +94,7 @@ class forage:
                 denrat = sum(pow(freqh[k],beta[0]))
             
             elif switchvals[k]==1: ## "dip" based on sim-drop
-                # If similarity dips, P of item is based on a combination of frequency and phonemic similarity
+                # If similarity dips, P of item is based on frequency 
                 numrat = pow(freql[k],beta[0]) 
                 denrat = sum(pow(freqh[k],beta[0]))
 

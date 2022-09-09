@@ -30,7 +30,9 @@ def prepareData(path,delimiter = '\t'):
     
 
     if len(oov) > 0:
-        print("There are " + str(len(oov)) + " items from your data that are out of the vocabulary set (OOV). The default policy is to replace any OOV item with the closest available word if the Levenshtein edit-distance is 2 or lower. Otherwise, the fluency list is truncated before the OOV item.")
+        print("There are " + str(len(oov))) + " items from your data that are out of the vocabulary set (OOV). The default policy is to replace any OOV item with the closest available word if the Levenshtein edit-distance is 2 or lower. Otherwise, the fluency list is truncated before the OOV item.")
+        rct = 0 # number of replacements
+        tct = 0 # number of truncations
         while True:
             choice = input("Type 'd' to use the default policy. \nType 'r' to review each OOV item and choose between replacing the word and truncating the list. \nThen, press enter. \n")
             if choice == "d":
@@ -44,8 +46,10 @@ def prepareData(path,delimiter = '\t'):
                     else: 
                         # truncate fluency list before instance of OOV item
                         while word in df.values:
+                            tct += 1
                             trunc(word, df)
                 # replace words within edit distance threshold
+                rct += len(replacements)
                 df.replace(replacements, inplace=True)
                 break
             elif choice == "r":
@@ -56,6 +60,7 @@ def prepareData(path,delimiter = '\t'):
                     print("OOV item #"+str(x)+": "+oov[x])
                     if len(closest_words[0])==0:
                         print("No close matches found. Truncating list before OOV item.")
+                        tct += 1
                         trunc(oov[x], df)
                         continue
                     print("The top three closest matches are:")
@@ -66,9 +71,11 @@ def prepareData(path,delimiter = '\t'):
                         c = input("To replace this item with one of the words above, please enter '1', '2', or '3' accordingly. \nEnter 't' to truncate this participant's list before the item.")
                         if c == "1" or c == "2" or c == "3":
                             y = int(c) - 1
+                            rct += 1
                             df.replace(oov[x], closest_words[y], inplace=True)
                             break
                         elif c == "t":
+                            tct += 1
                             trunc(oov[x], df)
                             break
                         else:
@@ -78,8 +85,8 @@ def prepareData(path,delimiter = '\t'):
             else:
                 print("Entry invalid. Try again.") 
                 continue 
-    
+        print("There were", rct, "replacements and", tct, "truncations.")
     print("Data preparation complete.")
     return df 
 
-#print(prepareData("semforage/tests/psyrev_files/data-psyrev.txt", " "))
+print(prepareData("semforage/tests/psyrev_files/data-psyrev.txt", " "))
