@@ -30,7 +30,7 @@ def prepareData(path,delimiter = '\t'):
     
 
     if len(oov) > 0:
-        print("There are " + str(len(oov))) + " items from your data that are out of the vocabulary set (OOV). The default policy is to replace any OOV item with the closest available word if the Levenshtein edit-distance is 2 or lower. Otherwise, the fluency list is truncated before the OOV item.")
+        print("There are " + str(len(oov)) + " items from your data that are out of the vocabulary set (OOV). The default policy is to replace any OOV item with the closest available word if the Levenshtein edit-distance is 2 or lower. Otherwise, the fluency list is truncated before the OOV item.")
         rct = 0 # number of replacements
         tct = 0 # number of truncations
         while True:
