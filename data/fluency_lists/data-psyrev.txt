@@ -67,7 +67,7 @@
 71 crab
 71 fish
 71 bluegill
-71 mantaray
+71 manta_ray
 71 caribou
 71 polarbear
 198 dog
