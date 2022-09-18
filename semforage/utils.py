@@ -89,4 +89,4 @@ def prepareData(path,delimiter = '\t'):
     print("Data preparation complete.")
     return df 
 
-print(prepareData("semforage/tests/psyrev_files/data-psyrev.txt", " "))
+#print(prepareData("semforage/tests/psyrev_files/data-psyrev.txt", " "))
