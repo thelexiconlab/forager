@@ -20,7 +20,7 @@ def prepareData(path,delimiter = '\t'):
     df = pd.read_csv(path, header=None, names=['SID', 'entry'], delimiter=delimiter)
 
     # load similarity labels
-    labels = pd.read_csv("semforage/tests/psyrev_files/similaritylabels.csv", names=['word']) # CHANGE PATH TO UPDATED VOCAB LIST
+    labels = pd.read_csv("data/lexical data/frequencies.csv", names=['word', 'logct', 'ct']) # CHANGE PATH TO UPDATED VOCAB LIST
 
     # get values from df 
     values = df['entry'].values
@@ -89,4 +89,4 @@ def prepareData(path,delimiter = '\t'):
     print("Data preparation complete.")
     return df 
 
-#print(prepareData("semforage/tests/psyrev_files/data-psyrev.txt", " "))
+print(prepareData("semforage/tests/psyrev_files/data-psyrev.txt", " "))
