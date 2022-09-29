@@ -17,7 +17,7 @@ def get_frequencies(embeddings):
         Args:
             (1) embeddings: path to the CSV file of semantic embeddings
     '''
-    data = pd.read_csv(embeddings) #TODO fix format of labels
+    data = pd.read_csv(embeddings) 
     items = data.columns.to_list()
 
     items_and_counts = []
@@ -41,8 +41,8 @@ def get_frequencies(embeddings):
     item_counts_df['log_count'] = item_counts_df['count'].apply(np.log10)
     item_counts_df = item_counts_df[['item', 'log_count', 'count']]
 
-    print(item_counts_df)
-    #item_counts_df.to_csv('data/lexical data/frequencies.csv', index=False)
+    #print(item_counts_df)
+    item_counts_df.to_csv('data/lexical data/frequencies.csv', index=False)
     return None
 
-get_frequencies('data/lexical data/semantic_embeddings.csv')
+#get_frequencies('data/lexical data/semantic_embeddings.csv')
