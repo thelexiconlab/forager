@@ -71,7 +71,7 @@ class forage:
 
             Description: This model computes the likelihood of each given item in the fluency list based 
             on two cues: semantic similarity (local)  and frequency (global). The likelihood is computed
-            based on the product of semantic similarity and frequecny until a switch is detected, at which 
+            based on the product of semantic similarity and frequency until a switch is detected, at which 
             point the likelihood is computed based on frequency (with the exception of the first item, whose 
             likelihood is computed based on frequency).
 
@@ -94,7 +94,7 @@ class forage:
                 denrat = sum(pow(freqh[k],beta[0]))
             
             elif switchvals[k]==1: ## "dip" based on sim-drop
-                # If similarity dips, P of item is based on a combination of frequency and phonemic similarity
+                # If similarity dips, P of item is based on frequency 
                 numrat = pow(freql[k],beta[0]) 
                 denrat = sum(pow(freqh[k],beta[0]))
 
@@ -112,14 +112,13 @@ class forage:
             Description: 
                 This model is an adapted version of static foraging model proposed by Hills, T. T., Jones, M. N., & Todd, P. M. (2012)
                 that incorporates phonological similarity. This model computes the likelihood of each given item 
-                in the fluency list based on three cues: semantic similarity, phonological similarity,  and frequency.             
+                in the fluency list based on three cues: semantic similarity, phonological similarity, and frequency.             
             Args: 
                 beta (tuple, size: 2): saliency parameter(s) encoding (beta_local, beta_global).
                 freql (list, size: L): frequency list containing frequency value of corresponding items.
                 freqh (list, size: L arrays of size N): frequency history list of containing frequency value list up to current point.
                 siml (list, size: L): semantic similarity list obtained via create_history_variables
                 simh (list, size: L arrays of size N): similarity history list obtained via create_history_variables
-                switchvals (list, size: L): list of switch values at given item in fluency list
                 phonl (list, size: L): phonological similarity list obtained via create_history_variables
                 phonh (list, size: ): phonological cue history list obtained via create_history_variables
             Returns: 

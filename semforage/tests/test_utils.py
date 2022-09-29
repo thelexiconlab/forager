@@ -1,0 +1,10 @@
+import pytest
+import pandas as pd
+from semforage.utils import *
+
+# TODO: test with small example fluency list and make sure correct actions take place for each input
+
+
+def test_prepareData():
+    
+    return
