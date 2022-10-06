@@ -273,7 +273,7 @@ def run_model(data, model, switch, dname):
     norms, similarity_matrix, phon_matrix, frequency_list, labels = get_lexical_data()
     outputs = []
     # Run through each fluency list in dataset
-    for i, (subj, fl_list) in enumerate(tqdm(data[:2])):
+    for i, (subj, fl_list) in enumerate(tqdm(data)):
         print("\nRunning Model for Subject {subj}".format(subj=subj))
         import time
         start_time = time.time()
