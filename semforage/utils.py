@@ -63,10 +63,10 @@ def prepareData(path,delimiter = '\t'):
                         tct += 1
                         trunc(oov[x], df)
                         continue
-                    print("The top three closest matches are:")
-                    print("(1)", closest_words[0])
-                    print("(2)", closest_words[1])
-                    print("(3)", closest_words[2])
+                    # Sometimes theres fewer than 3 closest words
+                    print("The top (three) closest matches are:")
+                    for i,word in enumerate(closest_words):
+                        print("({i}) {word}".format(i=i,word=word))
                     while True:
                         c = input("To replace this item with one of the words above, please enter '1', '2', or '3' accordingly. \nEnter 't' to truncate this participant's list before the item.")
                         if c == "1" or c == "2" or c == "3":
@@ -87,6 +87,11 @@ def prepareData(path,delimiter = '\t'):
                 continue 
         print("There were", rct, "replacements and", tct, "truncations.")
     print("Data preparation complete.")
-    return df 
-
-#print(prepareData("semforage/tests/psyrev_files/data-psyrev.txt", " "))
+    
+    # Stratify data into fluency lists
+    data = []
+    for subj in df['SID'].unique():
+        subj_df = df[df['SID'] == subj]
+        subj_data = (subj,subj_df['entry'].values.tolist())
+        data.append(subj_data)
+    return data
