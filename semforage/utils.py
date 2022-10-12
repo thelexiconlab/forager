@@ -18,7 +18,6 @@ def trunc(word, df):
 def prepareData(path,delimiter = '\t'):
     ### LOAD BEHAVIORAL DATA ###
     df = pd.read_csv(path, header=None, names=['SID', 'entry'], delimiter=delimiter)
-
     # load similarity labels
     labels = pd.read_csv("data/lexical data/frequencies.csv", names=['word', 'logct', 'ct']) # CHANGE PATH TO UPDATED VOCAB LIST
 
@@ -27,8 +26,6 @@ def prepareData(path,delimiter = '\t'):
     
     # loop through values to find which ones are not in file
     oov = [w for w in values if w not in labels['word'].values]
-    
-
     if len(oov) > 0:
         print("There are " + str(len(oov)) + " items from your data that are out of the vocabulary set (OOV). The default policy is to replace any OOV item with the closest available word if the Levenshtein edit-distance is 2 or lower. Otherwise, the fluency list is truncated before the OOV item.")
         rct = 0 # number of replacements
@@ -56,9 +53,8 @@ def prepareData(path,delimiter = '\t'):
                 for x in range(len(oov)):
                     # offer user top 3 matches and option to truncate
                     closest_words = difflib.get_close_matches(oov[x], labels['word'].values, 3)
-                    
                     print("OOV item #"+str(x)+": "+oov[x])
-                    if len(closest_words[0])==0:
+                    if len(closest_words)==0:
                         print("No close matches found. Truncating list before OOV item.")
                         tct += 1
                         trunc(oov[x], df)
@@ -66,7 +62,7 @@ def prepareData(path,delimiter = '\t'):
                     # Sometimes theres fewer than 3 closest words
                     print("The top (three) closest matches are:")
                     for i,word in enumerate(closest_words):
-                        print("({i}) {word}".format(i=i,word=word))
+                        print("({i}) {word}".format(i=i+1,word=word))
                     while True:
                         c = input("To replace this item with one of the words above, please enter '1', '2', or '3' accordingly. \nEnter 't' to truncate this participant's list before the item.")
                         if c == "1" or c == "2" or c == "3":
