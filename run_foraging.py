@@ -1,5 +1,4 @@
 import argparse
-import enum
 from scipy.optimize import fmin
 from semforage.foraging import forage
 from semforage.switch import switch_delta, switch_multimodal, switch_simdrop, switch_troyer
@@ -80,7 +79,7 @@ def retrieve_data(path):
     if os.path.exists(path) == False:
         ex_str = "Provided path to data \"{path}\" does not exist. Please specify a proper path".format(path=path)
         raise Exception(ex_str)
-    data = prepareData(path, delimiter=' ')
+    data = prepareData(path, delimiter=',')
     return data
 
 def get_lexical_data():

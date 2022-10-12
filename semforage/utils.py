@@ -71,6 +71,8 @@ def prepareData(path,delimiter = '\t'):
                         c = input("To replace this item with one of the words above, please enter '1', '2', or '3' accordingly. \nEnter 't' to truncate this participant's list before the item.")
                         if c == "1" or c == "2" or c == "3":
                             y = int(c) - 1
+                            if y > len(closest_words):
+                                raise Exception("Out-of-vocabulary word may have fewer than three close matches, please choose the closest valid replacement item")
                             rct += 1
                             df.replace(oov[x], closest_words[y], inplace=True)
                             break
