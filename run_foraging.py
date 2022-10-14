@@ -9,6 +9,7 @@ import numpy as np
 from scipy.optimize import fmin
 import os, sys
 from tqdm import tqdm
+
 """
 Current TODOS:
 - Return individual likelihoods
@@ -140,6 +141,7 @@ def calculate_model(model, history_vars, switch_names, switch_vecs):
         model_results.append((beta_df, beta_ds, beta_dp, nll, nll_vec))
     if model == models[3] or model == models[4]:
         for i, switch_vec in enumerate(switch_vecs):
+            # Global Dynamic Phonological Model
             r1 = np.random.rand()
             r2 = np.random.rand()
             r3 = np.random.rand()
@@ -150,7 +152,36 @@ def calculate_model(model, history_vars, switch_names, switch_vecs):
             beta_dp = float(v[2]) # Optimized weight for phonological cue
             
             nll, nll_vec = forage.model_dynamic_phon_report([beta_df, beta_ds,beta_dp], history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5],switch_vec,'global')
-            model_name.append('forage_phonologicaldynamic_' + switch_names[i])
+            model_name.append('forage_phonologicaldynamicglobal_' + switch_names[i])
+            model_results.append((beta_df, beta_ds, beta_dp, nll, nll_vec))
+    
+            # Local Dynamic Phonological Model
+            r1 = np.random.rand()
+            r2 = np.random.rand()
+            r3 = np.random.rand()
+            v = fmin(forage.model_dynamic_phon, [r1,r2,r3], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5], switch_vec,'local'),disp=False)
+            
+            beta_df = float(v[0]) # Optimized weight for frequency cue
+            beta_ds = float(v[1]) # Optimized weight for similarity cue
+            beta_dp = float(v[2]) # Optimized weight for phonological cue
+            
+            nll, nll_vec = forage.model_dynamic_phon_report([beta_df, beta_ds,beta_dp], history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5],switch_vec,'local')
+            model_name.append('forage_phonologicaldynamiclocal_' + switch_names[i])
+            model_results.append((beta_df, beta_ds, beta_dp, nll, nll_vec))
+    
+            # Switch Dynamic Phonological Model
+            r1 = np.random.rand()
+            r2 = np.random.rand()
+            r3 = np.random.rand()
+            v = fmin(forage.model_dynamic_phon, [r1,r2,r3], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5], switch_vec,'switch'),disp=False)
+            
+            beta_df = float(v[0]) # Optimized weight for frequency cue
+            beta_ds = float(v[1]) # Optimized weight for similarity cue
+            beta_dp = float(v[2]) # Optimized weight for phonological cue
+            
+            nll, nll_vec = forage.model_dynamic_phon_report([beta_df, beta_ds,beta_dp], history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5],switch_vec,'switch')
+            model_name.append('forage_phonologicaldynamicswitch_' + switch_names[i])
+
             model_results.append((beta_df, beta_ds, beta_dp, nll, nll_vec))
     
     # Unoptimized Model
@@ -209,15 +240,14 @@ def synthesize_results(outputs):
         results = output[3]
         switch_methods = output[4]
         switch_vectors = output[5]
-
         #Create Model Output Results DataFrame
         for i, model in enumerate(model_names):
-            
+            print(model)
             model_dict = dict()
             model_dict['Subject'] = subj
             model_dict['Model'] = model
             model_dict['Beta_Frequency'] = results[i][0]
-            model_dict['Beta_Similarity'] = results[i][1]
+            model_dict['Beta_Semantic'] = results[i][1]
             # print(results[i])
             # sys.exit()
             if len(results[i]) == 4:
@@ -241,7 +271,7 @@ def synthesize_results(outputs):
         switch_df = pd.concat(switch_df, ignore_index=True)
         switch_results.append(switch_df)
 
-        # Create Negative Log Likelihood DataFrame with SubjectWise NLL
+        # Create Negative Log Likelihood DataFrame with Item Wise NLL 
         nll_df = pd.DataFrame()
         nll_df['Subject'] = len(fl_list) * [subj]
         nll_df['Fluency_Item'] = fl_list
@@ -250,13 +280,18 @@ def synthesize_results(outputs):
                 nll_df['NLL_{model}'.format(model=model_names[k])] = result[3]
             if len(result) == 5:
                 nll_df['NLL_{model}'.format(model=model_names[k])] = result[4]
+        # Add freq, semantic sim, and phon sim values to itemwise nll data
+        nll_df['Frequency_Value'] = output[6][0]
+        nll_df['Semantic_Similarity'] = output[6][2]
+        nll_df['Phonological_Similarity'] = output[6][4]
         nll_results.append(nll_df)
 
     model_results = pd.DataFrame(model_results)
     switch_results = pd.concat(switch_results, ignore_index=True)
     nll_results = pd.concat(nll_results,ignore_index=True)
     
-    # TODO: Parameter Specified Value(s) for List (Similar to Jack's output file)
+    
+    
     return model_results, switch_results, nll_results
 
 def output_results(results,dname,dpath='output',sep=','):
@@ -284,7 +319,7 @@ def run_model(data, model, switch, dname):
 
         #Execute Individual Model(s) and get result(s)
         model_names, model_results = calculate_model(model,history_vars, switch_names, switch_vecs)
-        outputs.append([subj, fl_list, model_names, model_results, switch_names, switch_vecs])
+        outputs.append([subj, fl_list, model_names, model_results, switch_names, switch_vecs,history_vars])
         # print("Results: {names} , {res}".format(names = model_names, res=model_results))
         # print("--- Ran for %s seconds ---" % (time.time() - start_time))
     model_results, switch_results, nll_results = synthesize_results(outputs)
