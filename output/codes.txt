@@ -1,0 +1,18 @@
+CC = Cognitive Complaints
+MCI = Mild Cognitive Impairment
+A = Atypical
+CN = Control Normal     
+AD = Alzheimer's Disease
+
+Other codes = Different Pathology, but impaired
+
+Additional Information: 
+
+Visit_type is where in the study there were evaluated.
+BL: Baseline M3: 3 months after baseline Y1: one year after baseline Y2: two years after
+baseline, etc.
+Please let me know if you need anything else.
+
+Oh, I just remembered that for the M3 designations, they are actually 3 months after the last
+assessment. In most cases this is baseline, but some got three month assessments later in
+their timeline.
