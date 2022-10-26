@@ -34,10 +34,13 @@ WHAT TO DO: Give description of the method(s) -- should generally reflect what t
 ### Semantic, Phonological, and Frequency Matrix Generation
 Similarity Matrix Generation
 - TODO: Abhilasha
+
 Phonological Matrix Generation
 - TODO: Abhilasha
+
 Frequency Data Generation
 - TODO: Molly
+
 History Variabile Creation:
 - TODO: Abhilasha 
 

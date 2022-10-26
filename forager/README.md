@@ -6,14 +6,10 @@ switch.py
 - TODO: Larry
 
 foraging.py
-- Contains dynamic and static semantic foraging model
-    - Input:
-    - Output: 
+-TODO: Larry
 
 cues.py
-- TODO: Abhilasha 
-frequency.py
-- Contains methods for attaining frequency data for fluency items
+- TODO: Abhilasha
 
 frequency.py
 - TODO: Molly
