@@ -9,10 +9,12 @@ from forager.switch import switch_simdrop
 #Import Default Data from Psych Review
 
 parentfolder = '../../data/'
-sim_matrix = pd.read_csv(parentfolder + "lexical data/archive/psyrev-similaritymatrix.csv",header=None).dropna(axis=1).values
-labels = list(pd.read_csv(parentfolder + "lexical data/archive/psyrev-similaritylabels.csv",header=None).squeeze().values)
-freq_data = pd.read_csv(parentfolder + "lexical data/archive/psyrev-frequencies.csv",header=None).dropna(axis=1)
-psyrev_data = pd.read_csv(parentfolder + "fluency_lists/data-psyrev.txt",sep=' ',header=None)
+sim_matrix = pd.read_csv(parentfolder + "lexical_data/archive/psyrev/psyrev-similaritymatrix.csv",header=None).dropna(axis=1).values
+labels = list(pd.read_csv(parentfolder + "lexical_data/archive/psyrev/psyrev-similaritylabels.csv",header=None).squeeze().values)
+freq_data = pd.read_csv(parentfolder + "lexical_data/archive/psyrev/psyrev-frequencies.csv",header=None).dropna(axis=1)
+psyrev_data = pd.read_csv(parentfolder + "fluency_lists/data-psyrev.txt",sep='\t',header=None)
+
+print(psyrev_data)
 #reorder freq_matrix to match sim_matrix
 freq_matrix = []
 for label in labels:
@@ -28,7 +30,7 @@ ex_list = psyrev_data[psyrev_data[0] == subj][1].values.tolist()
 history_vars = create_history_variables(ex_list, labels, sim_matrix,freq_matrix)
 
 # Get comparison value for untuned model
-results_df = pd.read_csv("psyrev_files/fullfits_nophon.csv")
+results_df = pd.read_csv(parentfolder + "misc/fullfits_nophon.csv")
 comparison_nll_static = results_df[results_df['sid'] == subj]['merr-SR'][0]
 comparison_nll_dynamic = results_df[results_df['sid'] == subj]['merr-DR'][0]
 

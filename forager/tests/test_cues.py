@@ -5,10 +5,10 @@ import pandas as pd
 
 #TODO: update paths for test files
 parentfolder = '../../data/'
-path_to_embeddings = parentfolder + "lexical data/semantic_embeddings.csv"
-path_to_frequencies = parentfolder + "lexical data/archive/psyrev-frequencies.csv"
+path_to_embeddings = parentfolder + "lexical_data/semantic_embeddings.csv"
+path_to_frequencies = parentfolder + "lexical_data/archive/psyrev/psyrev-frequencies.csv"
 embeddings = pd.read_csv(path_to_embeddings, encoding="unicode-escape").transpose().values
-labels = list(pd.read_csv(parentfolder + "psyrev_files/similaritylabels.csv",header=None).squeeze().values)
+labels = list(pd.read_csv(parentfolder + "lexical_data/frequencies.csv",header=None).values.tolist())
 
 toy_semantic_matrix = np.array([[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]])
 toy_phonological_matrix = np.array([[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]])

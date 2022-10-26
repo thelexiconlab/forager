@@ -16,15 +16,16 @@ ex_list_1 = ['cat','dog','mouse','rat','giraffe','lion']
 
 # Import Default Data (e.g. semantic_similarity item(s), norms)
 
-norms = pd.read_csv("psyrev_files/troyernorms.csv", encoding="unicode-escape")
 
 #forager Test Data 
 parentfolder = "../../data/"
-freq_matrix = pd.read_csv(parentfolder + "lexical data/frequencies.csv", header = None) 
+norms = pd.read_csv(parentfolder + "norms/troyernorms.csv", encoding="unicode-escape")
+
+freq_matrix = pd.read_csv(parentfolder + "lexical_data/frequencies.csv", header = None) 
 labels = list(freq_matrix[0])
 freq_matrix = np.array(freq_matrix[1])
-sim_matrix = pd.read_csv(parentfolder + 'lexical data/similaritymatrix.csv',header = None).values
-phon_matrix= pd.read_csv(parentfolder + 'lexical data/phonmatrix.csv',header = None).values
+sim_matrix = pd.read_csv(parentfolder + 'lexical_data/similaritymatrix.csv',delimiter=' ',header = None).values
+phon_matrix= pd.read_csv(parentfolder + 'lexical_data/phonmatrix.csv',header = None).values
 
 phon_matrix[phon_matrix <= 0] = .0001
 sim_matrix[sim_matrix <= 0] = .0001

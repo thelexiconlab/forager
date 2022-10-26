@@ -157,29 +157,29 @@ class phonology_funcs:
         '''
         return round(1-nltk.edit_distance(w1,w2)/(max(len(w1), len(w2))),4)
 
-def create_phonological_matrix(labels):
-    '''
-        Description:
-            Takes in a list of labels (size N) and returns a phonological similarity matrix (NxN np.array)
-        Args:
-            (1) labels: a list of words matching the size of your search space (list of length N)
-        Returns: 
-            (1) phonological_matrix: phonological similarity matrix (NxN np.array)
-    '''
-    N = len(labels)
-    phonological_matrix = np.zeros(N * N)
-    labels = [re.sub('[^a-zA-Z]+', '', str(v)) for v in labels]
-    import time
-    start_time = time.time()
-    print("Calculating phonemes ...")
-    labels = [phonology_funcs.wordbreak(v)[0] for v in labels]
-    print("--- Ran for %s seconds ---" % (time.time() - start_time))
-    word_combos = list(iterprod(labels,labels))
-    print("Calculating Similarities")
-    for i, combo in enumerate(word_combos):
-        if i % 1000 == 0 and i != 0:
-            print(i)
-        phonological_matrix[i] = phonology_funcs.normalized_edit_distance(combo[0],combo[1])
-    phonological_matrix = phonological_matrix.reshape((N,N))
+    def create_phonological_matrix(labels):
+        '''
+            Description:
+                Takes in a list of labels (size N) and returns a phonological similarity matrix (NxN np.array)
+            Args:
+                (1) labels: a list of words matching the size of your search space (list of length N)
+            Returns: 
+                (1) phonological_matrix: phonological similarity matrix (NxN np.array)
+        '''
+        N = len(labels)
+        phonological_matrix = np.zeros(N * N)
+        labels = [re.sub('[^a-zA-Z]+', '', str(v)) for v in labels]
+        import time
+        start_time = time.time()
+        print("Calculating phonemes ...")
+        labels = [phonology_funcs.wordbreak(v)[0] for v in labels]
+        print("--- Ran for %s seconds ---" % (time.time() - start_time))
+        word_combos = list(iterprod(labels,labels))
+        print("Calculating Similarities")
+        for i, combo in enumerate(word_combos):
+            if i % 1000 == 0 and i != 0:
+                print(i)
+            phonological_matrix[i] = phonology_funcs.normalized_edit_distance(combo[0],combo[1])
+        phonological_matrix = phonological_matrix.reshape((N,N))
 
-    return phonological_matrix
+        return phonological_matrix

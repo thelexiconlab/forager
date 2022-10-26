@@ -63,9 +63,9 @@ Other stuff:
 
 # Global Path Variabiles
 normspath =  'data/norms/troyernorms.csv'
-similaritypath =  'data/lexical data/similaritymatrix.csv'
-frequencypath =  'data/lexical data/frequencies.csv'
-phonpath = 'data/lexical data/phonmatrix.csv'
+similaritypath =  'data/lexical_data/similaritymatrix.csv'
+frequencypath =  'data/lexical_data/frequencies.csv'
+phonpath = 'data/lexical_data/phonmatrix.csv'
 
 # Global Variables
 models = ['static','dynamic','pstatic','pdynamic','all']
