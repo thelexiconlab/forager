@@ -16,7 +16,7 @@ else:
 setup(name='semforage',
       version=verstr,
       description='Foraging methods for Semantic Memory Search',
-      url='https://github.com/larryzhang95/semforage',
+      url='https://github.com/larryzhang95/forager',
       author='IU Cognitive Computing Laboratory',
       author_email='larzhang@iu.edu',
       keywords=['fluency', 'foraging','psychology','memory','cognitive modeling'],
