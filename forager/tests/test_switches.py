@@ -1,8 +1,8 @@
 import pytest
 import pandas as pd
 import numpy as np
-from semforage.cues import create_history_variables
-from semforage.switch import *
+from forager.cues import create_history_variables
+from forager.switch import *
 
 '''
 Runs baseline tests for switch methods.
