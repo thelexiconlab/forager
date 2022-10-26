@@ -34,7 +34,7 @@ def create_history_variables(fluency_list, labels, sim_matrix, freq_matrix, phon
             (3) phon_list (list, size: L): phonological similarities between each item in fluency_list 
             (4) phon_history (list, size: L arrays of size N): phonological similarities of each word in fluency_list with all items in labels
             (5) freq_list (list, size: L): frequencies of each item in fluency_list (list of size L)
-            (6) freq_history  (list, size: L arrays of size N): frequencies of all words in fluency_list repeated L times
+            (6) freq_history  (list, size: L arrays of size N): frequencies of all words in labels repeated L times
 
 
     '''

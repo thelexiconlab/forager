@@ -33,11 +33,11 @@ class forage:
 
              
             Args: 
-                beta (tuple, size: 2): saliency parameter(s) encoding (beta_local, beta_global).
+                beta (tuple, size: 2): saliency parameter(s) encoding (beta_frequency, beta_semantic).
                 freql (list, size: L): frequency list containing frequency value of corresponding items.
                 freqh (list, size: L): frequency history list of containing frequency value list up 
                     to current point.
-                siml (list, size: L): similarity list containing frequency value of corresponding items
+                siml (list, size: L): similarity list containing similarity value of corresponding items
                 simh (list, size: L): similarity history list of containing similarity value list up 
                     to current point.
 
@@ -74,7 +74,7 @@ class forage:
             likelihood is computed based on frequency).
 
             Args: 
-                beta (tuple, size: 2): saliency parameter(s) encoding (beta_local, beta_global).
+                beta (tuple, size: 2): saliency parameter(s) encoding (beta_frequency, beta_semantic).
                 freql (list, size: L): frequency list obtained via create_history_variables
                 freqh (list, size: L arrays of size N): frequency history list obtained via create_history_variables
                 siml (list, size: L ): semantic similarity list obtained via create_history_variables
@@ -113,7 +113,7 @@ class forage:
                 that incorporates phonological similarity. This model computes the likelihood of each given item 
                 in the fluency list based on three cues: semantic similarity, phonological similarity, and frequency.             
             Args: 
-                beta (tuple, size: 2): saliency parameter(s) encoding (beta_local, beta_global).
+                beta (tuple, size: 3): saliency parameter(s) encoding (beta_frequency, beta_semantic, beta_phon).
                 freql (list, size: L): frequency list containing frequency value of corresponding items.
                 freqh (list, size: L arrays of size N): frequency history list of containing frequency value list up to current point.
                 siml (list, size: L): semantic similarity list obtained via create_history_variables
@@ -153,7 +153,7 @@ class forage:
                     and only based on semantic similarity and frequency during non-switch transitions
             
             Args: 
-                beta (tuple, size: 2): saliency parameter(s) encoding (beta_local, beta_global).
+                beta (tuple, size: 3): saliency parameter(s) encoding (beta_frequency, beta_semantic, beta_phon).
                 freql (list, size: L): frequency list containing frequency value of corresponding items.
                 freqh (list, size: L arrays of size N): frequency history list of containing frequency value list up to current point.
                 siml (list, size: L): semantic similarity list obtained via create_history_variables
@@ -207,7 +207,7 @@ class forage:
 
              
             Args: 
-                beta (tuple, size: 2): saliency parameter(s) encoding (beta_local, beta_global).
+                beta (tuple, size: 2): saliency parameter(s) encoding (beta_frequency, beta_semantic).
                 freql (list, size: L): frequency list containing frequency value of corresponding items.
                 freqh (list, size: L): frequency history list of containing frequency value list up 
                     to current point.
@@ -249,7 +249,7 @@ class forage:
             likelihood is computed based on frequency).
 
             Args: 
-                beta (tuple, size: 2): saliency parameter(s) encoding (beta_local, beta_global).
+                beta (tuple, size: 2): saliency parameter(s) encoding (beta_frequency, beta_semantic).
                 freql (list, size: L): frequency list obtained via create_history_variables
                 freqh (list, size: L arrays of size N): frequency history list obtained via create_history_variables
                 siml (list, size: L ): semantic similarity list obtained via create_history_variables
@@ -289,7 +289,7 @@ class forage:
                 that incorporates phonological similarity. This model computes the likelihood of each given item 
                 in the fluency list based on three cues: semantic similarity, phonological similarity, and frequency.             
             Args: 
-                beta (tuple, size: 2): saliency parameter(s) encoding (beta_local, beta_global).
+                beta (tuple, size: 3): saliency parameter(s) encoding (beta_frequency, beta_semantic, beta_phon).
                 freql (list, size: L): frequency list containing frequency value of corresponding items.
                 freqh (list, size: L arrays of size N): frequency history list of containing frequency value list up to current point.
                 siml (list, size: L): semantic similarity list obtained via create_history_variables
@@ -330,7 +330,7 @@ class forage:
                     and only based on semantic similarity and frequency during non-switch transitions
             
             Args: 
-                beta (tuple, size: 2): saliency parameter(s) encoding (beta_local, beta_global).
+                beta (tuple, size: 3): saliency parameter(s) encoding (beta_frequency, beta_semantic, beta_phon).
                 freql (list, size: L): frequency list containing frequency value of corresponding items.
                 freqh (list, size: L arrays of size N): frequency history list of containing frequency value list up to current point.
                 siml (list, size: L): semantic similarity list obtained via create_history_variables
