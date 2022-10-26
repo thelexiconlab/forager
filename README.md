@@ -29,9 +29,7 @@ WHAT TO DO: Give description of the method(s) -- should generally reflect what t
 - Multimodal Similarity Drop
     - TODO: Molly
 
-### Cues
-
-### Semantic, Phonological, and Frequency Matrix Generation
+### Cues (Semantic, Phonological, and Frequency Matrix) Generation
 Similarity Matrix Generation
 - TODO: Abhilasha
 
@@ -45,6 +43,7 @@ History Variabile Creation:
 - TODO: Abhilasha 
 
 ### Util Functions
+Prepare Data Function
 - TODO: Molly 
 
 

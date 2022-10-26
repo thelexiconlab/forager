@@ -6,7 +6,7 @@ switch.py
 - TODO: Larry
 
 foraging.py
--TODO: Larry
+- TODO: Larry
 
 cues.py
 - TODO: Abhilasha
