@@ -1,28 +1,22 @@
 # Package Contents
 
+WHAT TO DO: Describe the contained functions for each file; what they're used for. More general descriptions, as fewer people will look at the README. We want to make sure say if we (or external contributors/collaborators) in the future want to update the package, or new lab members managing the package can easily understand how to modify the code or add to it
+
 switch.py 
-- Contains all methods for switching 
-    - Input: required components to enable switching method
-        - Includes: 
-    - Output: binary switch vector encoding 
+- TODO: Larry
 
 foraging.py
 - Contains dynamic and static semantic foraging model
     - Input:
     - Output: 
 
-similarity.py
-- Contains methods for attaining similarity matrix for fluency items
-
+cues.py
+- TODO: Abhilasha 
 frequency.py
 - Contains methods for attaining frequency data for fluency items
 
-phonology.py
-- Contains methods for attaining phonological cue data for fluency items
+frequency.py
+- TODO: Molly
 
 utils.py
-- Contains support functions for any needs (e.g. non-specific data processing, data correction, etc.)
-
-
-
-** Additional content can be added, depending on evolving development and requirements of code to extend existing functionality **
+- TODO: Molly 
