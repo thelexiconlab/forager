@@ -1,97 +1,62 @@
-# semforage
+# forager
 
 Semantic Foraging methods for estimating semantic memory search on semantic fluency data
 
-## Methods and Usage
+## Usage: 
+- TODO: Larry
+
+## Functionality
+
+WHAT TO DO: Give description of the method(s) -- should generally reflect what the comments read or should read as. 
 
 ### Semantic Foraging
 - Static Model 
+    - TODO: Larry
 - Dynamic Model
-### Switching Methods
-- Norms-based (Troyer Norms, Subject Determined Norms)
+    - TODO: Larry
+- Phonological Static Model
+    - TODO: Abhilasha
+- Phonological Dynamic Model
+    - TODO: Abhilasha 
+
+### Switch Methods
+- Norms-based (Troyer Norms)
+    - TODO: Larry
 - Similarity Drop
+    - TODO: Larry
 - Delta Similarity
-- Enhanced Similarity Drop
-- Semantic Scent (TBD)
+    - TODO: Molly 
+- Multimodal Similarity Drop
+    - TODO: Molly
 
-### Similarity Matrix, Phonology Matrix, and Frequency Data Generation 
+### Cues
+
+### Semantic, Phonological, and Frequency Matrix Generation
 Similarity Matrix Generation
-    - Psychological Review Word2Vec Matrix
-    - Constructing Dynamic Similarity Matrices
-
+- TODO: Abhilasha
 Phonological Matrix Generation
-    - TODO:
-
+- TODO: Abhilasha
 Frequency Data Generation
-    - Google News Corpus Frequency Data
-    - Subtlex Frequency Data? 
+- TODO: Molly
+History Variabile Creation:
+- TODO: Abhilasha 
+
+### Util Functions
+- TODO: Molly 
+
 
 ## Installation
-
-Requirements:
-- numpy
-- scipy
-
 Requires Python 3.8 
 
-- TODO: Add versions for numpy, scipy
-- TODO: Add finalized instructions for general installation on any machine
+Requirements:
+- nltk>=3.6
+- numpy>=1.20
+- pandas>=1.3
+- pytest>=6.2
+- scipy>=1.6
+- requests>=2.25
+- urllib>=1.26
+- tqdm>=4.59
 
 ## Development Notes
 
-### Version Control and Management
-- https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request
-
-The simpler approach here is learning how to create an arbitrary pull request.
-
-The idea is as follows:
-
-1) Create a new fork/branch : https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-and-deleting-branches-within-your-repository
-    a) This will allow you to develop independently from the main branch, which can always be reverted to if something goes wrong on your individual branch
-
-2) Submit a Pull Request
-    a) Pull Requests can either be done from command line or from the web browser. I recommend reading the documentation linked above regarding creating a pull request. From the command line, it can be as easy as ` gh pr create `.
-    b) You can perform the same action via your web browser by going to the repository, choose the branch your code was committed to (do not push), and open a pull request.
-
-    Some additional notes here about creating pull requests from the command line:
-    * Create your branch: you can use the browser to do this by clicking on the "master" drop down and typing in a new branch name, OR via command line using 
-        ```
-        git checkout -b name-of-branch
-        ```
-    This will do two things: create a new branch (name-of-branch) and automatically take you to this new branch
-    * Next, you can make any changes you want within this branch. Once you are ready, you should add, commit, and push your changes to this branch
-        ```
-        git add - A
-        git commit -m "explain your changes"
-        git push
-        ```
-    * Finally, you can create a new pull request that you'd like to be merged with the main branch, after navigating to the main branch:
-        ```
-        git checkout master
-        git pr create --base master --head name-of-branch
-        ```
-
-When there is an update in the codebase (main/master branch) that you would like to bring to your local, you can do so by the command line command:
-``` git pull origin main ```
-
-### Unit Testing
-- See: https://realpython.com/python-testing/
-
-The idea behind unit testing is to compose simple tests to evaluate common conditions and edge cases which may come up in the usage of a particular method. This is helpful for both decoding, and producing verifiable behavior. 
-
-In the case of the Semantic Foraging project, often there is use of existing data structures, such as similarity matrix or frequency list, in many of the methods. It may not be necessary to utilize them in testing methods. You can think of simple abstractions to the applications of methods, with very reliable outputs to evaluate your method. 
-
-For the purpose of running unit testing, pytest is recommended. It is simple, and easy to use, and gives detailed results. There are ways to "upgrade" testing capabilities, but these should be all you need.
-
-Every time you develop a new method, you should think of the
-
-### Local editable package
-
-Utilize `pip install -e PROJECT_PACKAGE_NAME` command to install it as an
-"editable" package that does not require reinstallation after changes. Other external libraries can be installed here as well.
-
-One thing to note here, is that you would perform pip install in the directory that this git repository is located in, not within the git repository itself. 
-
-For example, my git repository is located in `../larry/semforage/ `. I execute `pip install -e semforage` in `../larry/`, which will allow you to pip install your local editable repository. 
-
-Every time you update your local codebase, the semforage package will have every new functionality added enabled.
