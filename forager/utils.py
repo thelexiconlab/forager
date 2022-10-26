@@ -1,10 +1,10 @@
 import numpy as np
 from scipy import stats
-import statistics
 import pandas as pd
 
 import difflib
 import nltk
+
 def trunc(word, df):
     # function to truncate fluency list at word
     i = df[df['entry'] == word].index.values[0]

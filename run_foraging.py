@@ -1,9 +1,9 @@
 import argparse
 from scipy.optimize import fmin
-from semforage.foraging import forage
-from semforage.switch import switch_delta, switch_multimodal, switch_simdrop, switch_troyer
-from semforage.cues import create_history_variables
-from semforage.utils import prepareData
+from forager.foraging import forage
+from forager.switch import switch_delta, switch_multimodal, switch_simdrop, switch_troyer
+from forager.cues import create_history_variables
+from forager.utils import prepareData
 import pandas as pd
 import numpy as np
 from scipy.optimize import fmin
@@ -281,8 +281,8 @@ def synthesize_results(outputs):
             if len(result) == 5:
                 nll_df['NLL_{model}'.format(model=model_names[k])] = result[4]
         # Add freq, semantic sim, and phon sim values to itemwise nll data
-        nll_df['Frequency_Value'] = output[6][0]
-        nll_df['Semantic_Similarity'] = output[6][2]
+        nll_df['Semantic_Similarity'] = output[6][0]
+        nll_df['Frequency_Value'] = output[6][2]
         nll_df['Phonological_Similarity'] = output[6][4]
         nll_results.append(nll_df)
 

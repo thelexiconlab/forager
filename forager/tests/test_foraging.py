@@ -2,9 +2,9 @@ import pytest
 import pandas as pd
 import numpy as np
 # from scipy.optimize import fmin
-from semforage.foraging import *
-from semforage.cues import create_history_variables
-from semforage.switch import switch_simdrop
+from forager.foraging import *
+from forager.cues import create_history_variables
+from forager.switch import switch_simdrop
 
 #Import Default Data from Psych Review
 

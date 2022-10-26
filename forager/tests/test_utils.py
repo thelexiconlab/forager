@@ -1,6 +1,6 @@
 import pytest
 import pandas as pd
-from semforage.utils import *
+from forager.utils import *
 
 # TODO: test with small example fluency list and make sure correct actions take place for each input
 

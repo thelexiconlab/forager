@@ -1,5 +1,5 @@
 import pytest
-from semforage.cues import *
+from forager.cues import *
 import numpy as np
 import pandas as pd
 
