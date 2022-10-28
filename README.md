@@ -27,6 +27,7 @@ To install the broader package, including command-line interfacable programs alo
 
 ### Alternative Installation
 In order to install the package without auxilliary files, you can also install with the following command
+
     ```
     pip install git+https://github.com/larryzhang95/forager
     ```
