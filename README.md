@@ -31,6 +31,7 @@ In order to install the package without auxilliary files, you can also install w
 ## Usage: 
  
 In order to utilize the package, there are a few key parameters that must be satisfied
+   
     1. data : The --data flag requires you to specify the path to the fluency list file that you would like to execute foraging methods on
 
     2. model: The --model flag requires you to pass one of the following arguments, to run corresponding model(s) you would like to execute.
