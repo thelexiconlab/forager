@@ -22,7 +22,7 @@ setup(name='forager',
       keywords=['fluency', 'foraging','psychology','memory','cognitive modeling'],
       packages=['forager'],
       include_package_data=True,
-      install_requires=['numpy','scipy','more_itertools','pandas','tqdm','nltk','difflib','requests'],
+      install_requires=['numpy','scipy','more_itertools','pandas','tqdm','nltk','requests'],
       python_requires='>=3.8',
       zip_safe=False,
       classifiers=[

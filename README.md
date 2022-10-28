@@ -8,14 +8,17 @@ In order to install the package as is , there are two options
 
 ### Recommended Installation 
 To install the broader package, including command-line interfacable programs along with metadata, we encourage you to use the following installation instructions:
+
     1. Clone this github repository to a home directory of your choice
         ```
         git clone https://github.com/larryzhang95/forager.git
         ```
+
     2. In current home directory, execute:
         ```
         pip install forager -r requirements.txt
         ```
+
     3. To utilize the package, you can now change your current working directory to the forager package, and execute the run_foraging.py file to utilize the command line interface  
         ```
         cd forager
@@ -29,12 +32,14 @@ In order to install the package without auxilliary files, you can also install w
  
 In order to utilize the package, there are a few key parameters that must be satisfied
 1. data : The --data flag requires you to specify the path to the fluency list file that you would like to execute foraging methods on
+
 2. model: The --model flag requires you to pass one of the following arguments, to run corresponding model(s) you would like to execute.
     a. static
     b. dynamic
     c. pstatic
     d. pdynamic
     e. all
+
 3. switch: The --switch flag requires you to pass one of the following arguments to utilize corresponding switch method(s) in the model selected
     a. troyer
     b. simdrop
@@ -48,10 +53,12 @@ a.  Sample execution with single model and all switches:
     ```
     python run_foraging.py --data data/fluency_lists/data-psyrev.txt --model dynamic --switch all
     ```
+
 b. Sample execution with all models and single switch:
     ```
     python run_foraging.py --data data/fluency_lists/data-psyrev.txt --model all --switch simdrop
     ```
+
 c.	Running all models and switches
     ```
     python run_foraging.py --data data/fluency_lists/data-psyrev.txt --model all --switch all
