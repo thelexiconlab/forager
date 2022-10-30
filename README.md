@@ -16,7 +16,7 @@ To install the broader package, including command-line interfacable programs alo
 
     2. In current home directory, execute:
         ```
-        pip install forager -r requirements.txt
+        pip install forager -r forager/requirements.txt
         ```
 
     3. To utilize the package, you can now change your current working directory to the forager package, and execute the run_foraging.py file to utilize the command line interface  
