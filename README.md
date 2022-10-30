@@ -81,27 +81,25 @@ Below are sample executions to execute the code, on example data we provide with
 
 ## Functionality
 
-WHAT TO DO: Give description of the method(s) -- should generally reflect what the comments read or should read as. 
-
 ### Semantic Foraging Models
 - Static Model 
-    - TODO: Larry
+    - the original static model (```static```) executes foraging where all transitions are based on the same set of cues over the entire retrieval interval, effectively ignoring the patchy structure of the memory retrieval environment. All transitions are based on a combined product of semantic similarity and word frequency.
 - Dynamic Model
-    - TODO: Larry
+    - the original dynamic model (```dynamic```) executes foraging by employing a clustering and switching mechanism that exploits the patchy structure of memory. The dynamic model utilizes word frequency and semantic similarity during within-clustering transitions, and word frequency during between-cluster transitions. Cluster and switching behavior is captured via the ```switchvals``` parameter, which can be calculated by the provided switch methods in the package.  
 - Phonological Static Model
     - the phonological static model (```pstatic```) is an extension of the static model, where all transitions are based on a combined product of semantic similarity, word frequency, and phonological similarity.
 - Phonological Dynamic Model
-    - the phonological dynamic model has 3 versions, indexed by the ```phoncue``` parameter. The "local" model uses frequency, semantic, and phonological similarity during within-cluster transitions and frequency during between-cluster transitions. The "global" model uses frequency, semantic, and phonological similarity during within-cluster transitions, and frequency and phonological similarity during between-cluster transitions. Finally, the "switch" model uses only semantic similarity and frequency during within-cluster transitions and phonological similarity and frequency for between-cluster transitions.
+    - the phonological dynamic (```pdynamic```) model has 3 versions, indexed by the ```phoncue``` parameter. The "local" model uses frequency, semantic, and phonological similarity during within-cluster transitions and frequency during between-cluster transitions. The "global" model uses frequency, semantic, and phonological similarity during within-cluster transitions, and frequency and phonological similarity during between-cluster transitions. Finally, the "switch" model uses only semantic similarity and frequency during within-cluster transitions and phonological similarity and frequency for between-cluster transitions. By default, if using run_foraging.py, if ```pdynamic``` is passed to --model flag, it will execute all three versions of the model. 
 
 ### Switch Methods
 - Norms-based (Troyer Norms)
-    - TODO: Larry
+    - the troyer norms switching method (```troyer```) adapts the categorization norms proposed by Troyer, AK, Moscovitch, M, & Winocur, G (1997), subsequently extended by our lab for analysis. Switches are predicted when moving from one subcategory of the Troyer categorization norms to another.  
 - Similarity Drop
-    - TODO: Larry
+    - the similarity drop switching method (```simdrop```) is based on a switch heuristic used in Hills TT, Jones MN, Todd (2012) to mimic optimal foraging behavior. A switch is predicted within a series of items A,B,C,D after B if S(A,B) > S(B,C) and S(B,C) < S(C,D).
 - Delta Similarity
-    - TODO: Molly 
+    - the delta similarity switching method (```delta```) is a switch method proposed by Nancy Lundin in her dissertation to bypass the limits of the similarity drop switching method by allowing for consecutive switches and accounting for small dips in similarity that similarity drop by deem as a switch. This is done through the inclusion of z-scoring semantic similarity across all transitions in a list, and the inclusion of rise and fall threshold parameters to control clustering and switching via thresholding on z-score similarity values.
 - Multimodal Similarity Drop
-    - TODO: Molly
+    - the multimodal similarity drop switching method (```multimodal```) is a switch method proposed by <insert reference>, to include phological similarity into the switch heuristic proposed by Hills TT, Jones MN, Todd (2012). It includes an alpha parameter which dictates the weighting of semantic versus phonological similarity in switching from cluster to cluster.
 
 ### Cues (Semantic, Phonological, and Frequency Matrix) Generation
 Semantic Similarity Matrix Generation
@@ -120,6 +118,7 @@ History Variabile Creation:
 Prepare Data Function
 - TODO: Molly 
 
-
 ## Development Notes
+
+## References
 
