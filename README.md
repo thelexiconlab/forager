@@ -29,7 +29,19 @@ To install the broader package, including command-line interfacable programs alo
 In order to install the package without auxilliary files, you can also install with the following command
 
     pip install git+https://github.com/larryzhang95/forager
-    
+
+## Installation Requirements
+Requires Python 3.8 
+
+Requirements:
+- nltk>=3.6
+- numpy>=1.20
+- pandas>=1.3
+- pytest>=6.2
+- scipy>=1.6
+- requests>=2.25
+- urllib>=1.26
+- tqdm>=4.59
 ## Usage: 
  
 In order to utilize the package, there are a few key parameters that must be satisfied
@@ -108,19 +120,6 @@ History Variabile Creation:
 Prepare Data Function
 - TODO: Molly 
 
-
-## Installation
-Requires Python 3.8 
-
-Requirements:
-- nltk>=3.6
-- numpy>=1.20
-- pandas>=1.3
-- pytest>=6.2
-- scipy>=1.6
-- requests>=2.25
-- urllib>=1.26
-- tqdm>=4.59
 
 ## Development Notes
 
