@@ -74,7 +74,7 @@ Below are sample executions to execute the code, on example data we provide with
         python run_foraging.py --data data/fluency_lists/data-psyrev.txt --model all --switch simdrop
         ```
 
-    c.	Running all models and switches
+    c. Running all models and switches
         ```
         python run_foraging.py --data data/fluency_lists/data-psyrev.txt --model all --switch all
         ```
@@ -123,4 +123,4 @@ Prepare Data Function
 ## References
     Hills, T. T, Jones, M. N, & Todd, P. M (2012). Optimal foraging in semantic memory. Psychological Review, 119(2), 431–440.
     Kumar, A. A, Lundin, N. B, & Jones, M. N (2022). Mouse-mole-vole: The inconspicuous benefit of phonology during retrieval from semantic memory. Proceedings of the Annual Meeting of the Cognitive Science Society. 
-    Troyer A. K, Moscovitch M., Winocur G (1997). Clustering and switching as two components of verbal fluency: evidence from younger and older healthy adults. Neuropsychology. Jan;11(1):138-46. 
+    Troyer A. K, Moscovitch M., Winocur G. (1997). Clustering and switching as two components of verbal fluency: evidence from younger and older healthy adults. Neuropsychology. Jan;11(1):138-46. 
