@@ -71,15 +71,15 @@ Below are sample executions to execute the code, on example data we provide with
 
 WHAT TO DO: Give description of the method(s) -- should generally reflect what the comments read or should read as. 
 
-### Semantic Foraging
+### Semantic Foraging Models
 - Static Model 
     - TODO: Larry
 - Dynamic Model
     - TODO: Larry
 - Phonological Static Model
-    - TODO: Abhilasha
+    - the phonological static model (```pstatic```) is an extension of the static model, where all transitions are based on a combined product of semantic similarity, word frequency, and phonological similarity.
 - Phonological Dynamic Model
-    - TODO: Abhilasha 
+    - the phonological dynamic model has 3 versions, indexed by the ```phoncue``` parameter. The "local" model uses frequency, semantic, and phonological similarity during within-cluster transitions and frequency during between-cluster transitions. The "global" model uses frequency, semantic, and phonological similarity during within-cluster transitions, and frequency and phonological similarity during between-cluster transitions. Finally, the "switch" model uses only semantic similarity and frequency during within-cluster transitions and phonological similarity and frequency for between-cluster transitions.
 
 ### Switch Methods
 - Norms-based (Troyer Norms)
@@ -92,17 +92,17 @@ WHAT TO DO: Give description of the method(s) -- should generally reflect what t
     - TODO: Molly
 
 ### Cues (Semantic, Phonological, and Frequency Matrix) Generation
-Similarity Matrix Generation
-- TODO: Abhilasha
+Semantic Similarity Matrix Generation
+- The semantic similarity matrix is generated using an underlying semantic representational model ("embeddings"). The package currently uses the word2vec model and computes pairwise cosine similarity for all items in the space (indexed by the size of embeddings).
 
 Phonological Matrix Generation
-- TODO: Abhilasha
+- The phonological similarity matrix computes the pairwise normalized edit distance between the phonemic transcriptions of all items in the space (indexed by a list (```labels```). Phonemic transcriptions are obtained via CMUdict, which uses Arpabet phonemic transcriptions.
 
 Frequency Data Generation
 - TODO: Molly
 
 History Variabile Creation:
-- TODO: Abhilasha 
+- History variables is a utility function that keeps track of lexical metrics (frequency, semantic, and phonological similarity) within a given fluency list. Specifically, the function uses underlying semantic and phonological similarity matrices as well as word frequency, and returns the similarites between consecutive items within a specific fluency list.
 
 ### Util Functions
 Prepare Data Function
