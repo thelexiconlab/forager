@@ -148,7 +148,8 @@ class forage:
                 phonological similarity, and frequency. 
                 - If phoncue is "local", then the likelihood is computed based on semantic similarity, phonological similarity, and frequency 
                     until a switch is detected at which point the likelihood is computed based on only frequency
-                - If phoncue is "global", then the likelihood is computed based on all three cues during both switch and non-switch transitions
+                - If phoncue is "global", then the likelihood is computed based on all three cues during both non-switch transitions, and based on frequency
+                    and phonological similarity for switch transitions.
                 - If phoncue is "switch", then the likelihood is computed based on phonological similarity and frequency during switch transitions
                     and only based on semantic similarity and frequency during non-switch transitions
             
