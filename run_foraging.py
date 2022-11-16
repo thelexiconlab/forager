@@ -11,22 +11,6 @@ import os, sys
 from tqdm import tqdm
 
 """
-Current TODOS:
-- Return individual likelihoods
-- Give an option to only get frequency and similarity and switch values
-
-Ongoing issues:
-- I think we do have to update the phon matrix, as it is should be indexed in the history variables 
-
-Use Cases:
-- Experimental
-    - May try to use one version, multiple comparison versions, or all (e.g. get best model)
-    - They may also try to specify their own space(s).
-
-- Clinical
-    - They probably want "best model" of all possible foraging & switching method combinations possible. 
-    - May need to specify their own space? But they may not have the know-how of doing so.
-
 Workflow: 
 1. Validate input(s)
     a. "Prepare Data" - does this also get required freq/sim data?
@@ -47,18 +31,6 @@ Workflow:
     a. visualization(s)
     X b. statistical test(s) & reporting
 
-
-Options to Specify:
-- data / data path (fluency list(s))
-- foraging method: static, dynamic, phon_static, phon_dynamic, all
-- switch method: multimodal, simdrop, delta, troyer/norm-based, all
-X - frequency/similarity matrix: pre-specified (default), or provided (experimental use-case)
-
-Other stuff:
-- Visualization stuff:
-    - Perhaps is best to ask existing collaborators what their typical workflow would be, and what visualizations would enhance their publications/informing their understanding
-- Are we still doing random walk/other baseline comparison model(s)?
-    - Might be important for experimental use cases, since they want to see how semantic foraging compares
 """
 
 # Global Path Variabiles
