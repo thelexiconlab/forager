@@ -11,7 +11,7 @@ To install the broader package, including command-line interfacable programs alo
 
     1. Clone this github repository to a home directory of your choice
         ```
-        git clone https://github.com/larryzhang95/forager.git
+        git clone https://github.com/thelexiconlab/forager.git
         ```
 
     2. In current home directory, execute:
@@ -28,7 +28,7 @@ To install the broader package, including command-line interfacable programs alo
 ### Alternative Installation
 In order to install the package without auxilliary files, you can also install with the following command
 
-    pip install git+https://github.com/larryzhang95/forager
+    pip install git+https://github.com/thelexiconlab/forager
 
 ## Installation Requirements
 Requires Python 3.8 
