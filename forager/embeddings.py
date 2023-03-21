@@ -6,7 +6,8 @@
 # else:
 #     from collections import MutableMapping
 # from collections import OrderedDict
-#
+
+### CODE WRITTEN BY: Mingi Kang and Abhilasha Kumar (Bowdoin College)
 
 from pymagnitude import * 
 from pymagnitude import MagnitudeUtils 
