@@ -1,6 +1,8 @@
 # forager
 
-Semantic Foraging methods for estimating semantic memory search on semantic fluency data
+`forager` is a Python package for analyzing verbal fluency data and implementing models of memory search. The package can be used for obtaining automated cluster/switch designations for verbal fluency lists, as well as for implementing optimal foraging models on verbal fluency data. The package includes a command-line as well as a web interface for executing the models on fluency data.
+
+The details below describe how to install and use the package from the command line. You can also use `forager` through the [web interface](https://forager.research.bowdoin.edu/).
 
 ## Installation:
 
@@ -82,6 +84,8 @@ Below are sample executions to execute the code, on example data we provide with
 ## Functionality
 
 ### Semantic Foraging Models
+
+The source code for these models can be found inside `forager/foraging.py`. We currently implement four types of semantic foraging models, which can be executed by passing the corresponding model name to the ```--model``` flag in the command line interface. The models are as follows:
 - Static Model 
     - the original static model (```static```) executes foraging where all transitions are based on the same set of cues over the entire retrieval interval, effectively ignoring the patchy structure of the memory retrieval environment. All transitions are based on a combined product of semantic similarity and word frequency. The static foraging model was introduced in Hills TT, Jones MN, Todd PM (2012).
 - Dynamic Model
@@ -92,6 +96,7 @@ Below are sample executions to execute the code, on example data we provide with
     - the phonological dynamic (```pdynamic```) model has 3 versions, indexed by the ```phoncue``` parameter. The "local" model uses frequency, semantic, and phonological similarity during within-cluster transitions and frequency during between-cluster transitions. The "global" model uses frequency, semantic, and phonological similarity during within-cluster transitions, and frequency and phonological similarity during between-cluster transitions. Finally, the "switch" model uses only semantic similarity and frequency during within-cluster transitions and phonological similarity and frequency for between-cluster transitions. By default, if using run_foraging.py, if ```pdynamic``` is passed to --model flag, it will execute all three versions of the model. The phonological dynamic model was introduced in Kumar AA, Lundin NB, & Jones MN (2022)
 
 ### Switch Methods
+The source code for these methods can be found inside `forager/switch.py`. We currently implement four types of switch methods, which can be executed by passing the corresponding switch name to the ```--switch``` flag in the command line interface. The methods are as follows:
 - Norms-based (Troyer Norms)
     - the troyer norms switching method (```troyer```) adapts the categorization norms proposed by Troyer, AK, Moscovitch, M, & Winocur, G (1997), subsequently extended by our lab for analysis. Switches are predicted when moving from one subcategory of the Troyer categorization norms to another.  
 - Similarity Drop
@@ -102,6 +107,9 @@ Below are sample executions to execute the code, on example data we provide with
     - the multimodal similarity drop switching method (```multimodal```) is a switch method developed to include phonological similarity into the switch heuristic proposed by Hills TT, Jones MN, Todd PM (2012). It includes an alpha parameter which dictates the weighting of semantic versus phonological similarity in switching from cluster to cluster.
 
 ### Cues (Semantic, Phonological, and Frequency Matrix) Generation
+
+The source code for these methods can be found inside `forager/cues.py`. We currently implement three types of cue generation methods, which are as follows:
+
 Semantic Similarity Matrix Generation
 - The semantic similarity matrix is generated using an underlying semantic representational model ("embeddings"). The package currently uses the word2vec model and computes pairwise cosine similarity for all items in the space (indexed by the size of embeddings).
 
@@ -114,13 +122,29 @@ Frequency Data Generation
 History Variabile Creation:
 - History variables is a utility function that keeps track of lexical metrics (frequency, semantic, and phonological similarity) within a given fluency list. Specifically, the function uses underlying semantic and phonological similarity matrices as well as word frequency, and returns the similarites between consecutive items within a specific fluency list.
 
-### Util Functions
+### Lexical Metrics (Embeddings and Frequency)
+
+We also provide functions to obtain embeddings and frequency data for a given vocabulary set. The source code for these methods can be found inside `forager/embeddings.py` and `forager/frequency.py`. 
+
+Embeddings
+- We use the `pymagnitude` packagae to obtain word vector embeddings. Currently, we use the word2vec model trained on the GoogleNews corpus that produces 300-dimensional word embeddings. `pymagnitude` also provides other embedding models.
+
+Frequency
+- We use the Google Books Ngram Dataset to obtain word frequency data. The package provides a function to obtain raw counts for a given vocabulary set. The raw counts are log transformed, and these log counts are the metrics used later by the models.
+
+### Util Functions (Data Preprocessing)
+
+The source code for this data preprocessing method can be found inside `forager/utils.py`. 
 Prepare Data Function
 - The data preparation function cleans and reformats the fluency list data provided by the user. It takes in a path to data in the form of a file in which each line contains a participant ID and one response item. The function also takes an optional delimiter argument that specifies the character(s) separating the ID from the item. If none is specified, the default is a tab delimiter ('\t'). The function checks for any items outside of the vocabulary set used in the lexical metrics (OOV items). The number of OOV items is printed. The user is given the option to apply the default policy to all OOV items or review each one and decide to replace it or truncate that participant's fluency list. Items replaced by the default policy filled by the closest match found in the vocabulary. In the "review" option, users are presented with the top three closest matches and may choose one as a replacement. This should be done if the OOV item clearly corresponds to some vocabulary item that will preserve the intended semantic content, such as in the case of typos, alternate spellings, or pluralizations. When a fluency list is truncated, the OOV item and any responses after it with the same participant ID are removed. This should be done if the OOV item is not in the VFT category or there is no clear replacement that would preserve the response's semantics. After the process is complete, a count of the number of replacements and truncations applied is printed. The fluency data is then reformatted into a list of tuples, each containing the participant ID and the corresponding fluency list. 
+
 
 ## Development Notes
 
 ## References
-    Hills, T. T, Jones, M. N, & Todd, P. M (2012). Optimal foraging in semantic memory. Psychological Review, 119(2), 431–440.
-    Kumar, A. A, Lundin, N. B, & Jones, M. N (2022). Mouse-mole-vole: The inconspicuous benefit of phonology during retrieval from semantic memory. Proceedings of the Annual Meeting of the Cognitive Science Society. 
-    Troyer A. K, Moscovitch M., Winocur G. (1997). Clustering and switching as two components of verbal fluency: evidence from younger and older healthy adults. Neuropsychology. Jan;11(1):138-46. 
+
+Please cite the following work if you use the package:
+- Kumar, A.A., Apsel, M., Zhang, L., Xing, N., Jones. M.N. (2023). forager: A Python package and web interface for modeling mental search.
+- Hills, T. T, Jones, M. N, & Todd, P. M (2012). Optimal foraging in semantic memory. *Psychological Review*, *119*(2), 431–440.
+- Kumar, A. A, Lundin, N. B, & Jones, M. N (2022). Mouse-mole-vole: The inconspicuous benefit of phonology during retrieval from semantic memory. *Proceedings of the Annual Meeting of the Cognitive Science Society*. 
+- Troyer A. K, Moscovitch M., Winocur G. (1997). Clustering and switching as two components of verbal fluency: evidence from younger and older healthy adults. *Neuropsychology*. Jan;11(1):138-46. 
