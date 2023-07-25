@@ -1,1 +1,1 @@
-include forager/data/*
+include forager/data/**
