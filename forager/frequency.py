@@ -44,7 +44,7 @@ def get_frequencies(embeddings):
     item_counts_df = item_counts_df[['item', 'log_count', 'count']]
 
     #print(item_counts_df)
-    pkg_path = os.path.abspath(__file__)
+    pkg_path = os.path.dirname(os.path.abspath(__file__))
     item_counts_df.to_csv(pkg_path + '/data/lexical data/frequencies.csv', index=False)
     return None
 

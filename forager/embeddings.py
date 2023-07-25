@@ -53,7 +53,7 @@ class embeddings:
             i += 1
             
         self.df = pd.DataFrame(self.dict)
-        pkg_path = os.path.abspath(__file__)
+        pkg_path = os.path.dirname(os.path.abspath(__file__))
         self.to_csv(pkg_path + '/data/lexical data/embeddings.csv', index=False)
     
     def collect_words(list_of_words):

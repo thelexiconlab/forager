@@ -33,7 +33,7 @@ Workflow:
 """
 
 # Global Path Variabiles
-pkg_path = os.path.abspath(__file__)
+pkg_path = os.path.dirname(os.path.abspath(__file__))
 normspath =  pkg_path + '/data/norms/troyernorms.csv'
 similaritypath =  pkg_path + '/data/lexical_data/similaritymatrix.csv'
 frequencypath =  pkg_path + '/data/lexical_data/frequencies.csv'
