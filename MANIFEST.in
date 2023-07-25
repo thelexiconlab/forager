@@ -1,1 +1,4 @@
-include forager/data/**
+include forager/data/*
+include forager/data/fluency_lists/*
+include forager/data/lexical_data/*
+include forager/data/norms/*
