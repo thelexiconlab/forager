@@ -19,7 +19,8 @@ def prepareData(path,delimiter = '\t'):
     ### LOAD BEHAVIORAL DATA ###
     df = pd.read_csv(path, header=None, names=['SID', 'entry'], delimiter=delimiter)
     # load labels
-    labels = pd.read_csv("data/lexical_data/frequencies.csv", names=['word', 'logct', 'ct']) 
+    pkg_path = os.path.abspath(__file__)
+    labels = pd.read_csv(pkg_path + "/data/lexical_data/frequencies.csv", names=['word', 'logct', 'ct']) 
 
     # get values from df 
     values = df['entry'].values
