@@ -1,6 +1,6 @@
 # forager
 
-[Open Example in Google Colab](https://colab.research.google.com/github/thelexiconlab/forager/blob/houser/Notebook%20Example.ipynb)
+[Open Example in Google Colab](https://colab.research.google.com/github/thelexiconlab/forager/blob/houser/Forager%20Notebook%20Example.ipynb)
 
 `forager` is a Python package for analyzing verbal fluency data and implementing models of memory search. The package can be used for obtaining automated cluster/switch designations for verbal fluency lists, as well as for implementing optimal foraging models on verbal fluency data. The package includes a command-line as well as a web interface for executing the models on fluency data.
 
