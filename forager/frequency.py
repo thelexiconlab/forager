@@ -1,5 +1,6 @@
 # code adapted from He et al. (2022)
 
+import os
 import urllib
 import requests
 import pandas as pd

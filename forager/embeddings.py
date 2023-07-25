@@ -8,7 +8,7 @@
 # from collections import OrderedDict
 
 ### CODE WRITTEN BY: Mingi Kang and Abhilasha Kumar (Bowdoin College)
-
+import os
 from pymagnitude import * 
 from pymagnitude import MagnitudeUtils 
 import pandas as pd 
