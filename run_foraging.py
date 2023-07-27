@@ -318,10 +318,10 @@ run_model(data, args.model, args.switch, dname)
 
 
 # Sample execution with single model and all switches: 
-# python run_foraging.py --data data/fluency_lists/data-psyrev.txt --model dynamic --switch all
+# python run_foraging.py --data data/fluency_lists/psyrev_data.txt --model dynamic --switch all
 
 # Sample execution with all models and single switch: 
-# python run_foraging.py --data data/fluency_lists/data-psyrev.txt --model all --switch simdrop
+# python run_foraging.py --data data/fluency_lists/psyrev_data.txt --model all --switch simdrop
 
 # Running all models and switches
-# python run_foraging.py --data data/fluency_lists/data-psyrev.txt --model all --switch all
+# python run_foraging.py --data data/fluency_lists/psyrev_data.txt --model all --switch all

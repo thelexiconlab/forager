@@ -86,10 +86,36 @@ def prepareData(path,delimiter = '\t'):
         print("There were", rct, "replacements and", tct, "truncations.")
     print("Data preparation complete.")
     
-    # Stratify data into fluency lists
-    data = []
-    for subj in df['SID'].unique():
-        subj_df = df[df['SID'] == subj]
-        subj_data = (subj,subj_df['entry'].values.tolist())
-        data.append(subj_data)
+    # iterate through df rows to identify repeated participant lists and update IDs
+    sub_ct = {}
+    subj_data = {}
+    prev = None
+    
+    for index, row in df.iterrows():
+        id = row['SID']
+        ent = row['entry']
+
+        # new subject
+        if id not in sub_ct:
+            sub_ct[id] = 1
+            subj_data[id] = [ent]
+
+        # same list
+        elif id == prev:
+            if sub_ct[id] > 1:
+                key = f"{id}_{sub_ct[id]}"
+            else:
+                key = id
+            subj_data[key].append(ent)
+
+        # new list, existing subject    
+        else:
+            sub_ct[id] += 1
+            subj_data[f"{id}_{sub_ct[id]}"] = [ent]
+
+        prev = id
+
+    # return a tuple for each new subject ID and fluency list
+    data = [(s, l) for s, l in subj_data.items()]
+    
     return data
