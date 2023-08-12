@@ -15,9 +15,9 @@ def trunc(word, df):
     df.reset_index(drop=True, inplace=True)
     return None
 
-def prepareData(path,delimiter = '\t'):
+def prepareData(path):
     ### LOAD BEHAVIORAL DATA ###
-    df = pd.read_csv(path, header=None, names=['SID', 'entry'], delimiter=delimiter)
+    df = pd.read_csv(path, header=None, names=['SID', 'entry', 'timepoint'], engine='python', sep=None, usecols=range(3))
     # load labels
     labels = pd.read_csv("data/lexical_data/frequencies.csv", names=['word', 'logct', 'ct']) 
 
@@ -86,36 +86,18 @@ def prepareData(path,delimiter = '\t'):
         print("There were", rct, "replacements and", tct, "truncations.")
     print("Data preparation complete.")
     
-    # iterate through df rows to identify repeated participant lists and update IDs
-    sub_ct = {}
-    subj_data = {}
-    prev = None
+    data = []
+    if len(df['timepoint'].value_counts()) > 0:
+        lists = df.groupby(["SID", "timepoint"])
+    else: 
+        lists = df.groupby("SID")
     
-    for index, row in df.iterrows():
-        id = row['SID']
-        ent = row['entry']
+    for sub, frame in lists:
+        list = frame["entry"].values.tolist()
+        subj_data = (sub, list)
+        data.append(subj_data)
 
-        # new subject
-        if id not in sub_ct:
-            sub_ct[id] = 1
-            subj_data[id] = [ent]
-
-        # same list
-        elif id == prev:
-            if sub_ct[id] > 1:
-                key = f"{id}_{sub_ct[id]}"
-            else:
-                key = id
-            subj_data[key].append(ent)
-
-        # new list, existing subject    
-        else:
-            sub_ct[id] += 1
-            subj_data[f"{id}_{sub_ct[id]}"] = [ent]
-
-        prev = id
-
-    # return a tuple for each new subject ID and fluency list
-    data = [(s, l) for s, l in subj_data.items()]
     
     return data
+
+#print(prepareData('data/fluency_lists/psyrev_data.txt'))
