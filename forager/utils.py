@@ -7,6 +7,7 @@ import nltk
 
 def trunc(word, df):
     # function to truncate fluency list at word
+    # TODO: rework for longitudinal data
     i = df[df['entry'] == word].index.values[0]
     sid = df.iloc[i]['SID']
     sid_rows = df[df['SID'] == sid].index.values
@@ -17,7 +18,7 @@ def trunc(word, df):
 
 def prepareData(path):
     ### LOAD BEHAVIORAL DATA ###
-    df = pd.read_csv(path, header=None, names=['SID', 'entry', 'timepoint'], engine='python', sep=None, usecols=range(3))
+    df = pd.read_csv(path, header=None, names=['SID', 'entry', 'timepoint'], engine='python', sep=None, usecols=range(3), encoding='utf-8-sig')
     # load labels
     labels = pd.read_csv("data/lexical_data/frequencies.csv", names=['word', 'logct', 'ct']) 
 
@@ -100,4 +101,4 @@ def prepareData(path):
     
     return data
 
-#print(prepareData('data/fluency_lists/psyrev_data.txt'))
+#print(prepareData('data/fluency_lists/fluency_data_20191227.csv'))
