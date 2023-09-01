@@ -7,18 +7,31 @@ import nltk
 
 def trunc(word, df):
     # function to truncate fluency list at word
-    # TODO: rework for longitudinal data
+
     i = df[df['entry'] == word].index.values[0]
     sid = df.iloc[i]['SID']
-    sid_rows = df[df['SID'] == sid].index.values
-    j = sid_rows[-1] + 1
+    if 'timepoint' in df.columns:
+        tp = df.iloc[i]['timepoint']
+        list_rows = df[(df['SID'] == sid) & (df['timepoint'] == tp)].index.values
+    else:
+        list_rows = df[df['SID'] == sid].index.values
+    j = list_rows[-1] + 1
     df.drop(df.index[i:j], inplace=True)
     df.reset_index(drop=True, inplace=True)
     return None
 
+# takes in a path to a data file to be read as a CSV 
+# accepted delimiters include commas, tabs, semicolons, pipes, and spaces
 def prepareData(path):
     ### LOAD BEHAVIORAL DATA ###
     df = pd.read_csv(path, header=None, names=['SID', 'entry', 'timepoint'], engine='python', sep=None, usecols=range(3), encoding='utf-8-sig')
+    if len(df['timepoint'].value_counts()) > 0:
+        three_col = input("Use the third column of this data file as a time point? Type 'y' for yes or 'n' for no: ")
+        if three_col == "n":
+            df.drop(columns = ['timepoint'], inplace=True)
+    else:
+        df.drop(columns = ['timepoint'], inplace = True)
+
     # load labels
     labels = pd.read_csv("data/lexical_data/frequencies.csv", names=['word', 'logct', 'ct']) 
 
@@ -28,11 +41,13 @@ def prepareData(path):
     # loop through values to find which ones are not in file
     oov = [w for w in values if w not in labels['word'].values]
     if len(oov) > 0:
-        print("There are " + str(len(oov)) + " items from your data that are out of the vocabulary set (OOV). The default policy is to replace any OOV item with the closest available word if the Levenshtein edit-distance is 2 or lower. Otherwise, the fluency list is truncated before the OOV item.")
+        print("There are " + str(len(oov)) + " items from your data that are out of the vocabulary set (OOV). Any items for which we find a reasonable match will be automatically replaced. For all other OOV items, you may:")
         rct = 0 # number of replacements
+        unk_ct = 0 # number of random vector assignments
+        ect = 0 # number of exclusions
         tct = 0 # number of truncations
         while True:
-            choice = input("Type 'd' to use the default policy. \nType 'r' to review each OOV item and choose between replacing the word and truncating the list. \nThen, press enter. \n")
+            choice = input("type 'e' to exclude these words from the fluency lists but continue with the rest of the list, \ntype 't' to truncate each fluency list at the first occurrence of such a word, \nor type 'r' to assign a random semantic vector and frequency to any such word and continue with the rest of the list. \nThen, press enter. \n")
             if choice == "d":
                 replacements = {}
                 for word in set(oov):
@@ -88,7 +103,7 @@ def prepareData(path):
     print("Data preparation complete.")
     
     data = []
-    if len(df['timepoint'].value_counts()) > 0:
+    if 'timepoint' in df.columns:
         lists = df.groupby(["SID", "timepoint"])
     else: 
         lists = df.groupby("SID")
