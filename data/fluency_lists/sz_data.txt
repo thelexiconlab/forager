@@ -1,3 +1,4 @@
+id	entry
 10201	dog
 10201	cat
 10201	rabbit
