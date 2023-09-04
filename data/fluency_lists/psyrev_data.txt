@@ -1,3 +1,4 @@
+id	entry
 51	cat
 51	dog
 51	mouse

@@ -52,7 +52,7 @@ def retrieve_data(path):
     if os.path.exists(path) == False:
         ex_str = "Provided path to data \"{path}\" does not exist. Please specify a proper path".format(path=path)
         raise Exception(ex_str)
-    data = prepareData(path, delimiter='\t')
+    data = prepareData(path)
     return data
 
 def get_lexical_data():
@@ -318,10 +318,10 @@ run_model(data, args.model, args.switch, dname)
 
 
 # Sample execution with single model and all switches: 
-# python run_foraging.py --data data/fluency_lists/data-psyrev.txt --model dynamic --switch all
+# python run_foraging.py --data data/fluency_lists/psyrev_data.txt --model dynamic --switch all
 
 # Sample execution with all models and single switch: 
-# python run_foraging.py --data data/fluency_lists/data-psyrev.txt --model all --switch simdrop
+# python run_foraging.py --data data/fluency_lists/psyrev_data.txt --model all --switch simdrop
 
 # Running all models and switches
-# python run_foraging.py --data data/fluency_lists/data-psyrev.txt --model all --switch all
+# python run_foraging.py --data data/fluency_lists/psyrev_data.txt --model all --switch all
