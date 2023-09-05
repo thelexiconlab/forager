@@ -6,9 +6,11 @@ from forager.cues import create_history_variables
 from forager.utils import prepareData
 import pandas as pd
 import numpy as np
-from scipy.optimize import fmin
+from scipy.optimize import fmin, minimize
 import os, sys
 from tqdm import tqdm
+import warnings 
+warnings.simplefilter('ignore')
 
 """
 Workflow: 
@@ -32,7 +34,6 @@ Workflow:
     X b. statistical test(s) & reporting
 
 """
-
 # Global Path Variabiles
 normspath =  'data/norms/troyernorms.csv'
 similaritypath =  'data/lexical_data/similaritymatrix.csv'
@@ -77,8 +78,7 @@ def calculate_model(model, history_vars, switch_names, switch_vecs):
         r1 = np.random.rand()
         r2 = np.random.rand()
 
-        v = fmin(forage.model_static, [r1,r2], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1]),disp=False)
-        
+        v = minimize(forage.model_static, [r1,r2], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1])).x
         beta_df = float(v[0]) # Optimized weight for frequency cue
         beta_ds = float(v[1]) # Optimized weight for similarity cue
         
@@ -90,8 +90,7 @@ def calculate_model(model, history_vars, switch_names, switch_vecs):
             r1 = np.random.rand()
             r2 = np.random.rand()
 
-            v = fmin(forage.model_dynamic, [r1,r2], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1], switch_vec),disp=False)
-            
+            v = minimize(forage.model_dynamic, [r1,r2], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1], switch_vec)).x
             beta_df = float(v[0]) # Optimized weight for frequency cue
             beta_ds = float(v[1]) # Optimized weight for similarity cue
             
@@ -102,8 +101,7 @@ def calculate_model(model, history_vars, switch_names, switch_vecs):
         r1 = np.random.rand()
         r2 = np.random.rand()
         r3 = np.random.rand()
-        v = fmin(forage.model_static_phon, [r1,r2,r3], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1], history_vars[4],history_vars[5]),disp=False)
-        
+        v = minimize(forage.model_static_phon, [r1,r2,r3], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1], history_vars[4],history_vars[5])).x
         beta_df = float(v[0]) # Optimized weight for frequency cue
         beta_ds = float(v[1]) # Optimized weight for similarity cue
         beta_dp = float(v[2]) # Optimized weight for phonological cue
@@ -117,8 +115,7 @@ def calculate_model(model, history_vars, switch_names, switch_vecs):
             r1 = np.random.rand()
             r2 = np.random.rand()
             r3 = np.random.rand()
-            v = fmin(forage.model_dynamic_phon, [r1,r2,r3], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5], switch_vec,'global'),disp=False)
-            
+            v = minimize(forage.model_dynamic_phon, [r1,r2,r3], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5], switch_vec,'global')).x
             beta_df = float(v[0]) # Optimized weight for frequency cue
             beta_ds = float(v[1]) # Optimized weight for similarity cue
             beta_dp = float(v[2]) # Optimized weight for phonological cue
@@ -131,8 +128,7 @@ def calculate_model(model, history_vars, switch_names, switch_vecs):
             r1 = np.random.rand()
             r2 = np.random.rand()
             r3 = np.random.rand()
-            v = fmin(forage.model_dynamic_phon, [r1,r2,r3], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5], switch_vec,'local'),disp=False)
-            
+            v = minimize(forage.model_dynamic_phon, [r1,r2,r3], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5], switch_vec,'local')).x
             beta_df = float(v[0]) # Optimized weight for frequency cue
             beta_ds = float(v[1]) # Optimized weight for similarity cue
             beta_dp = float(v[2]) # Optimized weight for phonological cue
@@ -145,8 +141,7 @@ def calculate_model(model, history_vars, switch_names, switch_vecs):
             r1 = np.random.rand()
             r2 = np.random.rand()
             r3 = np.random.rand()
-            v = fmin(forage.model_dynamic_phon, [r1,r2,r3], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5], switch_vec,'switch'),disp=False)
-            
+            v = minimize(forage.model_dynamic_phon, [r1,r2,r3], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5], switch_vec,'switch')).x
             beta_df = float(v[0]) # Optimized weight for frequency cue
             beta_ds = float(v[1]) # Optimized weight for similarity cue
             beta_dp = float(v[2]) # Optimized weight for phonological cue
@@ -161,7 +156,7 @@ def calculate_model(model, history_vars, switch_names, switch_vecs):
     nll_baseline, nll_baseline_vec = forage.model_static_report(beta = [0,0], freql = history_vars[2], freqh = history_vars[3], siml = history_vars[0], simh = history_vars[1])
     model_results.append((0, 0, nll_baseline, nll_baseline_vec))
     return model_name, model_results
-    
+
 def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity, norms, alpha = np.arange(0, 1.1, 0.1), rise = np.arange(0, 1.25, 0.25), fall = np.arange(0, 1.25, 0.25)):
     '''
     1. Check if specified switch model is valid
@@ -214,7 +209,6 @@ def synthesize_results(outputs):
         switch_vectors = output[5]
         #Create Model Output Results DataFrame
         for i, model in enumerate(model_names):
-            print(model)
             model_dict = dict()
             model_dict['Subject'] = subj
             model_dict['Model'] = model
@@ -261,9 +255,7 @@ def synthesize_results(outputs):
     model_results = pd.DataFrame(model_results)
     switch_results = pd.concat(switch_results, ignore_index=True)
     nll_results = pd.concat(nll_results,ignore_index=True)
-    
-    
-    
+  
     return model_results, switch_results, nll_results
 
 def output_results(results,dname,dpath='output',sep=','):
@@ -297,23 +289,83 @@ def run_model(data, model, switch, dname):
     model_results, switch_results, nll_results = synthesize_results(outputs)
     output_results([model_results,switch_results,nll_results],dname)
 
+def run_lexical(data):
+    '''Probably going to adapt get_lexical_data function, and then modify synthesize_results to get desired output'''
+    dname = 'forager_lexical_results.csv'
+    print("TODO")
+
+def run_switches(data,switch):
+    '''Probably going to adapt calculate_switches function and then modify synthesize_results to get desired output'''
+    dname = 'forager_switch_results.csv'
+    print("TODO")
+    
+
+'''
+Argument Parsing : 3 conditions
+
+1. User only wants the lexical values (e.g. semantic similarity, phonological similarity, frequency values)
+    a. Output will be lexical_results.csv
+    b. Argparse inputs:
+2. User wants only switch designations 
+    a. Output will be switch_results.csv
+3. User wants to run entire model
+    a. Output will be lexical_results.csv, switch_results.csv, and model_results.csv
+'''
 
 
 parser = argparse.ArgumentParser(description='Execute Semantic Foraging Code.')
 parser.add_argument('--data', type=str,  help='specifies path to fluency lists')
+parser.add_argument('--pipeline',type=str, help='specifies which part of pipeline (lexical, switches, model) to execute')
 parser.add_argument('--model', type=str, help='specifies foraging model to use')
 parser.add_argument('--switch', type=str, help='specifies switch model to use')
 
-
-
 args = parser.parse_args()
 
+if args.data == None:
+    parser.error("Please specify a data file for which you would like to run the forager pipeline for")
+
+if args.pipeline == None:
+    parser.error("Please specify which part of the forager pipeline you would like to execute for your data (e.g. \'lexical\', \'switches\',\'model\')")
+
+if args.pipeline == 'lexical':
+    # Retrieve the Data for Getting Lexical Info
+    data = retrieve_data(args.data)
+    # Run subroutine for getting strictly the similarity & frequency values 
+    run_lexical(data)
+elif args.pipeline == 'switches':
+    # Check if switches, then there is a switch method specified
+    if args.switch == None:
+        parser.error(f"Please specify a switch method (e.g. {switch_methods})")
+    if args.switch not in switch_methods:
+        parser.error(f"Please specify a proper switch method (e.g. {switch_methods})")
+    # Run subroutine for getting strictly switch outputs 
+    data = retrieve_data(args.data) 
+    run_switches(data,args.switch)
+elif args.pipeline == 'model':
+    # Check for model and switch parameters
+    if args.model == None:
+        parser.error(f"Please specify a forager model (e.g. {models})")
+    if args.model not in models:
+        parser.error(f"Please specify a proper forager model (e.g. {models})")
+    if args.switch == None:
+        parser.error(f"Please specify a switch method (e.g. {switch_methods})")
+    if args.switch not in switch_methods:
+        parser.error(f"Please specify a proper switch method (e.g. {switch_methods})")
+    # Run subroutine for getting model outputs
+    data = retrieve_data(args.data)
+    dname = args.data.split('/')[-1].split('.')[0] + '_model_' + args.model + '_switch_' + args.switch
+    run_model(data, args.model, args.switch, dname)
 
 
-data = retrieve_data(args.data)
 
-dname = args.data.split('/')[-1].split('.')[0] + '_model_' + args.model + '_switch_' + args.switch
-run_model(data, args.model, args.switch, dname)
+# args = parser.parse_args()
+
+
+
+# data = retrieve_data(args.data)
+
+# dname = args.data.split('/')[-1].split('.')[0] + '_model_' + args.model + '_switch_' + args.switch
+# run_model(data, args.model, args.switch, dname)
 
 
 
