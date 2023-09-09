@@ -40,6 +40,8 @@ def get_frequencies(embeddings):
     item_counts_df['count'] = item_counts_df['count'].astype(float)
     item_counts_df.loc[item_counts_df['count'] == 0, 'count'] = 1
     item_counts_df['log_count'] = item_counts_df['count'].apply(np.log10)
+    # if log_count is 0, then set to .0001
+    item_counts_df.loc[item_counts_df['log_count'] == 0, 'log_count'] = .0001
     item_counts_df = item_counts_df[['item', 'log_count', 'count']]
 
     #print(item_counts_df)

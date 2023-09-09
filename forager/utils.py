@@ -32,7 +32,6 @@ def exclude(word,df):
 def prepareData(path):
     ### LOAD BEHAVIORAL DATA ###
     df = pd.read_csv(path, header=0, engine='python', sep=None, encoding='utf-8-sig')
-    
     if len(df.columns) > 2:
         three_col = input("Use the third column of this data file as a time point? Type 'y' for yes or 'n' for no: ")
         if three_col == "y":
@@ -57,7 +56,7 @@ def prepareData(path):
     oov = [w for w in values if w not in labels['word'].values]
     if len(oov) > 0:
         replacement_df = df.copy()
-        print("There are " + str(len(oov)) + " items from your data that are out of the vocabulary set (OOV). Any items for which we find a reasonable match will be automatically replaced. For all other OOV items, you may:")
+        print("We did not find exact matches for " + str(len(oov)) + " items in our vocabulary. Any items for which we find a reasonable match will be automatically replaced. For all other OOV items, you may:")
         while True:
             choice = input("type 'e' to exclude these words from the fluency lists but continue with the rest of the list, \ntype 't' to truncate each fluency list at the first occurrence of such a word, \nor type 'r' to assign a random semantic vector and frequency to any such word and continue with the rest of the list. \nThen, press enter. \n")
             choices = ['e', 't', 'r']
@@ -110,34 +109,46 @@ def prepareData(path):
         elif trunc_count>0:
             print("Lists were truncated at " + str(trunc_count) + " items across all lists.\n")
         
-        # Create a zip file and add the CSV files to it
-        with zipfile.ZipFile('output/data_evaluation_results.zip', 'w', zipfile.ZIP_DEFLATED) as zipf:
-            # Save the first DataFrame as a CSV file inside the zip
-            with zipf.open('replacement_df.csv', 'w') as csvf:
-                replacement_df.to_csv(csvf, index=False)
+        # # Create a zip file and add the CSV files to it
+        # with zipfile.ZipFile('output/data_evaluation_results.zip', 'w', zipfile.ZIP_DEFLATED) as zipf:
+        #     # Save the first DataFrame as a CSV file inside the zip
+        #     with zipf.open('replacement_df.csv', 'w') as csvf:
+        #         replacement_df.to_csv(csvf, index=False)
 
-            # Save the second DataFrame as a CSV file inside the zip
-            with zipf.open('processed_data.csv', 'w') as csvf:
-                df.to_csv(csvf, index=False)
+        #     # Save the second DataFrame as a CSV file inside the zip
+        #     with zipf.open('processed_data.csv', 'w') as csvf:
+        #         df.to_csv(csvf, index=False)
 
-        print("A file detailing the changes made and a file of the data set to be used are saved in 'output/data_evaluation_results.zip'")
+        # print("A file detailing the changes made and a file of the data set to be used are saved in 'output/data_evaluation_results.zip'")
     
     #print("Data preparation complete.")
     
 
-    # Stratify data into fluency lists
-    data = []
-    if 'timepoint' in df.columns:
-        lists = df.groupby(["SID", "timepoint"])
-    else: 
-        lists = df.groupby("SID")
+        # Stratify data into fluency lists
+        data = []
+        if 'timepoint' in df.columns:
+            lists = df.groupby(["SID", "timepoint"])
+        else: 
+            lists = df.groupby("SID")
+        
+        for sub, frame in lists:
+            list = frame["entry"].values.tolist()
+            subj_data = (sub, list)
+            data.append(subj_data)    
+        return data, replacement_df, df
     
-    for sub, frame in lists:
-        list = frame["entry"].values.tolist()
-        subj_data = (sub, list)
-        data.append(subj_data)
-
-    
-    return data
-
-print(prepareData('data/fluency_lists/sz_data.txt'))
+    else:
+        replacement_df = df.copy()
+        replacement_df['evaluation'] = "FOUND"
+        # Add the column corresponding to the replacement column , set it all to the same value   
+        data = []
+        if 'timepoint' in df.columns:
+            lists = df.groupby(["SID", "timepoint"])
+        else: 
+            lists = df.groupby("SID")
+        
+        for sub, frame in lists:
+            list = frame["entry"].values.tolist()
+            subj_data = (sub, list)
+            data.append(subj_data)
+        return data, replacement_df, df
