@@ -1,7 +1,7 @@
 import argparse
 from scipy.optimize import fmin
 from forager.foraging import forage
-from forager.switch import switch_delta, switch_multimodal, switch_simdrop, switch_troyer
+from forager.switch import switch_delta, switch_multimodal, switch_simdrop, switch_norms_associative, switch_norms_categorical
 from forager.cues import create_history_variables
 from forager.utils import prepareData
 import pandas as pd
@@ -16,35 +16,24 @@ warnings.simplefilter('ignore')
 
 """
 Workflow: 
-1. Validate input(s)
-    a. "Prepare Data" - does this also get required freq/sim data?
-        - takes path of fluency list ; replace/truncated fluency list
+1. Evaluate data
+    a. "Prepare Data" 
+        - takes path of fluency list ; 
 
-2. Run model(s)
-    a. Model Optimization: Currently, the code base doesn't do optimization implicity. We have to include that now.
-        Question: Do we want to do the same and report optimized & unoptimized model results?; along with param values?
-    b. Running through switch method(s)
-
-3. Outputs:
-    a. Results
-    b. Optimized Parameters
-    c. Runtime
-    d. Best model(s)/switching?
-
-4. Extras & Reporting/Comparison?:
-    a. visualization(s)
-    X b. statistical test(s) & reporting
-
+2. Select use case (lexical, switches, models) via --pipeline
+    a. Lexical: returns similarity & frequency values for each word in fluency list
+    b. Switches: returns switch values for each word in fluency list + lexical values
+    c. Models: returns model outputs for each word in fluency list + lexical values + switch values
 """
 # Global Path Variabiles
-normspath =  'data/norms/troyernorms.csv'
+normspath =  'data/norms/animals_snafu_scheme_vocab.csv'
 similaritypath =  'data/lexical_data/similaritymatrix.csv'
 frequencypath =  'data/lexical_data/frequencies.csv'
 phonpath = 'data/lexical_data/phonmatrix.csv'
 
 # Global Variables
 models = ['static','dynamic','pstatic','pdynamic','all']
-switch_methods = ['simdrop','multimodal','troyer','delta','all']
+switch_methods = ['simdrop','multimodal','norms_associative', 'norms_categorical', 'delta','all']
 
 #Methods
 def retrieve_data(path):
@@ -163,6 +152,8 @@ def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity,
     '''
     1. Check if specified switch model is valid
     2. Return set of switches, including parameter value, if required
+
+    switch_methods = ['simdrop','multimodal','norms_associative', 'norms_categorical', 'delta','all']
     '''
     switch_names = []
     switch_vecs = []
@@ -171,102 +162,30 @@ def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity,
         ex_str = "Specified switch method is invalid. Switch method must be one of the following: {switch}".format(switch=switch_methods)
         raise Exception(ex_str)
 
-    if switch == switch_methods[0] or switch == switch_methods[4]:
+    if switch == switch_methods[0] or switch == switch_methods[5]:
         switch_names.append(switch_methods[0])
         switch_vecs.append(switch_simdrop(fluency_list, semantic_similarity))
 
-    if switch == switch_methods[1] or switch == switch_methods[4]:
+    if switch == switch_methods[1] or switch == switch_methods[5]:
         for i, a in enumerate(alpha):
             switch_names.append('multimodal_alpha={alpha}'.format(alpha=a))
             switch_vecs.append(switch_multimodal(fluency_list, semantic_similarity, phon_similarity, a))
 
-    if switch == switch_methods[2] or switch == switch_methods[4]:
+    if switch == switch_methods[2] or switch == switch_methods[5]:
         switch_names.append(switch_methods[2])
-        switch_vecs.append(switch_troyer(fluency_list,norms))
+        switch_vecs.append(switch_norms_associative(fluency_list,norms))
+    
+    if switch == switch_methods[3] or switch == switch_methods[5]:
+        switch_names.append(switch_methods[3])
+        switch_vecs.append(switch_norms_categorical(fluency_list,norms))
 
-    if switch == switch_methods[3] or switch == switch_methods[4]:
+    if switch == switch_methods[4] or switch == switch_methods[5]:
         for i, r in enumerate(rise):
             for j, f in enumerate(fall):
                 switch_names.append("delta_rise={rise}_fall={fall}".format(rise=r,fall=f))
                 switch_vecs.append(switch_delta(fluency_list, semantic_similarity, r, f))
 
     return switch_names, switch_vecs
-
-# def synthesize_results(outputs):
-#     """
-#     Output file(s):
-#     - All model result(s)
-#     - Switch Vector Result(s)
-#     - Item-Wise Negative Log Likelihood
-#     """
-#     model_results = []
-#     switch_results = []
-#     nll_results = []
-#     for output in outputs:
-#         subj = output[0]
-#         fl_list = output[1]
-#         model_names = output[2]
-#         results = output[3]
-#         switch_methods = output[4]
-#         switch_vectors = output[5]
-#         #Create Model Output Results DataFrame
-#         for i, model in enumerate(model_names):
-#             model_dict = dict()
-#             model_dict['Subject'] = subj
-#             model_dict['Model'] = model
-#             model_dict['Beta_Frequency'] = results[i][0]
-#             model_dict['Beta_Semantic'] = results[i][1]
-#             # print(results[i])
-#             # sys.exit()
-#             if len(results[i]) == 4:
-#                 model_dict['Beta_Phonological'] = None
-#                 model_dict['Negative_Log_Likelihood_Optimized'] = results[i][2]
-#             if len(results[i]) == 5:
-#                 model_dict['Beta_Phonological'] = results[i][2]
-#                 model_dict['Negative_Log_Likelihood_Optimized'] = results[i][3]
-#             model_results.append(model_dict)
-        
-#         #Create  Switch Results DataFrame
-#         switch_df = []
-#         for j, switch in enumerate(switch_vectors):
-#             df = pd.DataFrame()
-#             df['Subject'] = len(switch) * [subj]
-#             df['Fluency_Item'] = fl_list
-#             df['Switch_Value'] = switch
-#             df['Switch_Method'] = switch_methods[j]
-#             switch_df.append(df)
-    
-#         switch_df = pd.concat(switch_df, ignore_index=True)
-#         switch_results.append(switch_df)
-
-#         # Create Negative Log Likelihood DataFrame with Item Wise NLL 
-#         nll_df = pd.DataFrame()
-#         nll_df['Subject'] = len(fl_list) * [subj]
-#         nll_df['Fluency_Item'] = fl_list
-#         for k, result in enumerate(results):
-#             if len(result) == 4:
-#                 nll_df['NLL_{model}'.format(model=model_names[k])] = result[3]
-#             if len(result) == 5:
-#                 nll_df['NLL_{model}'.format(model=model_names[k])] = result[4]
-#         # Add freq, semantic sim, and phon sim values to itemwise nll data
-#         nll_df['Semantic_Similarity'] = output[6][0]
-#         nll_df['Frequency_Value'] = output[6][2]
-#         nll_df['Phonological_Similarity'] = output[6][4]
-#         nll_results.append(nll_df)
-
-#     model_results = pd.DataFrame(model_results)
-#     switch_results = pd.concat(switch_results, ignore_index=True)
-#     nll_results = pd.concat(nll_results,ignore_index=True)
-  
-#     return model_results, switch_results, nll_results
-
-# def output_results(results,dname,dpath='output',sep=','):
-#     if os.path.exists(dpath) == False:
-#         os.mkdir(dpath)
-#     results[0].to_csv(os.path.join(dpath,dname + '_modelresults.csv'), index=False, sep=sep)        
-#     results[1].to_csv(os.path.join(dpath,dname + '_switchresults.csv'), index=False, sep=sep)
-#     results[2].to_csv(os.path.join(dpath,dname + '_individualitemfits.csv'), index=False, sep=sep)
-
 
 def run_model(data, model_type, switch_type):
     # Get Lexical Data needed for executing methods
@@ -303,12 +222,9 @@ def run_model(data, model_type, switch_type):
                 model_dict['Negative_Log_Likelihood_Optimized'] = model_results[i][3]
             forager_results.append(model_dict)
     forager_results = pd.DataFrame(forager_results)
-        # outputs.append([subj, fl_list, model_names, model_results, switch_names, switch_vecs,history_vars])
-        # print("Results: {names} , {res}".format(names = model_names, res=model_results))
-    # print("--- Ran for %s seconds ---" % (time.time() - start_time))
+        
     return forager_results
-    # model_results, switch_results, nll_results = synthesize_results(outputs)
-    # output_results([model_results,switch_results,nll_results],dname)
+    
 
 def run_lexical(data):
     # Get Lexical Data needed for executing methods
@@ -349,7 +265,7 @@ def run_switches(data,switch_type):
 
 parser = argparse.ArgumentParser(description='Execute Semantic Foraging Code.')
 parser.add_argument('--data', type=str,  help='specifies path to fluency lists')
-parser.add_argument('--pipeline',type=str, help='specifies which part of pipeline (lexical, switches, model) to execute')
+parser.add_argument('--pipeline',type=str, help='specifies which part of pipeline (lexical, switches, models) to execute')
 parser.add_argument('--model', type=str, help='specifies foraging model to use')
 parser.add_argument('--switch', type=str, help='specifies switch model to use')
 
@@ -406,13 +322,19 @@ elif args.pipeline == 'lexical':
         
 elif args.pipeline == 'switches':
     dname = 'switch_results.csv'
+    lexical_name = 'lexical_results.csv'
     # Check if switches, then there is a switch method specified
     if args.switch == None:
         parser.error(f"Please specify a switch method (e.g. {switch_methods})")
     if args.switch not in switch_methods:
         parser.error(f"Please specify a proper switch method (e.g. {switch_methods})")
     # Run subroutine for getting strictly switch outputs 
-    data, replacement_df, processed_df = retrieve_data(args.data) 
+    # Run subroutine for getting model outputs
+    print("Checking Data ...")
+    data, replacement_df, processed_df = retrieve_data(args.data)
+    print("Retrieving Lexical Data ...")
+    lexical_results = run_lexical(data)
+    print("Obtaining Switch Designations ...")
     switch_results = run_switches(data,args.switch)
     with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
         # Save the first DataFrame as a CSV file inside the zip
@@ -423,14 +345,18 @@ elif args.pipeline == 'switches':
         with zipf.open('processed_data.csv', 'w') as csvf:
             processed_df.to_csv(csvf, index=False)
 
+        with zipf.open(lexical_name,'w') as csvf:
+            lexical_results.to_csv(csvf, index=False) 
+        
         with zipf.open(dname,'w') as csvf:
             switch_results.to_csv(csvf, index=False) 
 
         print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
         print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
+        print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")        
         print(f"File 'switch_results.csv' containing designated switch methods and switch values of fluency list data saved in '{oname}'")
 
-elif args.pipeline == 'model':
+elif args.pipeline == 'models':
     switch_name = 'switch_results.csv'
     lexical_name = 'lexical_results.csv'
     models_name = 'model_results.csv'
@@ -478,16 +404,25 @@ elif args.pipeline == 'model':
         print(f"File 'model_results.csv' containing model level NLL results of provided fluency data saved in '{oname}'")
 
 else:
-    parser.error("Please specify a proper pipeline option (e.g. \'evaluate_data\', \'lexical\', \'switches\',\'model\')")
+    parser.error("Please specify a proper pipeline option (e.g. \'evaluate_data\', \'lexical\', \'switches\',\'models\')")
 
 
 
+#### SAMPLE RUN CODE ####
+## Sample execution to evaluate data file ##
+# python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline evaluate_data
 
-# Sample execution with single model and all switches: 
-# python run_foraging.py --data data/fluency_lists/psyrev_data.txt --model dynamic --switch all
+## Sample execution to obtain lexical metrics (semantic similarity, phonological similarity, frequency) ##
+# python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline lexical
 
-# Sample execution with all models and single switch: 
-# python run_foraging.py --data data/fluency_lists/psyrev_data.txt --model all --switch simdrop
+## Sample execution to obtain switch designations + lexical metrics (semantic similarity, phonological similarity, frequency) ##
+## 'all' switch method will run all switch methods ##
+## other possible arguments for --switch include: 'simdrop', 'multimodal', 'norms_associative','norms_categorical', 'delta' ##
 
-# Running all models and switches
-# python run_foraging.py --data data/fluency_lists/psyrev_data.txt --model all --switch all
+# python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch all
+
+## Sample execution to obtain model results ##
+## 'all' model will run all models ##
+## other possible arguments for --model include: 'static', 'dynamic', 'pstatic', 'pdynamic' ##
+
+# python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all

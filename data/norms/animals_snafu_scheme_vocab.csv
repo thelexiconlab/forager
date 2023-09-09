@@ -1,0 +1,1229 @@
+Category,snafu_animal,in_vocab,Item,levenstein_distance
+African,aardvark,TRUE,aardvark,0
+African,aardwolf,TRUE,aardwolf,0
+African,addax,TRUE,addax,0
+Fish,humunukuapua,FALSE,humuhumunukunukuapua,8
+African,antelope,TRUE,antelope,0
+Feline,persian,FALSE,persian cat,4
+African,bongo,TRUE,bongo,0
+African,buffalo,TRUE,buffalo,0
+Canine,cavalierkingcharlesspaniel,FALSE,cavalier king charles spaniel,3
+African,caecilian,TRUE,caecilian,0
+African,camel,TRUE,camel,0
+Insects,leafy,FALSE,flea,3
+African,caracal,TRUE,caracal,0
+African,chameleon,TRUE,chameleon,0
+African,cheetah,TRUE,cheetah,0
+African,chimpanzee,TRUE,chimpanzee,0
+African,cobra,TRUE,cobra,0
+African,coelacanth,TRUE,coelacanth,0
+Pets,cavalierkingcharlesspaniel,FALSE,cavalier king charles spaniel,3
+African,duiker,TRUE,duiker,0
+ReptileAmphibian,black,FALSE,blackfly,3
+African,eland,TRUE,eland,0
+African,elephant,TRUE,elephant,0
+ReptileAmphibian,gilamonster,FALSE,glia monster,3
+African,madagascarhissingcockroach,FALSE,madagascar hissing cockroach,2
+African,redadmiralbutterfly,FALSE,red admiral butterfly,2
+African,fossa,TRUE,fossa,0
+Arachnid,brownreclusespider,FALSE,brown recluse spider,2
+African,gazelle,TRUE,gazelle,0
+African,genet,TRUE,genet,0
+African,giraffe,TRUE,giraffe,0
+African,gnu,TRUE,gnu,0
+African,gorilla,TRUE,gorilla,0
+African,hartebeest,TRUE,hartebeest,0
+African,hippopotamus,TRUE,hippopotamus,0
+Asian,redadmiralbutterfly,FALSE,red admiral butterfly,2
+Bird,blackheadedgull,FALSE,black headed gull,2
+African,hyena,TRUE,hyena,0
+African,impala,TRUE,impala,0
+African,indri,TRUE,indri,0
+African,jackal,TRUE,jackal,0
+African,jerboa,TRUE,jerboa,0
+African,kongoni,TRUE,kongoni,0
+African,kudu,TRUE,kudu,0
+African,lemur,TRUE,lemur,0
+African,leopard,TRUE,leopard,0
+African,lion,TRUE,lion,0
+African,lioness,TRUE,lioness,0
+Bird,cornishgamehen,FALSE,cornish game hen,2
+African,manatee,TRUE,manatee,0
+African,mandrill,TRUE,mandrill,0
+African,meerkat,TRUE,meerkat,0
+African,milkfish,TRUE,milkfish,0
+African,mongoose,TRUE,mongoose,0
+African,monkey,TRUE,monkey,0
+African,nyala,TRUE,nyala,0
+African,okapi,TRUE,okapi,0
+Bird,ptarmagin,FALSE,ptarmigan,2
+African,oryx,TRUE,oryx,0
+African,ostrich,TRUE,ostrich,0
+African,pangolin,TRUE,pangolin,0
+African,panther,TRUE,panther,0
+Bird,redtailedhawk,FALSE,red tailed hawk,2
+Bird,siberianbluerobin,FALSE,siberian blue robin,2
+African,rhinoceros,TRUE,rhinoceros,0
+African,rhino,TRUE,rhino,0
+Canine,airdaleterrier,FALSE,airedale terrier,2
+Canine,bernesemountaindog,FALSE,bernese mountain dog,2
+African,springbok,TRUE,springbok,0
+African,steenbok,TRUE,steenbok,0
+African,tiger,TRUE,tiger,0
+African,turtledove,TRUE,turtledove,0
+African,warthog,TRUE,warthog,0
+African,wildebeest,TRUE,wildebeest,0
+African,zebra,TRUE,zebra,0
+Canine,pembrokewelshcorgi,FALSE,pembroke welsh corgi,2
+Canine,portuguesewaterdog,FALSE,portuguese water dog,2
+Arachnid,spider,TRUE,spider,0
+Deers,blacktaileddeer,FALSE,blacktail deer,2
+Deers,whitetaileddeer,FALSE,white tailed deer,2
+Dinosaur,pteordactyl,FALSE,pterodactyl,2
+Europe,redadmiralbutterfly,FALSE,red admiral butterfly,2
+Arctic,auk,TRUE,auk,0
+Arctic,caribou,TRUE,caribou,0
+Farm,cornishgamehen,FALSE,cornish game hen,2
+Fish,greatwhiteshark,FALSE,great white shark,2
+Arctic,muskox,TRUE,muskox,0
+Arctic,narwhal,TRUE,narwhal,0
+Arctic,penguin,TRUE,penguin,0
+Insects,fireants,FALSE,fire ant,2
+Arctic,puffin,TRUE,puffin,0
+Arctic,reindeer,TRUE,reindeer,0
+Arctic,seal,TRUE,seal,0
+Insects,madagascarhissingcockroach,FALSE,madagascar hissing cockroach,2
+Arctic,walrus,TRUE,walrus,0
+Insects,paloverdeborer,FALSE,palo verde borer,2
+Insects,redadmiralbutterfly,FALSE,red admiral butterfly,2
+Asian,argali,TRUE,argali,0
+Asian,binturong,TRUE,binturong,0
+Asian,caecilian,TRUE,caecilian,0
+Asian,caracal,TRUE,caracal,0
+Asian,chigger,TRUE,chigger,0
+Asian,coelacanth,TRUE,coelacanth,0
+NorthAmerican,brownreclusespider,FALSE,brown recluse spider,2
+NorthAmerican,cornishgamehen,FALSE,cornish game hen,2
+NorthAmerican,paloverdeborer,FALSE,palo verde borer,2
+NorthAmerican,redadmiralbutterfly,FALSE,red admiral butterfly,2
+NorthAmerican,redtailedhawk,FALSE,red tailed hawk,2
+Pets,bernesemountaindog,FALSE,bernese mountain dog,2
+Asian,gavial,TRUE,gavial,0
+Asian,gharial,TRUE,gharial,0
+ReptileAmphibian,pteordactyl,FALSE,pterodactyl,2
+Rodents,nakedmolerat,FALSE,naked mole rat,2
+Asian,ibex,TRUE,ibex,0
+Asian,jerboa,TRUE,jerboa,0
+Asian,lionfish,TRUE,lionfish,0
+Asian,lorikeet,TRUE,lorikeet,0
+Asian,milkfish,TRUE,milkfish,0
+Asian,myna,TRUE,myna,0
+Asian,panda,TRUE,panda,0
+Asian,pangolin,TRUE,pangolin,0
+Water,christmastreeworm,FALSE,christmas tree worm,2
+Water,coralreefsnake,FALSE,coral reef snake,2
+Worms,christmastreeworm,FALSE,christmas tree worm,2
+African,africandog,FALSE,african dog,1
+African,blackmamba,FALSE,black mamba,1
+African,bushsquirrel,FALSE,bush squirrel,1
+African,capebuffalo,FALSE,cape buffalo,1
+Asian,tarsier,TRUE,tarsier,0
+Australian,bandicoot,TRUE,bandicoot,0
+African,dikdik,FALSE,dik-dik,1
+Australian,budgerigar,TRUE,budgerigar,0
+Australian,cuscus,TRUE,cuscus,0
+Australian,devil,TRUE,devil,0
+Australian,dingo,TRUE,dingo,0
+Australian,duckbill,TRUE,duckbill,0
+Australian,emu,TRUE,emu,0
+Australian,goanna,TRUE,goanna,0
+African,easterntoebiter,FALSE,eastern toebiter,1
+Australian,kangaroo,TRUE,kangaroo,0
+Australian,kiwi,TRUE,kiwi,0
+Australian,koala,TRUE,koala,0
+Australian,kookaburra,TRUE,kookaburra,0
+Australian,lionfish,TRUE,lionfish,0
+Australian,lorikeet,TRUE,lorikeet,0
+Australian,marsupial,TRUE,marsupial,0
+Australian,platypus,TRUE,platypus,0
+Australian,possum,TRUE,possum,0
+Australian,prawn,TRUE,prawn,0
+African,fennecfox,FALSE,fennec fox,1
+African,fiddlercrab,FALSE,fiddler crab,1
+African,fisheagle,FALSE,fish eagle,1
+African,fruitbat,FALSE,fruit bat,1
+Australian,wallaby,TRUE,wallaby,0
+Australian,wallaroo,TRUE,wallaroo,0
+Australian,wombat,TRUE,wombat,0
+BeastsOfBurden,ass,TRUE,ass,0
+BeastsOfBurden,burro,TRUE,burro,0
+BeastsOfBurden,camel,TRUE,camel,0
+BeastsOfBurden,clydesdale,TRUE,clydesdale,0
+BeastsOfBurden,colt,TRUE,colt,0
+BeastsOfBurden,donkey,TRUE,donkey,0
+BeastsOfBurden,dromedary,TRUE,dromedary,0
+BeastsOfBurden,horse,TRUE,horse,0
+BeastsOfBurden,llama,TRUE,llama,0
+BeastsOfBurden,mare,TRUE,mare,0
+BeastsOfBurden,mule,TRUE,mule,0
+BeastsOfBurden,mustang,TRUE,mustang,0
+BeastsOfBurden,ox,TRUE,ox,0
+BeastsOfBurden,pony,TRUE,pony,0
+African,huntsmanspider,FALSE,huntsman spider,1
+BeastsOfBurden,trotter,TRUE,trotter,0
+BeastsOfBurden,yak,TRUE,yak,0
+BeastsOfBurden,zebu,TRUE,zebu,0
+African,hydrax,FALSE,hyrax,1
+Bird,albatross,TRUE,albatross,0
+Bird,anhinga,TRUE,anhinga,0
+Bird,auk,TRUE,auk,0
+Bird,avian,TRUE,avian,0
+African,orangeroughie,FALSE,orange roughie,1
+Bird,bird,TRUE,bird,0
+African,pygmygoat,FALSE,pygmy goat,1
+Bird,blackbird,TRUE,blackbird,0
+African,sandcat,FALSE,sand cat,1
+Bird,bluebird,TRUE,bluebird,0
+African,seasnake,FALSE,sea snake,1
+Bird,bluegill,TRUE,bluegill,0
+Arachnid,huntsmanspider,FALSE,huntsman spider,1
+Arachnid,vinegaroon,FALSE,vinegarroon,1
+Bird,bobolink,TRUE,bobolink,0
+Bird,booby,TRUE,booby,0
+Bird,budgerigar,TRUE,budgerigar,0
+Bird,bullfinch,TRUE,bullfinch,0
+Bird,bunting,TRUE,bunting,0
+Bird,buzzard,TRUE,buzzard,0
+Bird,canary,TRUE,canary,0
+Bird,cardinal,TRUE,cardinal,0
+Bird,cassowary,TRUE,cassowary,0
+Bird,chickadee,TRUE,chickadee,0
+Bird,chicken,TRUE,chicken,0
+Bird,cock,TRUE,cock,0
+Bird,cockatiel,TRUE,cockatiel,0
+Bird,cockatoo,TRUE,cockatoo,0
+Bird,condor,TRUE,condor,0
+Bird,conure,TRUE,conure,0
+Bird,coot,TRUE,coot,0
+Arachnid,wolfspider,FALSE,wolf spider,1
+Bird,crow,TRUE,crow,0
+Bird,cuckoo,TRUE,cuckoo,0
+Bird,dodo,TRUE,dodo,0
+Arctic,adeliepenguin,FALSE,adelie penguin,1
+Bird,dove,TRUE,dove,0
+Bird,drake,TRUE,drake,0
+Bird,duck,TRUE,duck,0
+Bird,duckling,TRUE,duckling,0
+Bird,eagle,TRUE,eagle,0
+Bird,eaglet,TRUE,eaglet,0
+Bird,egret,TRUE,egret,0
+Bird,emu,TRUE,emu,0
+Bird,ewe,TRUE,ewe,0
+Bird,falcon,TRUE,falcon,0
+Bird,finch,TRUE,finch,0
+Arctic,arcticfox,FALSE,arctic fox,1
+Bird,flamingo,TRUE,flamingo,0
+Bird,fowl,TRUE,fowl,0
+Bird,gander,TRUE,gander,0
+Arctic,harborseal,FALSE,harbor seal,1
+Bird,goldfinch,TRUE,goldfinch,0
+Bird,goshawk,TRUE,goshawk,0
+Bird,gosling,TRUE,gosling,0
+Bird,grackle,TRUE,grackle,0
+Bird,grebe,TRUE,grebe,0
+Bird,grouse,TRUE,grouse,0
+Bird,guineafowl,TRUE,guineafowl,0
+Bird,gull,TRUE,gull,0
+Bird,halcyon,TRUE,halcyon,0
+Bird,harrier,TRUE,harrier,0
+Bird,hawk,TRUE,hawk,0
+Bird,heron,TRUE,heron,0
+Bird,hoatzin,TRUE,hoatzin,0
+Arctic,leopardseal,FALSE,leopard seal,1
+Bird,hummingbird,TRUE,hummingbird,0
+Bird,ibis,TRUE,ibis,0
+Bird,jackdaw,TRUE,jackdaw,0
+Bird,jay,TRUE,jay,0
+Bird,kingfisher,TRUE,kingfisher,0
+Bird,kite,TRUE,kite,0
+Bird,kiwi,TRUE,kiwi,0
+Bird,kookaburra,TRUE,kookaburra,0
+Bird,lark,TRUE,lark,0
+Bird,loon,TRUE,loon,0
+Bird,lorikeet,TRUE,lorikeet,0
+Bird,lovebird,TRUE,lovebird,0
+Bird,macaw,TRUE,macaw,0
+Bird,magpie,TRUE,magpie,0
+Bird,mallard,TRUE,mallard,0
+Bird,merlin,TRUE,merlin,0
+Bird,mockingbird,TRUE,mockingbird,0
+Arctic,polarbear,FALSE,polar bear,1
+Bird,mouse,TRUE,mouse,0
+Bird,myna,TRUE,myna,0
+Bird,nightingale,TRUE,nightingale,0
+Bird,nuthatch,TRUE,nuthatch,0
+Bird,oriole,TRUE,oriole,0
+Bird,osprey,TRUE,osprey,0
+Bird,ostrich,TRUE,ostrich,0
+Bird,owl,TRUE,owl,0
+Bird,parakeet,TRUE,parakeet,0
+Bird,parrot,TRUE,parrot,0
+Bird,partridge,TRUE,partridge,0
+Bird,peacock,TRUE,peacock,0
+Bird,pelican,TRUE,pelican,0
+Bird,penguin,TRUE,penguin,0
+Bird,peregrine,TRUE,peregrine,0
+Bird,pheasant,TRUE,pheasant,0
+Bird,pigeon,TRUE,pigeon,0
+Arctic,snowyowl,FALSE,snowy owl,1
+Arctic,whitewolf,FALSE,white wolf,1
+Bird,puffin,TRUE,puffin,0
+Bird,quail,TRUE,quail,0
+Bird,quetzal,TRUE,quetzal,0
+Bird,raven,TRUE,raven,0
+Arctic,woollymammoth,FALSE,woolly mammoth,1
+Bird,rhea,TRUE,rhea,0
+Bird,roadrunner,TRUE,roadrunner,0
+Bird,robin,TRUE,robin,0
+Bird,rook,TRUE,rook,0
+Asian,easterntoebiter,FALSE,eastern toebiter,1
+Bird,sandpiper,TRUE,sandpiper,0
+Asian,fennecfox,FALSE,fennec fox,1
+Asian,fireant,FALSE,fire ant,1
+Bird,seagull,TRUE,seagull,0
+Bird,shearwater,TRUE,shearwater,0
+Bird,shrike,TRUE,shrike,0
+Asian,fisheagle,FALSE,fish eagle,1
+Bird,snipe,TRUE,snipe,0
+Asian,flyingsnake,FALSE,flying snake,1
+Bird,songbird,TRUE,songbird,0
+Bird,sparrow,TRUE,sparrow,0
+Bird,spoonbill,TRUE,spoonbill,0
+Bird,squab,TRUE,squab,0
+Bird,starling,TRUE,starling,0
+Asian,fruitbat,FALSE,fruit bat,1
+Bird,stilt,TRUE,stilt,0
+Bird,stork,TRUE,stork,0
+Asian,giantpanda,FALSE,giant panda,1
+Bird,swallow,TRUE,swallow,0
+Bird,swallowtail,TRUE,swallowtail,0
+Bird,swan,TRUE,swan,0
+Bird,swift,TRUE,swift,0
+Bird,tanager,TRUE,tanager,0
+Bird,thrush,TRUE,thrush,0
+Bird,toucan,TRUE,toucan,0
+Bird,trumpeter,TRUE,trumpeter,0
+Bird,turkey,TRUE,turkey,0
+Bird,turtledove,TRUE,turtledove,0
+Bird,vulture,TRUE,vulture,0
+Bird,warbler,TRUE,warbler,0
+Bird,waxwing,TRUE,waxwing,0
+Bird,woodpecker,TRUE,woodpecker,0
+Bird,wren,TRUE,wren,0
+Bovine,auroch,TRUE,auroch,0
+Bovine,bison,TRUE,bison,0
+Bovine,bovine,TRUE,bovine,0
+Bovine,buffalo,TRUE,buffalo,0
+Bovine,bullock,TRUE,bullock,0
+Asian,huntsmanspider,FALSE,huntsman spider,1
+Bovine,calf,TRUE,calf,0
+Asian,redpanda,FALSE,red panda,1
+Bovine,cattle,TRUE,cattle,0
+Bovine,cow,TRUE,cow,0
+Bovine,heifer,TRUE,heifer,0
+Bovine,longhorn,TRUE,longhorn,0
+Bovine,muskox,TRUE,muskox,0
+Bovine,oxen,TRUE,oxen,0
+Bovine,steer,TRUE,steer,0
+Asian,rhesusmacaque,FALSE,rhesus macaque,1
+Bovine,yak,TRUE,yak,0
+Canine,aardwolf,TRUE,aardwolf,0
+Asian,sandcat,FALSE,sand cat,1
+Asian,seasnake,FALSE,sea snake,1
+Asian,siberiantiger,FALSE,siberian tiger,1
+Canine,akita,TRUE,akita,0
+Asian,sunbear,FALSE,sun bear,1
+Canine,beagle,TRUE,beagle,0
+Australian,bilbie,FALSE,bilbies,1
+Australian,huntsmanspider,FALSE,huntsman spider,1
+Canine,bloodhound,TRUE,bloodhound,0
+Australian,redkangaroo,FALSE,red kangaroo,1
+Canine,boxer,TRUE,boxer,0
+Canine,bulldog,TRUE,bulldog,0
+Canine,bullmastiff,TRUE,bullmastiff,0
+Canine,canine,TRUE,canine,0
+Australian,sugarglider,FALSE,sugar glider,1
+Canine,chihuahua,TRUE,chihuahua,0
+Canine,chinook,TRUE,chinook,0
+Australian,tammarwallaby,FALSE,tammar wallaby,1
+Australian,tasmaniandevil,FALSE,tasmanian devil,1
+Canine,collie,TRUE,collie,0
+Canine,corgi,TRUE,corgi,0
+Canine,coyote,TRUE,coyote,0
+Canine,dachshund,TRUE,dachshund,0
+Canine,dalmatian,TRUE,dalmatian,0
+BeastsOfBurden,scottishshetland,FALSE,scottish shetland,1
+Canine,dog,TRUE,dog,0
+Bird,adeliepenguin,FALSE,adelie penguin,1
+Canine,fox,TRUE,fox,0
+Canine,foxhound,TRUE,foxhound,0
+Bird,baldeagle,FALSE,bald eagle,1
+Bird,black-cappedchickadee,FALSE,black-capped chickadee,1
+Canine,goldendoodle,TRUE,goldendoodle,0
+Bird,bluefootedbooby,FALSE,bluefooted booby,1
+Canine,graywolf,TRUE,graywolf,0
+Bird,blueheron,FALSE,blue heron,1
+Bird,bluejay,FALSE,blue jay,1
+Canine,greyhound,TRUE,greyhound,0
+Canine,harrier,TRUE,harrier,0
+Canine,hound,TRUE,hound,0
+Canine,husky,TRUE,husky,0
+Canine,hyena,TRUE,hyena,0
+Canine,jackal,TRUE,jackal,0
+Canine,kitfox,TRUE,kitfox,0
+Bird,double-crestedcormorant,FALSE,double-crested cormorant,1
+Bird,fisheagle,FALSE,fish eagle,1
+Canine,malamute,TRUE,malamute,0
+Canine,maltese,TRUE,maltese,0
+Bird,goldeneagle,FALSE,golden eagle,1
+Canine,pitbull,TRUE,pitbull,0
+Canine,pomeranian,TRUE,pomeranian,0
+Canine,poodle,TRUE,poodle,0
+Bird,hornedowl,FALSE,horned owl,1
+Canine,pug,TRUE,pug,0
+Canine,puggle,TRUE,puggle,0
+Canine,pup,TRUE,pup,0
+Bird,mourningdove,FALSE,mourning dove,1
+Bird,prairiechicken,FALSE,prairie chicken,1
+Canine,schnauzer,TRUE,schnauzer,0
+Bird,sandhillcrane,FALSE,sandhill crane,1
+Bird,scarletmacaw,FALSE,scarlet macaw,1
+Bird,scrubjay,FALSE,scrub jay,1
+Canine,terrier,TRUE,terrier,0
+Bird,snowyowl,FALSE,snowy owl,1
+Canine,whippet,TRUE,whippet,0
+Bird,stellersjay,FALSE,steller jay,1
+Bird,sunconure,FALSE,sun conure,1
+Canine,wolf,TRUE,wolf,0
+Canine,wolfhound,TRUE,wolfhound,0
+Bovine,bulls,FALSE,bull,1
+Bovine,capebuffalo,FALSE,cape buffalo,1
+Deers,buck,TRUE,buck,0
+Deers,caribou,TRUE,caribou,0
+Deers,deer,TRUE,deer,0
+Bovine,waterbuffalo,FALSE,water buffalo,1
+Deers,doe,TRUE,doe,0
+Deers,eland,TRUE,eland,0
+Deers,elk,TRUE,elk,0
+Deers,fawn,TRUE,fawn,0
+Deers,gazelle,TRUE,gazelle,0
+Deers,gnu,TRUE,gnu,0
+Deers,hartebeest,TRUE,hartebeest,0
+Deers,impala,TRUE,impala,0
+Deers,moose,TRUE,moose,0
+Canine,afghanhound,FALSE,afghan hound,1
+Canine,africandog,FALSE,african dog,1
+Deers,pronghorn,TRUE,pronghorn,0
+Deers,reindeer,TRUE,reindeer,0
+Deers,roe,TRUE,roe,0
+Deers,stag,TRUE,stag,0
+Canine,bassethound,FALSE,basset hound,1
+Deers,wildebeest,TRUE,wildebeest,0
+Dinosaur,allosaurus,TRUE,allosaurus,0
+Dinosaur,apatosaurus,TRUE,apatosaurus,0
+Dinosaur,brachiosaurus,TRUE,brachiosaurus,0
+Dinosaur,brontosaurus,TRUE,brontosaurus,0
+Dinosaur,dinosaur,TRUE,dinosaur,0
+Canine,blacklab,FALSE,black lab,1
+Dinosaur,raptor,TRUE,raptor,0
+Dinosaur,stegosaurus,TRUE,stegosaurus,0
+Dinosaur,triceratops,TRUE,triceratops,0
+Canine,bostonterrier,FALSE,boston terrier,1
+Dinosaur,velociraptor,TRUE,velociraptor,0
+Europe,bedbug,TRUE,bedbug,0
+Europe,bullmastiff,TRUE,bullmastiff,0
+Europe,chigger,TRUE,chigger,0
+Europe,foxhound,TRUE,foxhound,0
+Europe,longhorn,TRUE,longhorn,0
+Canine,chowchow,FALSE,chow chow,1
+Europe,rook,TRUE,rook,0
+Europe,sardine,TRUE,sardine,0
+Canine,cockerspaniel,FALSE,cocker spaniel,1
+Canine,dobermanpinscher,FALSE,doberman pinscher,1
+Europe,turtledove,TRUE,turtledove,0
+Europe,whippet,TRUE,whippet,0
+Farm,ass,TRUE,ass,0
+Canine,fennecfox,FALSE,fennec fox,1
+Farm,bronco,TRUE,bronco,0
+Farm,bullock,TRUE,bullock,0
+Farm,calf,TRUE,calf,0
+Farm,chick,TRUE,chick,0
+Farm,chicken,TRUE,chicken,0
+Farm,clydesdale,TRUE,clydesdale,0
+Farm,cock,TRUE,cock,0
+Farm,colt,TRUE,colt,0
+Canine,frenchbulldog,FALSE,french bulldog,1
+Farm,cow,TRUE,cow,0
+Farm,donkey,TRUE,donkey,0
+Farm,equine,TRUE,equine,0
+Farm,ferret,TRUE,ferret,0
+Farm,foal,TRUE,foal,0
+Farm,goat,TRUE,goat,0
+Farm,heifer,TRUE,heifer,0
+Farm,hen,TRUE,hen,0
+Farm,hog,TRUE,hog,0
+Farm,horse,TRUE,horse,0
+Farm,kid,TRUE,kid,0
+Farm,lamb,TRUE,lamb,0
+Farm,longhorn,TRUE,longhorn,0
+Farm,mare,TRUE,mare,0
+Canine,germanshepherd,FALSE,german shepherd,1
+Farm,mule,TRUE,mule,0
+Farm,peccary,TRUE,peccary,0
+Farm,pig,TRUE,pig,0
+Farm,piglet,TRUE,piglet,0
+Farm,pony,TRUE,pony,0
+Canine,goldenretriever,FALSE,golden retriever,1
+Canine,greatdane,FALSE,great dane,1
+Farm,ram,TRUE,ram,0
+Farm,rooster,TRUE,rooster,0
+Farm,sheep,TRUE,sheep,0
+Farm,snake,TRUE,snake,0
+Farm,sow,TRUE,sow,0
+Farm,spider,TRUE,spider,0
+Farm,stallion,TRUE,stallion,0
+Farm,turkey,TRUE,turkey,0
+Canine,greatpyrenees,FALSE,great pyrenees,1
+Canine,labradorretriever,FALSE,labrador retriever,1
+Feline,bobcat,TRUE,bobcat,0
+Feline,bull,TRUE,bull,0
+Feline,caracal,TRUE,caracal,0
+Feline,catamount,TRUE,catamount,0
+Feline,cheetah,TRUE,cheetah,0
+Feline,cougar,TRUE,cougar,0
+Feline,crane,TRUE,crane,0
+Feline,feline,TRUE,feline,0
+Feline,fossa,TRUE,fossa,0
+Feline,jaguar,TRUE,jaguar,0
+Feline,leopard,TRUE,leopard,0
+Feline,liger,TRUE,liger,0
+Feline,lion,TRUE,lion,0
+Feline,lynx,TRUE,lynx,0
+Canine,lhasaapso,FALSE,lhasa apso,1
+Canine,redfox,FALSE,red fox,1
+Feline,ocelot,TRUE,ocelot,0
+Feline,panther,TRUE,panther,0
+Canine,saintbernard,FALSE,saint bernard,1
+Feline,puma,TRUE,puma,0
+Feline,pussycat,TRUE,pussycat,0
+Canine,shetlandsheepdog,FALSE,shetland sheepdog,1
+Canine,shihtzu,FALSE,shih tzu,1
+Canine,siberianhusky,FALSE,siberian husky,1
+Canine,timberwolf,FALSE,timber wolf,1
+Canine,whitewolf,FALSE,white wolf,1
+Feline,serval,TRUE,serval,0
+Canine,wilddog,FALSE,wild dog,1
+Canine,yorkshireterrier,FALSE,yorkshire terrier,1
+Deers,dikdik,FALSE,dik-dik,1
+Deers,muledeer,FALSE,mule deer,1
+Feline,tiger,TRUE,tiger,0
+Feline,tigon,TRUE,tigon,0
+Feline,tomcat,TRUE,tomcat,0
+Deers,muskdeer,FALSE,musk deer,1
+Feline,wildcat,TRUE,wildcat,0
+Fish,zebrafish,TRUE,zebrafish,0
+Fish,albacore,TRUE,albacore,0
+Fish,anchovy,TRUE,anchovy,0
+Fish,angelfish,TRUE,angelfish,0
+Fish,anglerfish,TRUE,anglerfish,0
+Fish,arapaima,TRUE,arapaima,0
+Dinosaur,tyrannosaurusrex,FALSE,tyrannosaurus rex,1
+Fish,barracuda,TRUE,barracuda,0
+Fish,barramundi,TRUE,barramundi,0
+Fish,bass,TRUE,bass,0
+Europe,scottishfold,FALSE,scottish fold,1
+Fish,billfish,TRUE,billfish,0
+Fish,blobfish,TRUE,blobfish,0
+Fish,blowfish,TRUE,blowfish,0
+Europe,stagbeetle,FALSE,stag beetle,1
+Fish,bream,TRUE,bream,0
+Fish,brimfish,TRUE,brimfish,0
+Farm,billygoat,FALSE,billy goat,1
+Fish,carp,TRUE,carp,0
+Fish,catfish,TRUE,catfish,0
+Fish,clownfish,TRUE,clownfish,0
+Fish,cod,TRUE,cod,0
+Fish,coelacanth,TRUE,coelacanth,0
+Fish,crappie,TRUE,crappie,0
+Fish,cuttlefish,TRUE,cuttlefish,0
+Fish,damselfish,TRUE,damselfish,0
+Fish,dogfish,TRUE,dogfish,0
+Fish,fish,TRUE,fish,0
+Fish,flounder,TRUE,flounder,0
+Farm,miniaturepony,FALSE,miniature pony,1
+Farm,potbelliedpig,FALSE,potbellied pig,1
+Farm,pygmygoat,FALSE,pygmy goat,1
+Fish,gar,TRUE,gar,0
+Fish,goby,TRUE,goby,0
+Fish,goldfish,TRUE,goldfish,0
+Feline,bengaltiger,FALSE,bengal tiger,1
+Fish,grenadier,TRUE,grenadier,0
+Fish,grouper,TRUE,grouper,0
+Fish,grunt,TRUE,grunt,0
+Fish,guppy,TRUE,guppy,0
+Fish,haddock,TRUE,haddock,0
+Fish,hagfish,TRUE,hagfish,0
+Fish,halibut,TRUE,halibut,0
+Feline,blackpanther,FALSE,black panther,1
+Fish,herring,TRUE,herring,0
+Feline,manx,FALSE,man,1
+Fish,jack,TRUE,jack,0
+Fish,jewfish,TRUE,jewfish,0
+Fish,koi,TRUE,koi,0
+Fish,lamprey,TRUE,lamprey,0
+Feline,mountainlion,FALSE,mountain lion,1
+Feline,ragdollcat,FALSE,ragdoll cat,1
+Fish,lionfish,TRUE,lionfish,0
+Fish,mackerel,TRUE,mackerel,0
+Fish,mahimahi,TRUE,mahimahi,0
+Feline,ringtailcat,FALSE,ringtail cat,1
+Fish,marlin,TRUE,marlin,0
+Fish,megalodon,TRUE,megalodon,0
+Fish,milkfish,TRUE,milkfish,0
+Fish,minnow,TRUE,minnow,0
+Fish,mudskipper,TRUE,mudskipper,0
+Fish,mullet,TRUE,mullet,0
+Feline,sabertoothedtiger,FALSE,sabertoothed tiger,1
+Feline,sandcat,FALSE,sand cat,1
+Fish,parrotfish,TRUE,parrotfish,0
+Fish,perch,TRUE,perch,0
+Fish,pickerel,TRUE,pickerel,0
+Fish,pike,TRUE,pike,0
+Feline,scottishfold,FALSE,scottish fold,1
+Fish,piranha,TRUE,piranha,0
+Fish,prawn,TRUE,prawn,0
+Fish,pufferfish,TRUE,pufferfish,0
+Fish,rainbowfish,TRUE,rainbowfish,0
+Feline,siamesecat,FALSE,siamese cat,1
+Fish,rockhead,TRUE,rockhead,0
+Fish,sailfish,TRUE,sailfish,0
+Fish,salmon,TRUE,salmon,0
+Feline,siberiantiger,FALSE,siberian tiger,1
+Feline,snow,FALSE,sow,1
+Fish,sardine,TRUE,sardine,0
+Fish,sculpin,TRUE,sculpin,0
+Feline,snowleopard,FALSE,snow leopard,1
+Fish,shad,TRUE,shad,0
+Fish,shark,TRUE,shark,0
+Fish,shrimp,TRUE,shrimp,0
+Feline,whitetiger,FALSE,white tiger,1
+Fish,smelt,TRUE,smelt,0
+Fish,snapper,TRUE,snapper,0
+Fish,spadefish,TRUE,spadefish,0
+Fish,arrowheadshark,FALSE,arrowhead shark,1
+Fish,bettafish,FALSE,betta fish,1
+Fish,stickleback,TRUE,stickleback,0
+Fish,stonefish,TRUE,stonefish,0
+Fish,sturgeon,TRUE,sturgeon,0
+Fish,sunfish,TRUE,sunfish,0
+Fish,surgeonfish,TRUE,surgeonfish,0
+Fish,swordfish,TRUE,swordfish,0
+Fish,blueshark,FALSE,blue shark,1
+Fish,tilapia,TRUE,tilapia,0
+Fish,trout,TRUE,trout,0
+Fish,tuna,TRUE,tuna,0
+Fish,walleye,TRUE,walleye,0
+Fish,whale,TRUE,whale,0
+Fish,bullshark,FALSE,bull shark,1
+Fish,whitefish,TRUE,whitefish,0
+Insectivores,aardvark,TRUE,aardvark,0
+Insectivores,anteater,TRUE,anteater,0
+Insectivores,armadillo,TRUE,armadillo,0
+Insectivores,bat,TRUE,bat,0
+Insectivores,echidna,TRUE,echidna,0
+Insectivores,hedgehog,TRUE,hedgehog,0
+Insectivores,mole,TRUE,mole,0
+Insectivores,pangolin,TRUE,pangolin,0
+Insectivores,shrew,TRUE,shrew,0
+Fish,flyingfish,FALSE,flying fish,1
+Insects,ant,TRUE,ant,0
+Insects,antlion,TRUE,antlion,0
+Insects,aphid,TRUE,aphid,0
+Fish,foureyebutterflyfish,FALSE,foureye butterflyfish,1
+Insects,bedbug,TRUE,bedbug,0
+Insects,bee,TRUE,bee,0
+Insects,beetle,TRUE,beetle,0
+Insects,bessbug,TRUE,bessbug,0
+Fish,freshwaterfish,FALSE,freshwater fish,1
+Fish,hammerheadshark,FALSE,hammerhead shark,1
+Insects,bug,TRUE,bug,0
+Insects,bumblebee,TRUE,bumblebee,0
+Insects,butterfly,TRUE,butterfly,0
+Fish,largemouthbass,FALSE,largemouth bass,1
+Fish,leopardshark,FALSE,leopard shark,1
+Insects,caterpillar,TRUE,caterpillar,0
+Insects,centipede,TRUE,centipede,0
+Insects,chigger,TRUE,chigger,0
+Insects,cicada,TRUE,cicada,0
+Insects,cockroach,TRUE,cockroach,0
+Insects,cranefly,TRUE,cranefly,0
+Insects,cricket,TRUE,cricket,0
+Fish,makoshark,FALSE,mako shark,1
+Insects,dolphin,TRUE,dolphin,0
+Insects,dragonfly,TRUE,dragonfly,0
+Fish,northernpike,FALSE,northern pike,1
+Insects,earthworm,TRUE,earthworm,0
+Insects,earwig,TRUE,earwig,0
+Fish,nurseshark,FALSE,nurse shark,1
+Fish,pinksalmon,FALSE,pink salmon,1
+Fish,reddrum,FALSE,red drum,1
+Insects,firefly,TRUE,firefly,0
+Insects,flatworm,TRUE,flatworm,0
+Insects,flea,TRUE,flea,0
+Insects,fly,TRUE,fly,0
+Fish,saltwaterfish,FALSE,saltwater fish,1
+Insects,gnat,TRUE,gnat,0
+Insects,grasshopper,TRUE,grasshopper,0
+Insects,grub,TRUE,grub,0
+Insects,honeybee,TRUE,honeybee,0
+Insects,hornet,TRUE,hornet,0
+Fish,sandshark,FALSE,sand shark,1
+Insects,housefly,TRUE,housefly,0
+Insects,hoverfly,TRUE,hoverfly,0
+Insects,inchworm,TRUE,inchworm,0
+Insects,insect,TRUE,insect,0
+Insects,isopod,TRUE,isopod,0
+Fish,seabass,FALSE,sea bass,1
+Fish,smallmouthbass,FALSE,smallmouth bass,1
+Fish,spermwhale,FALSE,sperm whale,1
+Insects,ladybug,TRUE,ladybug,0
+Insects,larva,TRUE,larva,0
+Fish,spinydogfish,FALSE,spiny dogfish,1
+Insects,locust,TRUE,locust,0
+Insects,louse,TRUE,louse,0
+Fish,tigershark,FALSE,tiger shark,1
+Insects,maggot,TRUE,maggot,0
+Insects,mantis,TRUE,mantis,0
+Insects,mealworm,TRUE,mealworm,0
+Insects,millipede,TRUE,millipede,0
+Insects,mite,TRUE,mite,0
+Fish,whaleshark,FALSE,whale shark,1
+Insects,mosquito,TRUE,mosquito,0
+Insects,moth,TRUE,moth,0
+Insectivores,vampirebat,FALSE,vampire bat,1
+Insects,assassinbug,FALSE,assassin bug,1
+Insects,blackwidow,FALSE,black widow,1
+Insects,boxelderbug,FALSE,boxelder bug,1
+Insects,roly-poly,TRUE,roly-poly,0
+Insects,scorpion,TRUE,scorpion,0
+Insects,carpenterant,FALSE,carpenter ant,1
+Insects,carpetbeetle,FALSE,carpet beetle,1
+Insects,daddylonglegs,FALSE,daddy longlegs,1
+Insects,stinkbug,TRUE,stinkbug,0
+Insects,tarantula,TRUE,tarantula,0
+Insects,termite,TRUE,termite,0
+Insects,tick,TRUE,tick,0
+Insects,wasp,TRUE,wasp,0
+Insects,dungbeetle,FALSE,dung beetle,1
+Insects,easterntoebiter,FALSE,eastern toebiter,1
+Insects,weevil,TRUE,weevil,0
+Insects,fireant,FALSE,fire ant,1
+Insects,worm,TRUE,worm,0
+Insects,yellowjacket,TRUE,yellowjacket,0
+Jungle,kinkajou,TRUE,kinkajou,0
+Jungle,sloth,TRUE,sloth,0
+Jungle,tapir,TRUE,tapir,0
+Marsupial,cuscus,TRUE,cuscus,0
+NorthAmerican,badger,TRUE,badger,0
+Insects,fruitfly,FALSE,fruit fly,1
+NorthAmerican,bear,TRUE,bear,0
+NorthAmerican,beaver,TRUE,beaver,0
+NorthAmerican,bedbug,TRUE,bedbug,0
+NorthAmerican,bighorn,TRUE,bighorn,0
+NorthAmerican,bison,TRUE,bison,0
+Insects,horse-fly,FALSE,horsefly,1
+Insects,junebeetle,FALSE,june beetle,1
+NorthAmerican,boar,TRUE,boar,0
+NorthAmerican,bobcat,TRUE,bobcat,0
+Insects,junebug,FALSE,june bug,1
+Insects,killerbee,FALSE,killer bee,1
+Insects,monarchbutterfly,FALSE,monarch butterfly,1
+Insects,pillbug,FALSE,pill bug,1
+NorthAmerican,bruin,TRUE,bruin,0
+NorthAmerican,bullsnake,TRUE,bullsnake,0
+NorthAmerican,caribou,TRUE,caribou,0
+NorthAmerican,catamount,TRUE,catamount,0
+NorthAmerican,chigger,TRUE,chigger,0
+NorthAmerican,chinook,TRUE,chinook,0
+NorthAmerican,chipmunk,TRUE,chipmunk,0
+NorthAmerican,coati,TRUE,coati,0
+NorthAmerican,coatimundi,TRUE,coatimundi,0
+NorthAmerican,conch,TRUE,conch,0
+Insects,prayingmantis,FALSE,praying mantis,1
+Insects,stagbeetle,FALSE,stag beetle,1
+Insects,stickbug,FALSE,stick bug,1
+NorthAmerican,cougar,TRUE,cougar,0
+NorthAmerican,coypu,TRUE,coypu,0
+NorthAmerican,crappie,TRUE,crappie,0
+NorthAmerican,cub,TRUE,cub,0
+NorthAmerican,deer,TRUE,deer,0
+Insects,stickinsect,FALSE,stick insect,1
+Insects,waterbear,FALSE,water bear,1
+Insects,waterbug,FALSE,water bug,1
+NorthAmerican,elk,TRUE,elk,0
+NorthAmerican,fisher,TRUE,fisher,0
+NorthAmerican,fox,TRUE,fox,0
+NorthAmerican,foxhound,TRUE,foxhound,0
+Insects,wolfspider,FALSE,wolf spider,1
+NorthAmerican,grackle,TRUE,grackle,0
+NorthAmerican,baldeagle,FALSE,bald eagle,1
+NorthAmerican,graywolf,TRUE,graywolf,0
+NorthAmerican,black-cappedchickadee,FALSE,black-capped chickadee,1
+NorthAmerican,blackbear,FALSE,black bear,1
+NorthAmerican,bostonterrier,FALSE,boston terrier,1
+NorthAmerican,boxelderbug,FALSE,boxelder bug,1
+NorthAmerican,brownbear,FALSE,brown bear,1
+NorthAmerican,coralsnake,FALSE,coral snake,1
+NorthAmerican,kitfox,TRUE,kitfox,0
+NorthAmerican,kodiak,TRUE,kodiak,0
+NorthAmerican,cottontailrabbit,FALSE,cottontail rabbit,1
+NorthAmerican,longhorn,TRUE,longhorn,0
+NorthAmerican,marsupial,TRUE,marsupial,0
+NorthAmerican,dobermanpinscher,FALSE,doberman pinscher,1
+NorthAmerican,moose,TRUE,moose,0
+NorthAmerican,double-crestedcormorant,FALSE,double-crested cormorant,1
+NorthAmerican,easterntoebiter,FALSE,eastern toebiter,1
+NorthAmerican,gartersnake,FALSE,garter snake,1
+NorthAmerican,grasssnake,FALSE,grass snake,1
+NorthAmerican,grizzlybear,FALSE,grizzly bear,1
+NorthAmerican,nuthatch,TRUE,nuthatch,0
+NorthAmerican,opossum,TRUE,opossum,0
+NorthAmerican,gumbootchiton,FALSE,gumboot chiton,1
+NorthAmerican,hognosesnake,FALSE,hognose snake,1
+NorthAmerican,pronghorn,TRUE,pronghorn,0
+NorthAmerican,ptarmigan,TRUE,ptarmigan,0
+NorthAmerican,puma,TRUE,puma,0
+NorthAmerican,quetzal,TRUE,quetzal,0
+NorthAmerican,rabbit,TRUE,rabbit,0
+NorthAmerican,raccoon,TRUE,raccoon,0
+NorthAmerican,hornedtoad,FALSE,horned toad,1
+NorthAmerican,huntsmanspider,FALSE,huntsman spider,1
+NorthAmerican,kingcrab,FALSE,king crab,1
+NorthAmerican,leopardshark,FALSE,leopard shark,1
+NorthAmerican,mastadon,FALSE,mastodon,1
+NorthAmerican,mountaingoat,FALSE,mountain goat,1
+NorthAmerican,mountainlion,FALSE,mountain lion,1
+NorthAmerican,mourningdove,FALSE,mourning dove,1
+NorthAmerican,northernpike,FALSE,northern pike,1
+NorthAmerican,nurseshark,FALSE,nurse shark,1
+NorthAmerican,sidewinder,TRUE,sidewinder,0
+NorthAmerican,skunk,TRUE,skunk,0
+NorthAmerican,orangeroughie,FALSE,orange roughie,1
+NorthAmerican,ragdollcat,FALSE,ragdoll cat,1
+NorthAmerican,squirrel,TRUE,squirrel,0
+NorthAmerican,redfox,FALSE,red fox,1
+NorthAmerican,rightwhale,FALSE,right whale,1
+NorthAmerican,ringtailcat,FALSE,ringtail cat,1
+NorthAmerican,wolf,TRUE,wolf,0
+Pets,beagle,TRUE,beagle,0
+NorthAmerican,sandcrab,FALSE,sand crab,1
+NorthAmerican,scottishfold,FALSE,scottish fold,1
+Pets,budgie,TRUE,budgie,0
+Pets,canary,TRUE,canary,0
+Pets,cat,TRUE,cat,0
+NorthAmerican,scrubjay,FALSE,scrub jay,1
+Pets,cockatiel,TRUE,cockatiel,0
+Pets,cockatoo,TRUE,cockatoo,0
+Pets,corgi,TRUE,corgi,0
+Pets,degu,TRUE,degu,0
+Pets,dog,TRUE,dog,0
+NorthAmerican,seaotter,FALSE,sea otter,1
+NorthAmerican,snowcrab,FALSE,snow crab,1
+Pets,gerbil,TRUE,gerbil,0
+NorthAmerican,snowyowl,FALSE,snowy owl,1
+Pets,goldendoodle,TRUE,goldendoodle,0
+NorthAmerican,star-nosedmole,FALSE,star-nosed mole,1
+Pets,goldfish,TRUE,goldfish,0
+NorthAmerican,waterbug,FALSE,water bug,1
+NorthAmerican,watermoccasin,FALSE,water moccasin,1
+Pets,guppy,TRUE,guppy,0
+Pets,hamster,TRUE,hamster,0
+Pets,kitten,TRUE,kitten,0
+Pets,bettafish,FALSE,betta fish,1
+Pets,dwarfrabbit,FALSE,dwarf rabbit,1
+Pets,malamute,TRUE,malamute,0
+Pets,parakeet,TRUE,parakeet,0
+Pets,parrot,TRUE,parrot,0
+Pets,poodle,TRUE,poodle,0
+Pets,puppy,TRUE,puppy,0
+Pets,rabbit,TRUE,rabbit,0
+Pets,frenchbulldog,FALSE,french bulldog,1
+Pets,germanshepherd,FALSE,german shepherd,1
+Pets,schnauzer,TRUE,schnauzer,0
+Pets,goldenretriever,FALSE,golden retriever,1
+Pets,wolfhound,TRUE,wolfhound,0
+Pets,greatpyrenees,FALSE,great pyrenees,1
+Primates,ape,TRUE,ape,0
+Primates,baboon,TRUE,baboon,0
+Primates,bonobo,TRUE,bonobo,0
+Primates,bushbaby,TRUE,bushbaby,0
+Primates,capuchin,TRUE,capuchin,0
+Primates,chimpanzee,TRUE,chimpanzee,0
+Primates,gibbon,TRUE,gibbon,0
+Primates,gorilla,TRUE,gorilla,0
+Pets,guineapig,FALSE,guinea pig,1
+Primates,human,TRUE,human,0
+Primates,indri,TRUE,indri,0
+Primates,langur,TRUE,langur,0
+Primates,lemur,TRUE,lemur,0
+Primates,loris,TRUE,loris,0
+Primates,macaque,TRUE,macaque,0
+Primates,mandrill,TRUE,mandrill,0
+Primates,marmoset,TRUE,marmoset,0
+Primates,monkey,TRUE,monkey,0
+Primates,neanderthal,TRUE,neanderthal,0
+Primates,orangutan,TRUE,orangutan,0
+Pets,labradorretriever,FALSE,labrador retriever,1
+Pets,lhasaapso,FALSE,lhasa apso,1
+Pets,russianblue,FALSE,russian blue,1
+Pets,saintbernard,FALSE,saint bernard,1
+Primates,shrew,TRUE,shrew,0
+Pets,shihtzu,FALSE,shih tzu,1
+Pets,yorkshireterrier,FALSE,yorkshire terrier,1
+Primates,howlermonkey,FALSE,howler monkey,1
+Primates,tamarin,TRUE,tamarin,0
+Primates,tarsier,TRUE,tarsier,0
+Primates,titi,TRUE,titi,0
+Rabbit,bunny,TRUE,bunny,0
+Rabbit,coney,TRUE,coney,0
+Primates,primates,FALSE,primate,1
+Rabbit,hare,TRUE,hare,0
+Rabbit,jackrabbit,TRUE,jackrabbit,0
+Rabbit,rabbit,TRUE,rabbit,0
+ReptileAmphibian,adder,TRUE,adder,0
+ReptileAmphibian,alligator,TRUE,alligator,0
+ReptileAmphibian,allosaurus,TRUE,allosaurus,0
+ReptileAmphibian,amphibian,TRUE,amphibian,0
+ReptileAmphibian,anaconda,TRUE,anaconda,0
+ReptileAmphibian,anole,TRUE,anole,0
+ReptileAmphibian,apatosaurus,TRUE,apatosaurus,0
+ReptileAmphibian,asp,TRUE,asp,0
+Primates,pygmymarmoset,FALSE,pygmy marmoset,1
+Primates,rhesusmacaque,FALSE,rhesus macaque,1
+Primates,sakimonkey,FALSE,saki monkey,1
+Primates,slowloris,FALSE,slow loris,1
+ReptileAmphibian,brachiosaurus,TRUE,brachiosaurus,0
+ReptileAmphibian,brontosaurus,TRUE,brontosaurus,0
+ReptileAmphibian,bullfrog,TRUE,bullfrog,0
+ReptileAmphibian,bullsnake,TRUE,bullsnake,0
+ReptileAmphibian,bushmaster,TRUE,bushmaster,0
+ReptileAmphibian,caecilian,TRUE,caecilian,0
+ReptileAmphibian,caiman,TRUE,caiman,0
+ReptileAmphibian,chameleon,TRUE,chameleon,0
+ReptileAmphibian,cobra,TRUE,cobra,0
+Primates,snow,FALSE,sow,1
+Primates,spidermonkey,FALSE,spider monkey,1
+Rabbit,dwarfrabbit,FALSE,dwarf rabbit,1
+ReptileAmphibian,cottonmouth,TRUE,cottonmouth,0
+ReptileAmphibian,crocodile,TRUE,crocodile,0
+ReptileAmphibian,beardeddragon,FALSE,bearded dragon,1
+ReptileAmphibian,diamondback,TRUE,diamondback,0
+ReptileAmphibian,dinosaur,TRUE,dinosaur,0
+ReptileAmphibian,dragon,TRUE,dragon,0
+ReptileAmphibian,blackmamba,FALSE,black mamba,1
+ReptileAmphibian,frog,TRUE,frog,0
+ReptileAmphibian,boaconstrictor,FALSE,boa constrictor,1
+ReptileAmphibian,copperheadsnake,FALSE,copperhead snake,1
+ReptileAmphibian,gavial,TRUE,gavial,0
+ReptileAmphibian,gecko,TRUE,gecko,0
+ReptileAmphibian,gharial,TRUE,gharial,0
+ReptileAmphibian,coralsnake,FALSE,coral snake,1
+ReptileAmphibian,goanna,TRUE,goanna,0
+ReptileAmphibian,godzilla,TRUE,godzilla,0
+ReptileAmphibian,cornsnake,FALSE,corn snake,1
+ReptileAmphibian,darwinsfrog,FALSE,darwin frog,1
+ReptileAmphibian,flyingsnake,FALSE,flying snake,1
+ReptileAmphibian,iguana,TRUE,iguana,0
+ReptileAmphibian,gardensnake,FALSE,garden snake,1
+ReptileAmphibian,kingsnake,TRUE,kingsnake,0
+ReptileAmphibian,gartersnake,FALSE,garter snake,1
+ReptileAmphibian,lizard,TRUE,lizard,0
+ReptileAmphibian,mamba,TRUE,mamba,0
+ReptileAmphibian,moccasin,TRUE,moccasin,0
+ReptileAmphibian,monitor,TRUE,monitor,0
+ReptileAmphibian,newt,TRUE,newt,0
+ReptileAmphibian,grasssnake,FALSE,grass snake,1
+ReptileAmphibian,python,TRUE,python,0
+ReptileAmphibian,raptor,TRUE,raptor,0
+ReptileAmphibian,rattlesnake,TRUE,rattlesnake,0
+ReptileAmphibian,reptile,TRUE,reptile,0
+ReptileAmphibian,salamander,TRUE,salamander,0
+ReptileAmphibian,serpent,TRUE,serpent,0
+ReptileAmphibian,sidewinder,TRUE,sidewinder,0
+ReptileAmphibian,skink,TRUE,skink,0
+ReptileAmphibian,snake,TRUE,snake,0
+ReptileAmphibian,hognosesnake,FALSE,hognose snake,1
+ReptileAmphibian,taipan,TRUE,taipan,0
+ReptileAmphibian,hornedtoad,FALSE,horned toad,1
+ReptileAmphibian,toad,TRUE,toad,0
+ReptileAmphibian,tortoise,TRUE,tortoise,0
+ReptileAmphibian,treefrog,TRUE,treefrog,0
+ReptileAmphibian,triceratops,TRUE,triceratops,0
+ReptileAmphibian,turtle,TRUE,turtle,0
+ReptileAmphibian,kingcobra,FALSE,king cobra,1
+ReptileAmphibian,velociraptor,TRUE,velociraptor,0
+ReptileAmphibian,viper,TRUE,viper,0
+ReptileAmphibian,komododragon,FALSE,komodo dragon,1
+ReptileAmphibian,springpeeper,FALSE,spring peeper,1
+Rodents,agouti,TRUE,agouti,0
+Rodents,beaver,TRUE,beaver,0
+ReptileAmphibian,thornydevil,FALSE,thorny devil,1
+ReptileAmphibian,tyrannosaurusrex,FALSE,tyrannosaurus rex,1
+Rodents,capybara,TRUE,capybara,0
+Rodents,cavy,TRUE,cavy,0
+Rodents,chinchilla,TRUE,chinchilla,0
+Rodents,chipmunk,TRUE,chipmunk,0
+Rodents,degu,TRUE,degu,0
+Rodents,dormouse,TRUE,dormouse,0
+ReptileAmphibian,watermoccasin,FALSE,water moccasin,1
+Rodents,gerbil,TRUE,gerbil,0
+ReptileAmphibian,watersnake,FALSE,water snake,1
+Rodents,gopher,TRUE,gopher,0
+Rodents,blacksquirrel,FALSE,black squirrel,1
+Rodents,groundhog,TRUE,groundhog,0
+Rodents,bushsquirrel,FALSE,bush squirrel,1
+Rodents,flyingsquirrel,FALSE,flying squirrel,1
+Rodents,hamster,TRUE,hamster,0
+Rodents,hedgehog,TRUE,hedgehog,0
+Rodents,jerboa,TRUE,jerboa,0
+Rodents,lemming,TRUE,lemming,0
+Rodents,marmot,TRUE,marmot,0
+Rodents,mole,TRUE,mole,0
+Rodents,mouse,TRUE,mouse,0
+Rodents,muskrat,TRUE,muskrat,0
+Rodents,goldenmarmot,FALSE,golden marmot,1
+Rodents,nutria,TRUE,nutria,0
+Rodents,packrat,TRUE,packrat,0
+Rodents,pika,TRUE,pika,0
+Rodents,porcupine,TRUE,porcupine,0
+Rodents,greysquirrel,FALSE,grey squirrel,1
+Rodents,rat,TRUE,rat,0
+Rodents,groundsquirrel,FALSE,ground squirrel,1
+Rodents,rodent,TRUE,rodent,0
+Rodents,shrew,TRUE,shrew,0
+Rodents,squirrel,TRUE,squirrel,0
+Rodents,vole,TRUE,vole,0
+Rodents,woodchuck,TRUE,woodchuck,0
+Rodents,xerus,TRUE,xerus,0
+SouthAmerica,arapaima,TRUE,arapaima,0
+SouthAmerica,bushmaster,TRUE,bushmaster,0
+SouthAmerica,caecilian,TRUE,caecilian,0
+SouthAmerica,caiman,TRUE,caiman,0
+SouthAmerica,coati,TRUE,coati,0
+SouthAmerica,coatimundi,TRUE,coatimundi,0
+Rodents,guineapig,FALSE,guinea pig,1
+SouthAmerica,degu,TRUE,degu,0
+SouthAmerica,grackle,TRUE,grackle,0
+SouthAmerica,guanaco,TRUE,guanaco,0
+Rodents,prairiedog,FALSE,prairie dog,1
+Rodents,redsquirrel,FALSE,red squirrel,1
+SouthAmerica,quetzal,TRUE,quetzal,0
+SouthAmerica,darwinsfrog,FALSE,darwin frog,1
+SouthAmerica,tamarin,TRUE,tamarin,0
+UsedForFur,alpaca,TRUE,alpaca,0
+UsedForFur,beaver,TRUE,beaver,0
+UsedForFur,chamois,TRUE,chamois,0
+UsedForFur,chinchilla,TRUE,chinchilla,0
+UsedForFur,coypu,TRUE,coypu,0
+UsedForFur,ermine,TRUE,ermine,0
+UsedForFur,fox,TRUE,fox,0
+UsedForFur,llama,TRUE,llama,0
+UsedForFur,mink,TRUE,mink,0
+UsedForFur,rabbit,TRUE,rabbit,0
+UsedForFur,sable,TRUE,sable,0
+UsedForFur,vicuna,TRUE,vicuna,0
+Water,sardine,TRUE,sardine,0
+SouthAmerica,nurseshark,FALSE,nurse shark,1
+Water,alga,TRUE,alga,0
+Water,alligator,TRUE,alligator,0
+Water,anemone,TRUE,anemone,0
+Water,anglerfish,TRUE,anglerfish,0
+Water,aplysia,TRUE,aplysia,0
+Water,arapaima,TRUE,arapaima,0
+Water,ascidians,TRUE,ascidians,0
+Water,axolotl,TRUE,axolotl,0
+SouthAmerica,pygmymarmoset,FALSE,pygmy marmoset,1
+SouthAmerica,scarletmacaw,FALSE,scarlet macaw,1
+Water,barnacle,TRUE,barnacle,0
+Water,beaver,TRUE,beaver,0
+Water,beluga,TRUE,beluga,0
+Water,Cockle,FALSE,cockle,1
+Water,billfish,TRUE,billfish,0
+Water,blobfish,TRUE,blobfish,0
+Water,bloodworm,TRUE,bloodworm,0
+Water,baleenwhale,FALSE,baleen whale,1
+Water,bananaslug,FALSE,banana slug,1
+Water,boto,TRUE,boto,0
+Water,bettafish,FALSE,betta fish,1
+Water,blueshark,FALSE,blue shark,1
+Water,bream,TRUE,bream,0
+Water,bluewhale,FALSE,blue whale,1
+Water,bottlenosedolphin,FALSE,bottlenose dolphin,1
+Water,boxturtle,FALSE,box turtle,1
+Water,clam,TRUE,clam,0
+Water,brineshrimp,FALSE,brine shrimp,1
+Water,coelacanth,TRUE,coelacanth,0
+Water,conch,TRUE,conch,0
+Water,coral,TRUE,coral,0
+Water,bullshark,FALSE,bull shark,1
+Water,cowry,TRUE,cowry,0
+Water,coypu,TRUE,coypu,0
+Water,crab,TRUE,crab,0
+Water,crawfish,TRUE,crawfish,0
+Water,crayfish,TRUE,crayfish,0
+Water,dogfish,TRUE,dogfish,0
+Water,dolphin,TRUE,dolphin,0
+Water,eel,TRUE,eel,0
+Water,cleanershrimp,FALSE,cleaner shrimp,1
+Water,electriceel,FALSE,electric eel,1
+Water,elephantseal,FALSE,elephant seal,1
+Water,fish,TRUE,fish,0
+Water,flatworm,TRUE,flatworm,0
+Water,fiddlercrab,FALSE,fiddler crab,1
+Water,frog,TRUE,frog,0
+Water,gar,TRUE,gar,0
+Water,gavial,TRUE,gavial,0
+Water,gharial,TRUE,gharial,0
+Water,flyingfish,FALSE,flying fish,1
+Water,ghostcrab,FALSE,ghost crab,1
+Water,glaucus,TRUE,glaucus,0
+Water,goldfish,TRUE,goldfish,0
+Water,goose,TRUE,goose,0
+Water,giantsquid,FALSE,giant squid,1
+Water,graywhale,FALSE,gray whale,1
+Water,haddock,TRUE,haddock,0
+Water,hagfish,TRUE,hagfish,0
+Water,gumbootchiton,FALSE,gumboot chiton,1
+Water,hammerheadshark,FALSE,hammerhead shark,1
+Water,harborseal,FALSE,harbor seal,1
+Water,hermitcrab,FALSE,hermit crab,1
+Water,horseshoecrab,FALSE,horseshoe crab,1
+Water,jellyfish,TRUE,jellyfish,0
+Water,jewfish,TRUE,jewfish,0
+Water,humpbackwhale,FALSE,humpback whale,1
+Water,killerwhale,FALSE,killer whale,1
+Water,krill,TRUE,krill,0
+Water,kingcrab,FALSE,king crab,1
+Water,leech,TRUE,leech,0
+Water,largemouthbass,FALSE,largemouth bass,1
+Water,leopardseal,FALSE,leopard seal,1
+Water,limpet,TRUE,limpet,0
+Water,lionfish,TRUE,lionfish,0
+Water,lobster,TRUE,lobster,0
+Water,mahimahi,TRUE,mahimahi,0
+Water,manatee,TRUE,manatee,0
+Water,manowar,TRUE,manowar,0
+Water,leopardshark,FALSE,leopard shark,1
+Water,milkfish,TRUE,milkfish,0
+Water,mollusk,TRUE,mollusk,0
+Water,monster,TRUE,monster,0
+Water,mantaray,FALSE,manta ray,1
+Water,mudskipper,TRUE,mudskipper,0
+Water,mullet,TRUE,mullet,0
+Water,muskrat,TRUE,muskrat,0
+Water,mussel,TRUE,mussel,0
+Water,narwhal,TRUE,narwhal,0
+Water,nautilus,TRUE,nautilus,0
+Water,newt,TRUE,newt,0
+Water,morayeel,FALSE,moray eel,1
+Water,octopus,TRUE,octopus,0
+Water,nurseshark,FALSE,nurse shark,1
+Water,orca,TRUE,orca,0
+Water,otter,TRUE,otter,0
+Water,oyster,TRUE,oyster,0
+Water,penguin,TRUE,penguin,0
+Water,orangeroughie,FALSE,orange roughie,1
+Water,pilotwhale,FALSE,pilot whale,1
+Water,plankton,TRUE,plankton,0
+Water,platypus,TRUE,platypus,0
+Water,porpoise,TRUE,porpoise,0
+Water,prawn,TRUE,prawn,0
+Water,quahog,TRUE,quahog,0
+Water,ray,TRUE,ray,0
+Water,pistolshrimp,FALSE,pistol shrimp,1
+Water,reddrum,FALSE,red drum,1
+Water,sailfish,TRUE,sailfish,0
+Water,salamander,TRUE,salamander,0
+Water,rightwhale,FALSE,right whale,1
+Water,sandcrab,FALSE,sand crab,1
+Water,scallop,TRUE,scallop,0
+Water,sculpin,TRUE,sculpin,0
+Water,sanddollar,FALSE,sand dollar,1
+Water,seaanemone,FALSE,sea anemone,1
+Water,seacow,FALSE,sea cow,1
+Water,seahorse,TRUE,seahorse,0
+Water,seal,TRUE,seal,0
+Water,sealion,TRUE,sealion,0
+Water,seacucumber,FALSE,sea cucumber,1
+Water,seamonkey,FALSE,sea monkey,1
+Water,seaotter,FALSE,sea otter,1
+Water,seaslug,FALSE,sea slug,1
+Water,seasnake,FALSE,sea snake,1
+Water,seasponge,FALSE,sea sponge,1
+Water,seaturtle,FALSE,sea turtle,1
+Water,shad,TRUE,shad,0
+Water,shark,TRUE,shark,0
+Water,siphonophore,TRUE,siphonophore,0
+Water,skate,TRUE,skate,0
+Water,slug,TRUE,slug,0
+Water,seaurchin,FALSE,sea urchin,1
+Water,snail,TRUE,snail,0
+Water,snapper,TRUE,snapper,0
+Water,smallmouthbass,FALSE,smallmouth bass,1
+Water,snappingturtle,FALSE,snapping turtle,1
+Water,spadefish,TRUE,spadefish,0
+Water,snowcrab,FALSE,snow crab,1
+Water,spermwhale,FALSE,sperm whale,1
+Water,sponge,TRUE,sponge,0
+Water,squid,TRUE,squid,0
+Water,starfish,TRUE,starfish,0
+Water,stingray,TRUE,stingray,0
+Water,stonefish,TRUE,stonefish,0
+Water,tadpole,TRUE,tadpole,0
+Water,tardigrade,TRUE,tardigrade,0
+Water,terrapin,TRUE,terrapin,0
+Water,spinydogfish,FALSE,spiny dogfish,1
+Water,toad,TRUE,toad,0
+Water,turtle,TRUE,turtle,0
+Water,urchin,TRUE,urchin,0
+Water,walleye,TRUE,walleye,0
+Water,walrus,TRUE,walrus,0
+Water,whale,TRUE,whale,0
+Water,tigershark,FALSE,tiger shark,1
+Water,whitefish,TRUE,whitefish,0
+Weasels,badger,TRUE,badger,0
+Weasels,civet,TRUE,civet,0
+Weasels,ferret,TRUE,ferret,0
+Weasels,fisher,TRUE,fisher,0
+Weasels,groundhog,TRUE,groundhog,0
+Water,whaleshark,FALSE,whale shark,1
+Weasels,marten,TRUE,marten,0
+Weasels,mink,TRUE,mink,0
+Weasels,mongoose,TRUE,mongoose,0
+Weasels,otter,TRUE,otter,0
+Weasels,polecat,TRUE,polecat,0
+Weasels,honeybadger,FALSE,honey badger,1
+Weasels,skunk,TRUE,skunk,0
+Weasels,stoat,TRUE,stoat,0
+Weasels,weasel,TRUE,weasel,0
+Weasels,sea,FALSE,seal,1
+Weasels,wolverine,TRUE,wolverine,0
+Worms,bloodworm,TRUE,bloodworm,0
+Weasels,weasels,FALSE,weasel,1
+Worms,earthworm,TRUE,earthworm,0
+Worms,flatworm,TRUE,flatworm,0
+Worms,inchworm,TRUE,inchworm,0
+Worms,mealworm,TRUE,mealworm,0
+Worms,tapeworm,TRUE,tapeworm,0
+Worms,tubeworm,TRUE,tubeworm,0
+Worms,worm,TRUE,worm,0
