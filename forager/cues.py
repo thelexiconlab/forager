@@ -5,6 +5,7 @@ import nltk
 from functools import lru_cache
 from itertools import product as iterprod
 import re
+from tqdm import tqdm
 
 '''
 
@@ -105,6 +106,9 @@ def create_semantic_matrix(path_to_embeddings):
     
     semantic_matrix = 1-scipy.spatial.distance.cdist(embeddings, embeddings, 'cosine').reshape(-1)
     semantic_matrix = semantic_matrix.reshape((N,N))
+    # convert to dataframe without header or index
+    semantic_matrix_df = pd.DataFrame(semantic_matrix)
+    semantic_matrix_df.to_csv('../data/lexical_data/USE_semantic_matrix.csv', header=False, index=False)
     return semantic_matrix
 
 class phonology_funcs:
@@ -166,20 +170,18 @@ class phonology_funcs:
             Returns: 
                 (1) phonological_matrix: phonological similarity matrix (NxN np.array)
         '''
-        N = len(labels)
-        phonological_matrix = np.zeros(N * N)
         labels = [re.sub('[^a-zA-Z]+', '', str(v)) for v in labels]
-        import time
-        start_time = time.time()
-        print("Calculating phonemes ...")
-        labels = [phonology_funcs.wordbreak(v)[0] for v in labels]
-        print("--- Ran for %s seconds ---" % (time.time() - start_time))
-        word_combos = list(iterprod(labels,labels))
-        print("Calculating Similarities")
-        for i, combo in enumerate(word_combos):
-            if i % 1000 == 0 and i != 0:
-                print(i)
-            phonological_matrix[i] = phonology_funcs.normalized_edit_distance(combo[0],combo[1])
-        phonological_matrix = phonological_matrix.reshape((N,N))
+        sim = np.zeros((len(labels), len(labels)))
+        for i in tqdm(range(len(labels))):
+            for j in range(i):
+                sim[i, j] = phonology_funcs.normalized_edit_distance(phonology_funcs.wordbreak(labels[i])[0], phonology_funcs.wordbreak(labels[j])[0])
+        sim = sim + sim.T
+        np.fill_diagonal(sim, 1)
+        # convert to dataframe without header or index
+        phon_matrix_df = pd.DataFrame(sim)
+        phon_matrix_df.to_csv('USE_phon_matrix.csv', header=False, index=False)
+        return sim
+    
 
-        return phonological_matrix
+### SAMPLE RUN CODE ###
+#create_semantic_matrix('../data/lexical_data/USE_embeddings.csv')

@@ -109,21 +109,6 @@ def prepareData(path):
         elif trunc_count>0:
             print("Lists were truncated at " + str(trunc_count) + " items across all lists.\n")
         
-        # # Create a zip file and add the CSV files to it
-        # with zipfile.ZipFile('output/data_evaluation_results.zip', 'w', zipfile.ZIP_DEFLATED) as zipf:
-        #     # Save the first DataFrame as a CSV file inside the zip
-        #     with zipf.open('replacement_df.csv', 'w') as csvf:
-        #         replacement_df.to_csv(csvf, index=False)
-
-        #     # Save the second DataFrame as a CSV file inside the zip
-        #     with zipf.open('processed_data.csv', 'w') as csvf:
-        #         df.to_csv(csvf, index=False)
-
-        # print("A file detailing the changes made and a file of the data set to be used are saved in 'output/data_evaluation_results.zip'")
-    
-    #print("Data preparation complete.")
-    
-
         # Stratify data into fluency lists
         data = []
         if 'timepoint' in df.columns:
@@ -138,6 +123,7 @@ def prepareData(path):
         return data, replacement_df, df
     
     else:
+        print("Success! We have found exact matches for all items in your data. \n\n")
         replacement_df = df.copy()
         replacement_df['evaluation'] = "FOUND"
         # Add the column corresponding to the replacement column , set it all to the same value   
@@ -151,4 +137,5 @@ def prepareData(path):
             list = frame["entry"].values.tolist()
             subj_data = (sub, list)
             data.append(subj_data)
+        
         return data, replacement_df, df
