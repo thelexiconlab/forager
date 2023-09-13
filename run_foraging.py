@@ -267,7 +267,7 @@ def run_switches(data,switch_type):
 def execute_forager(data, use, switch, model):
     if os.path.exists('output') == False:
         os.mkdir('output')
-    oname = 'output/' + data.split + '_forager_results.zip'
+    oname = 'output/' + data + '_forager_results.zip'
 
     if use == "evaluate_data":
         data, replacement_df, processed_df = retrieve_data(data)
