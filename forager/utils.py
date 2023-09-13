@@ -29,17 +29,12 @@ def exclude(word,df):
 
 # takes in a path to a data file to be read as a CSV, the first row will be assumed as a header 
 # accepted delimiters include commas, tabs, semicolons, pipes, and spaces
-def prepareData(path):
+def prepareData(path, choice = 'e', longitudinal=False):
     ### LOAD BEHAVIORAL DATA ###
     df = pd.read_csv(path, header=0, engine='python', sep=None, encoding='utf-8-sig')
-    if len(df.columns) > 2:
-        three_col = input("Use the third column of this data file as a time point? Type 'y' for yes or 'n' for no: ")
-        if three_col == "y":
+    if len(df.columns) > 2 and longitudinal:
             df = df.iloc[:, :4]
             df.columns = ['SID', 'entry', 'timepoint']
-        else:
-            df = df.iloc[:, :3]
-            df.columns = ['SID', 'entry']
     else:
         df.columns = ['SID', 'entry']
 
@@ -56,12 +51,18 @@ def prepareData(path):
     oov = [w for w in values if w not in labels['word'].values]
     if len(oov) > 0:
         replacement_df = df.copy()
-        print("We did not find exact matches for " + str(len(oov)) + " items in our vocabulary. Any items for which we find a reasonable match will be automatically replaced. For all other OOV items, you may:")
+        print("We did not find exact matches for " + str(len(oov)) + " items in our vocabulary. Any items for which we find a reasonable match will be automatically replaced. For all other OOV items, you chose to:")
+        if(choice == 'e'):
+            print("exclude these words.")
+        elif(choice == 't'):
+            print("truncate each fluency list at the first occurrence of such a word.")
+        elif(choice == 'r'):
+            print("assign a random semantic vector and frequency to any such word.")
         while True:
-            choice = input("type 'e' to exclude these words from the fluency lists but continue with the rest of the list, \ntype 't' to truncate each fluency list at the first occurrence of such a word, \nor type 'r' to assign a random semantic vector and frequency to any such word and continue with the rest of the list. \nThen, press enter. \n")
+            #choice = input("type 'e' to exclude these words from the fluency lists but continue with the rest of the list, \ntype 't' to truncate each fluency list at the first occurrence of such a word, \nor type 'r' to assign a random semantic vector and frequency to any such word and continue with the rest of the list. \nThen, press enter. \n")
             choices = ['e', 't', 'r']
             if choice not in choices:
-                print("Entry invalid. Try again.") 
+                print("OOV choice is invalid. Try again. You can choose from 'e', 't', or 'r'.") 
                 continue
 
             for word in set(oov):

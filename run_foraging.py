@@ -264,174 +264,159 @@ def run_switches(data,switch_type):
     switch_results = pd.concat(switch_results, ignore_index=True)
     return switch_results
 
-parser = argparse.ArgumentParser(description='Execute Semantic Foraging Code.')
-parser.add_argument('--data', type=str,  help='specifies path to fluency lists')
-parser.add_argument('--pipeline',type=str, help='specifies which part of pipeline (lexical, switches, models) to execute')
-parser.add_argument('--model', type=str, help='specifies foraging model to use')
-parser.add_argument('--switch', type=str, help='specifies switch model to use')
+def execute_forager(data, use, switch, model):
+    if os.path.exists('output') == False:
+        os.mkdir('output')
+    oname = 'output/' + data.split + '_forager_results.zip'
 
-args = parser.parse_args()
+    if use == "evaluate_data":
+        data, replacement_df, processed_df = retrieve_data(data)
+        with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            # Save the first DataFrame as a CSV file inside the zip
+            with zipf.open('evaluation_results.csv', 'w') as csvf:
+                replacement_df.to_csv(csvf, index=False)
 
-if os.path.exists('output') == False:
-    os.mkdir('output')
+            # Save the second DataFrame as a CSV file inside the zip
+            with zipf.open('processed_data.csv', 'w') as csvf:
+                processed_df.to_csv(csvf, index=False)
+            
+            # Save vocab as a CSV file inside the zip
+            with zipf.open('forager_vocab.csv', 'w') as csvf:
+                vocab = pd.read_csv(vocabpath, encoding="unicode-escape")
+                vocab.to_csv(csvf, index=False)
 
-if args.data == None:
-    parser.error("Please specify a data file for which you would like to run the forager pipeline for")
+            print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
+            print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
+            print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
 
-if args.pipeline == None:
-    parser.error("Please specify which part of the forager pipeline you would like to execute for your data (e.g. \'lexical\', \'switches\',\'model\')")
+    elif use == 'lexical':
+        dname = 'lexical_results.csv'
+        # Retrieve the Data for Getting Lexical Info
+        data, replacement_df, processed_df = retrieve_data(data)
+        # Run subroutine for getting strictly the similarity & frequency values 
+        lexical_results = run_lexical(data)
+        with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            # Save the first DataFrame as a CSV file inside the zip
+            with zipf.open('evaluation_results.csv', 'w') as csvf:
+                replacement_df.to_csv(csvf, index=False)
 
-oname = 'output/' + args.data.split('/')[-1].split('.')[0] + '_forager_results.zip'
+            # Save the second DataFrame as a CSV file inside the zip
+            with zipf.open('processed_data.csv', 'w') as csvf:
+                processed_df.to_csv(csvf, index=False)
+            # Save vocab as a CSV file inside the zip
+            with zipf.open('forager_vocab.csv', 'w') as csvf:
+                vocab = pd.read_csv(vocabpath, encoding="unicode-escape")
+                vocab.to_csv(csvf, index=False)
+            # save lexical results
+            with zipf.open(dname,'w') as csvf:
+                lexical_results.to_csv(csvf, index=False) 
 
-
-if args.pipeline == 'evaluate_data':
-    data, replacement_df, processed_df = retrieve_data(args.data)
-    with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
-        # Save the first DataFrame as a CSV file inside the zip
-        with zipf.open('evaluation_results.csv', 'w') as csvf:
-            replacement_df.to_csv(csvf, index=False)
-
-        # Save the second DataFrame as a CSV file inside the zip
-        with zipf.open('processed_data.csv', 'w') as csvf:
-            processed_df.to_csv(csvf, index=False)
-        
-        # Save vocab as a CSV file inside the zip
-        with zipf.open('forager_vocab.csv', 'w') as csvf:
-            vocab = pd.read_csv(vocabpath, encoding="unicode-escape")
-            vocab.to_csv(csvf, index=False)
-
-        print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
-        print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
-        print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
-
-elif args.pipeline == 'lexical':
-    dname = 'lexical_results.csv'
-    # Retrieve the Data for Getting Lexical Info
-    data, replacement_df, processed_df = retrieve_data(args.data)
-    # Run subroutine for getting strictly the similarity & frequency values 
-    lexical_results = run_lexical(data)
-    with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
-        # Save the first DataFrame as a CSV file inside the zip
-        with zipf.open('evaluation_results.csv', 'w') as csvf:
-            replacement_df.to_csv(csvf, index=False)
-
-        # Save the second DataFrame as a CSV file inside the zip
-        with zipf.open('processed_data.csv', 'w') as csvf:
-            processed_df.to_csv(csvf, index=False)
-        # Save vocab as a CSV file inside the zip
-        with zipf.open('forager_vocab.csv', 'w') as csvf:
-            vocab = pd.read_csv(vocabpath, encoding="unicode-escape")
-            vocab.to_csv(csvf, index=False)
-        # save lexical results
-        with zipf.open(dname,'w') as csvf:
-            lexical_results.to_csv(csvf, index=False) 
-
-        print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
-        print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
-        print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
-        print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")
+            print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
+            print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
+            print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
+            print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")
 
         
-elif args.pipeline == 'switches':
-    dname = 'switch_results.csv'
-    lexical_name = 'lexical_results.csv'
-    # Check if switches, then there is a switch method specified
-    if args.switch == None:
-        parser.error(f"Please specify a switch method (e.g. {switch_methods})")
-    if args.switch not in switch_methods:
-        parser.error(f"Please specify a proper switch method (e.g. {switch_methods})")
-    # Run subroutine for getting strictly switch outputs 
-    # Run subroutine for getting model outputs
-    print("Checking Data ...")
-    data, replacement_df, processed_df = retrieve_data(args.data)
-    print("Retrieving Lexical Data ...")
-    lexical_results = run_lexical(data)
-    print("Obtaining Switch Designations ...")
-    switch_results = run_switches(data,args.switch)
-    with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
-        # Save the first DataFrame as a CSV file inside the zip
-        with zipf.open('evaluation_results.csv', 'w') as csvf:
-            replacement_df.to_csv(csvf, index=False)
+    elif use == 'switches':
+        dname = 'switch_results.csv'
+        lexical_name = 'lexical_results.csv'
+        # Check if switches, then there is a switch method specified
+        if switch == None:
+            print(f"Please specify a switch method (e.g. {switch_methods})")
+        if switch not in switch_methods:
+            print(f"Please specify a proper switch method (e.g. {switch_methods})")
+        # Run subroutine for getting strictly switch outputs 
+        # Run subroutine for getting model outputs
+        print("Checking Data ...")
+        data, replacement_df, processed_df = retrieve_data(data)
+        print("Retrieving Lexical Data ...")
+        lexical_results = run_lexical(data)
+        print("Obtaining Switch Designations ...")
+        switch_results = run_switches(data,switch)
+        with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            # Save the first DataFrame as a CSV file inside the zip
+            with zipf.open('evaluation_results.csv', 'w') as csvf:
+                replacement_df.to_csv(csvf, index=False)
 
-        # Save the second DataFrame as a CSV file inside the zip
-        with zipf.open('processed_data.csv', 'w') as csvf:
-            processed_df.to_csv(csvf, index=False)
-        
-        # Save vocab as a CSV file inside the zip
-        with zipf.open('forager_vocab.csv', 'w') as csvf:
-            vocab = pd.read_csv(vocabpath, encoding="unicode-escape")
-            vocab.to_csv(csvf, index=False)
+            # Save the second DataFrame as a CSV file inside the zip
+            with zipf.open('processed_data.csv', 'w') as csvf:
+                processed_df.to_csv(csvf, index=False)
+            
+            # Save vocab as a CSV file inside the zip
+            with zipf.open('forager_vocab.csv', 'w') as csvf:
+                vocab = pd.read_csv(vocabpath, encoding="unicode-escape")
+                vocab.to_csv(csvf, index=False)
 
-        # save lexical results
+            # save lexical results
 
-        with zipf.open(lexical_name,'w') as csvf:
-            lexical_results.to_csv(csvf, index=False) 
-        
-        # save switch results
-        with zipf.open(dname,'w') as csvf:
-            switch_results.to_csv(csvf, index=False) 
+            with zipf.open(lexical_name,'w') as csvf:
+                lexical_results.to_csv(csvf, index=False) 
+            
+            # save switch results
+            with zipf.open(dname,'w') as csvf:
+                switch_results.to_csv(csvf, index=False) 
 
-        print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
-        print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
-        print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
-        print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")        
-        print(f"File 'switch_results.csv' containing designated switch methods and switch values of fluency list data saved in '{oname}'")
+            print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
+            print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
+            print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
+            print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")        
+            print(f"File 'switch_results.csv' containing designated switch methods and switch values of fluency list data saved in '{oname}'")
 
-elif args.pipeline == 'models':
-    switch_name = 'switch_results.csv'
-    lexical_name = 'lexical_results.csv'
-    models_name = 'model_results.csv'
-    # Check for model and switch parameters
-    if args.model == None:
-        parser.error(f"Please specify a forager model (e.g. {models})")
-    if args.model not in models:
-        parser.error(f"Please specify a proper forager model (e.g. {models})")
-    if args.switch == None:
-        parser.error(f"Please specify a switch method (e.g. {switch_methods})")
-    if args.switch not in switch_methods:
-        parser.error(f"Please specify a proper switch method (e.g. {switch_methods})")
-    # Run subroutine for getting model outputs
-    print("Checking Data ...")
-    data, replacement_df, processed_df = retrieve_data(args.data)
-    print("Retrieving Lexical Data ...")
-    lexical_results = run_lexical(data)
-    print("Obtaining Switch Designations ...")
-    switch_results = run_switches(data,args.switch)
-    print("Running Forager Models...")
-    forager_results = run_model(data, args.model, args.switch)
+    elif use == 'models':
+        switch_name = 'switch_results.csv'
+        lexical_name = 'lexical_results.csv'
+        models_name = 'model_results.csv'
+        # Check for model and switch parameters
+        if model == None:
+            print(f"Please specify a forager model (e.g. {models})")
+        if model not in models:
+            print(f"Please specify a proper forager model (e.g. {models})")
+        if switch == None:
+            print(f"Please specify a switch method (e.g. {switch_methods})")
+        if switch not in switch_methods:
+            print(f"Please specify a proper switch method (e.g. {switch_methods})")
+        # Run subroutine for getting model outputs
+        print("Checking Data ...")
+        data, replacement_df, processed_df = retrieve_data(data)
+        print("Retrieving Lexical Data ...")
+        lexical_results = run_lexical(data)
+        print("Obtaining Switch Designations ...")
+        switch_results = run_switches(data,switch)
+        print("Running Forager Models...")
+        forager_results = run_model(data, model, switch)
 
-    with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
-        # Save the first DataFrame as a CSV file inside the zip
-        with zipf.open('evaluation_results.csv', 'w') as csvf:
-            replacement_df.to_csv(csvf, index=False)
+        with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            # Save the first DataFrame as a CSV file inside the zip
+            with zipf.open('evaluation_results.csv', 'w') as csvf:
+                replacement_df.to_csv(csvf, index=False)
 
-        # Save the second DataFrame as a CSV file inside the zip
-        with zipf.open('processed_data.csv', 'w') as csvf:
-            processed_df.to_csv(csvf, index=False)
-        
-        # Save vocab as a CSV file inside the zip
-        with zipf.open('forager_vocab.csv', 'w') as csvf:
-            vocab = pd.read_csv(vocabpath, encoding="unicode-escape")
-            vocab.to_csv(csvf, index=False)
-        # save lexical results
-        with zipf.open(lexical_name,'w') as csvf:
-            lexical_results.to_csv(csvf, index=False) 
-        # save switch results
-        with zipf.open(switch_name,'w') as csvf:
-            switch_results.to_csv(csvf, index=False) 
-        # save model results
-        with zipf.open(models_name,'w') as csvf:
-            forager_results.to_csv(csvf, index=False) 
+            # Save the second DataFrame as a CSV file inside the zip
+            with zipf.open('processed_data.csv', 'w') as csvf:
+                processed_df.to_csv(csvf, index=False)
+            
+            # Save vocab as a CSV file inside the zip
+            with zipf.open('forager_vocab.csv', 'w') as csvf:
+                vocab = pd.read_csv(vocabpath, encoding="unicode-escape")
+                vocab.to_csv(csvf, index=False)
+            # save lexical results
+            with zipf.open(lexical_name,'w') as csvf:
+                lexical_results.to_csv(csvf, index=False) 
+            # save switch results
+            with zipf.open(switch_name,'w') as csvf:
+                switch_results.to_csv(csvf, index=False) 
+            # save model results
+            with zipf.open(models_name,'w') as csvf:
+                forager_results.to_csv(csvf, index=False) 
 
-        print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
-        print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
-        print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
-        print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")
-        print(f"File 'switch_results.csv' containing designated switch methods and switch values of fluency list data saved in '{oname}'")
-        print(f"File 'model_results.csv' containing model level NLL results of provided fluency data saved in '{oname}'")
+            print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
+            print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
+            print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
+            print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")
+            print(f"File 'switch_results.csv' containing designated switch methods and switch values of fluency list data saved in '{oname}'")
+            print(f"File 'model_results.csv' containing model level NLL results of provided fluency data saved in '{oname}'")
 
-else:
-    parser.error("Please specify a proper pipeline option (e.g. \'evaluate_data\', \'lexical\', \'switches\',\'models\')")
+    else:
+        print("Please specify a proper pipeline option (e.g. \'evaluate_data\', \'lexical\', \'switches\',\'models\')")
 
 
 
