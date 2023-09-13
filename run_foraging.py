@@ -27,9 +27,9 @@ Workflow:
 """
 # Global Path Variabiles
 normspath =  'data/norms/animals_snafu_scheme_vocab.csv'
-similaritypath =  'data/lexical_data/similaritymatrix.csv'
-frequencypath =  'data/lexical_data/frequencies.csv'
-phonpath = 'data/lexical_data/phonmatrix.csv'
+similaritypath =  'data/lexical_data/USE_semantic_matrix.csv'
+frequencypath =  'data/lexical_data/USE_frequencies.csv'
+phonpath = 'data/lexical_data/USE_phonological_matrix.csv'
 vocabpath = 'data/lexical_data/vocab.csv'
 
 # Global Variables
@@ -50,7 +50,7 @@ def retrieve_data(path):
 
 def get_lexical_data():
     norms = pd.read_csv(normspath, encoding="unicode-escape")
-    similarity_matrix = np.loadtxt(similaritypath,delimiter=' ')
+    similarity_matrix = np.loadtxt(similaritypath,delimiter=',')
     frequency_list = np.array(pd.read_csv(frequencypath,header=None,encoding="unicode-escape")[1])
     phon_matrix = np.loadtxt(phonpath,delimiter=',')
     labels = pd.read_csv(frequencypath,header=None)[0].values.tolist()
