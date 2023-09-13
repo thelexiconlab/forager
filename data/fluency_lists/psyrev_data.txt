@@ -1608,7 +1608,7 @@ id	entry
 479	sparrow
 479	eagle
 479	egret
-479	bluefooted_boobies
+479	bluefooted booby
 479	muskrat
 479	possum
 479	mole
@@ -3718,7 +3718,7 @@ id	entry
 694	great_dane
 694	shih_tzu
 694	greyhound
-694	siamese
+694	siamese cat
 694	parakeet
 694	cockatiel
 694	shark
@@ -4417,7 +4417,7 @@ id	entry
 793	lamb
 793	eagle
 793	hawk
-793	siamese
+793	siamese cat
 794	dog
 794	cat
 794	tiger

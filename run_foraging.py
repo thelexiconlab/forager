@@ -27,9 +27,10 @@ Workflow:
 """
 # Global Path Variabiles
 normspath =  'data/norms/animals_snafu_scheme_vocab.csv'
-similaritypath =  'data/lexical_data/similaritymatrix.csv'
-frequencypath =  'data/lexical_data/frequencies.csv'
-phonpath = 'data/lexical_data/phonmatrix.csv'
+similaritypath =  'data/lexical_data/USE_semantic_matrix.csv'
+frequencypath =  'data/lexical_data/USE_frequencies.csv'
+phonpath = 'data/lexical_data/USE_phonological_matrix.csv'
+vocabpath = 'data/lexical_data/vocab.csv'
 
 # Global Variables
 models = ['static','dynamic','pstatic','pdynamic','all']
@@ -49,7 +50,7 @@ def retrieve_data(path):
 
 def get_lexical_data():
     norms = pd.read_csv(normspath, encoding="unicode-escape")
-    similarity_matrix = np.loadtxt(similaritypath,delimiter=' ')
+    similarity_matrix = np.loadtxt(similaritypath,delimiter=',')
     frequency_list = np.array(pd.read_csv(frequencypath,header=None,encoding="unicode-escape")[1])
     phon_matrix = np.loadtxt(phonpath,delimiter=',')
     labels = pd.read_csv(frequencypath,header=None)[0].values.tolist()
@@ -293,9 +294,15 @@ if args.pipeline == 'evaluate_data':
         # Save the second DataFrame as a CSV file inside the zip
         with zipf.open('processed_data.csv', 'w') as csvf:
             processed_df.to_csv(csvf, index=False)
+        
+        # Save vocab as a CSV file inside the zip
+        with zipf.open('forager_vocab.csv', 'w') as csvf:
+            vocab = pd.read_csv(vocabpath, encoding="unicode-escape")
+            vocab.to_csv(csvf, index=False)
 
         print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
         print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
+        print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
 
 elif args.pipeline == 'lexical':
     dname = 'lexical_results.csv'
@@ -311,12 +318,17 @@ elif args.pipeline == 'lexical':
         # Save the second DataFrame as a CSV file inside the zip
         with zipf.open('processed_data.csv', 'w') as csvf:
             processed_df.to_csv(csvf, index=False)
-
+        # Save vocab as a CSV file inside the zip
+        with zipf.open('forager_vocab.csv', 'w') as csvf:
+            vocab = pd.read_csv(vocabpath, encoding="unicode-escape")
+            vocab.to_csv(csvf, index=False)
+        # save lexical results
         with zipf.open(dname,'w') as csvf:
             lexical_results.to_csv(csvf, index=False) 
 
         print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
         print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
+        print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
         print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")
 
         
@@ -344,15 +356,24 @@ elif args.pipeline == 'switches':
         # Save the second DataFrame as a CSV file inside the zip
         with zipf.open('processed_data.csv', 'w') as csvf:
             processed_df.to_csv(csvf, index=False)
+        
+        # Save vocab as a CSV file inside the zip
+        with zipf.open('forager_vocab.csv', 'w') as csvf:
+            vocab = pd.read_csv(vocabpath, encoding="unicode-escape")
+            vocab.to_csv(csvf, index=False)
+
+        # save lexical results
 
         with zipf.open(lexical_name,'w') as csvf:
             lexical_results.to_csv(csvf, index=False) 
         
+        # save switch results
         with zipf.open(dname,'w') as csvf:
             switch_results.to_csv(csvf, index=False) 
 
         print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
         print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
+        print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
         print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")        
         print(f"File 'switch_results.csv' containing designated switch methods and switch values of fluency list data saved in '{oname}'")
 
@@ -387,18 +408,24 @@ elif args.pipeline == 'models':
         # Save the second DataFrame as a CSV file inside the zip
         with zipf.open('processed_data.csv', 'w') as csvf:
             processed_df.to_csv(csvf, index=False)
-
+        
+        # Save vocab as a CSV file inside the zip
+        with zipf.open('forager_vocab.csv', 'w') as csvf:
+            vocab = pd.read_csv(vocabpath, encoding="unicode-escape")
+            vocab.to_csv(csvf, index=False)
+        # save lexical results
         with zipf.open(lexical_name,'w') as csvf:
             lexical_results.to_csv(csvf, index=False) 
-
+        # save switch results
         with zipf.open(switch_name,'w') as csvf:
             switch_results.to_csv(csvf, index=False) 
-
+        # save model results
         with zipf.open(models_name,'w') as csvf:
             forager_results.to_csv(csvf, index=False) 
 
         print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
         print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
+        print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
         print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")
         print(f"File 'switch_results.csv' containing designated switch methods and switch values of fluency list data saved in '{oname}'")
         print(f"File 'model_results.csv' containing model level NLL results of provided fluency data saved in '{oname}'")

@@ -13,6 +13,7 @@ Methods for calculating switches in Semantic Foraging methods.
         (2) Norms_Associative: Switch Method based on norms developed in Troyer, AK, Moscovitch, M, & Winocur, G (1997) 
             and extended by Zemla & Austerweil (2018) via SNAFU.
             Switches are predicted when current item does not share categories with preceding item.
+            
         (3) Norms_Categorical: Switch Method based on norms developed in Troyer, AK, Moscovitch, M, & Winocur, G (1997) 
             and extended by Zemla & Austerweil (2018) via SNAFU.
             Switches are predicted when current item does not share categories with all items in preceding cluster.
@@ -90,12 +91,13 @@ def switch_norms_associative(fluency_list,norms):
             item1 = difflib.get_close_matches(item1, items_in_norms, n=1)[0] if len(difflib.get_close_matches(item1, items_in_norms, n = 1)) > 0 else item1
             item2 = difflib.get_close_matches(item2, items_in_norms, n=1)[0] if len(difflib.get_close_matches(item2, items_in_norms, n = 1)) > 0 else item2
 
+            
+
             category1 = norms[norms['Item'] == item1]['Category'].values.tolist()
             category2 = norms[norms['Item'] == item2]['Category'].values.tolist()
 
             if len(list(set(category1) & set(category2)))== 0:
                 norm_designation.append(1)
-
             else:
                 norm_designation.append(0)
 
@@ -126,6 +128,7 @@ def switch_norms_categorical(fluency_list,norms):
 
     for i, row in df.iterrows():
         if i == 0:
+            # first word
             df.at[i, 'designation'] = 2
         elif i == 1:
             # find category of previous word
@@ -133,14 +136,12 @@ def switch_norms_categorical(fluency_list,norms):
             closest_match = difflib.get_close_matches(prev_word, items_in_norms, n=1)
             prev_word = closest_match[0] if len(closest_match) > 0 else prev_word
             
-            prev_word_cats = norms[norms['Item'] == prev_word]['Category'].iloc[0] if prev_word in items_in_norms else 'notinnorms'
-            
+            prev_word_cats = norms[norms['Item'] == prev_word]['Category'].tolist() if prev_word in items_in_norms else 'notinnorms'            
             # find category of current word
             current_word = row['item']
             closest_match = difflib.get_close_matches(current_word, items_in_norms, n=1)
             current_word = closest_match[0] if len(closest_match) > 0 else current_word
-            current_word_cats = norms[norms['Item'] == current_word]['Category'].iloc[0] if current_word in items_in_norms else 'notinnorms'
-            
+            current_word_cats = norms[norms['Item'] == current_word]['Category'].tolist() if current_word in items_in_norms else 'notinnorms'            
             # check if they share a category
             if any(cat in current_word_cats for cat in prev_word_cats):
                 df.at[i, 'designation'] = 0
@@ -149,21 +150,24 @@ def switch_norms_categorical(fluency_list,norms):
         else:
             
             prev_one = find_most_recent_one_index(df['designation'], i)
-            cluster = df.loc[prev_one:i, :]
+            cluster = df.loc[prev_one:i, :] if prev_one != i else df.loc[i, :]
             prev_words = norms[norms['Item'].isin(cluster['item'])]
             prev_cats = prev_words.groupby('Item', group_keys=False)['Category'].apply(list).to_dict()
-            
             all_shared_cats = set.intersection(*[set(cats) for cats in prev_cats.values()]) if len(prev_cats) > 0 else set()
+            
             # find category of current word
             current_word = row['item']
             closest_match = difflib.get_close_matches(current_word, items_in_norms, n=1)
             current_word = closest_match[0] if len(closest_match) > 0 else current_word
-            current_word_cats = norms[norms['Item'] == current_word]['Category'].iloc[0] if current_word in items_in_norms else 'notinnorms'
+            current_word_cats = norms[norms['Item'] == current_word]['Category'].tolist() if current_word in items_in_norms else 'notinnorms'
+            
             
             if any(cat in current_word_cats for cat in all_shared_cats):
                 df.at[i, 'designation'] = 0
+                
             else:
                 df.at[i, 'designation'] = 1
+                
     
     # return the designations
     categorical_designations = df['designation'].values.tolist()
@@ -264,3 +268,12 @@ def switch_delta(fluency_list, semantic_similarity, rise_thresh, fall_thresh):
         previousState = currentState
 
     return switchVector
+
+### SAMPLE RUN CODE ###
+# normspath =  '../data/norms/animals_snafu_scheme_vocab.csv'
+# norms = pd.read_csv(normspath, encoding="unicode-escape")
+# fluency_list = pd.read_csv('../data/fluency_lists/51.txt',header=0, engine='python', sep=None, encoding='utf-8-sig')
+# print(fluency_list.head())
+# fluency_list = fluency_list['entry'].values.tolist()
+
+# switch_norms_associative(fluency_list, norms)
