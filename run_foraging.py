@@ -226,7 +226,6 @@ def run_model(data, model_type, switch_type):
         
     return forager_results
     
-
 def run_lexical(data):
     # Get Lexical Data needed for executing methods
     norms, similarity_matrix, phon_matrix, frequency_list, labels = get_lexical_data()
@@ -264,6 +263,34 @@ def run_switches(data,switch_type):
     switch_results = pd.concat(switch_results, ignore_index=True)
     return switch_results
 
+def indiv_desc_stats(lexical_results, switch_results = None):
+    metrics = lexical_results[['Subject', 'Semantic_Similarity', 'Frequency_Value', 'Phonological_Similarity']]
+    grouped = metrics.groupby('Subject').agg(['mean', 'std'])
+    grouped.columns = ['{}_{}'.format(col[0], col[1]) for col in grouped.columns]
+    grouped.reset_index(inplace=True)
+    if switch_results is not None:
+        cluster_size_mean = []
+        cluster_size_sd = []
+        for sub, fl_list in switch_results.groupby("Subject"):
+            cluster_lengths = []
+            ct = 0
+            for x in fl_list['Switch_Value'].values:
+                ct += 1
+                if x == 1:
+                    cluster_lengths.append(ct)
+                    ct = 0
+            if ct != 0:
+                cluster_lengths.append(ct)
+            avg = sum(cluster_lengths) / len(cluster_lengths)
+            sd = np.std(cluster_lengths)
+            cluster_size_mean.append(avg)
+            cluster_size_sd.append(sd)
+        
+        grouped['Cluster_Size_mean'] = cluster_size_mean
+        grouped['Cluster_Size_std'] = cluster_size_sd
+    return grouped
+
+ 
 parser = argparse.ArgumentParser(description='Execute Semantic Foraging Code.')
 parser.add_argument('--data', type=str,  help='specifies path to fluency lists')
 parser.add_argument('--pipeline',type=str, help='specifies which part of pipeline (lexical, switches, models) to execute')
@@ -310,6 +337,7 @@ elif args.pipeline == 'lexical':
     data, replacement_df, processed_df = retrieve_data(args.data)
     # Run subroutine for getting strictly the similarity & frequency values 
     lexical_results = run_lexical(data)
+    ind_stats = indiv_desc_stats(lexical_results)
     with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
         # Save the first DataFrame as a CSV file inside the zip
         with zipf.open('evaluation_results.csv', 'w') as csvf:
@@ -325,16 +353,21 @@ elif args.pipeline == 'lexical':
         # save lexical results
         with zipf.open(dname,'w') as csvf:
             lexical_results.to_csv(csvf, index=False) 
+        # save individual descriptive statistics
+        with zipf.open('individual_descriptive_stats.csv', 'w') as csvf:
+            ind_stats.to_csv(csvf, index=False)
 
         print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
         print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
         print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
         print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")
+        print(f"File 'individual_descriptive_stats.csv' containing means and SDs of the lexical results saved in '{oname}'")
 
         
 elif args.pipeline == 'switches':
     dname = 'switch_results.csv'
     lexical_name = 'lexical_results.csv'
+
     # Check if switches, then there is a switch method specified
     if args.switch == None:
         parser.error(f"Please specify a switch method (e.g. {switch_methods})")
@@ -348,6 +381,7 @@ elif args.pipeline == 'switches':
     lexical_results = run_lexical(data)
     print("Obtaining Switch Designations ...")
     switch_results = run_switches(data,args.switch)
+    ind_stats = indiv_desc_stats(lexical_results, switch_results)
     with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
         # Save the first DataFrame as a CSV file inside the zip
         with zipf.open('evaluation_results.csv', 'w') as csvf:
@@ -371,11 +405,16 @@ elif args.pipeline == 'switches':
         with zipf.open(dname,'w') as csvf:
             switch_results.to_csv(csvf, index=False) 
 
+        # save individual descriptive statistics
+        with zipf.open('individual_descriptive_stats.csv', 'w') as csvf:
+            ind_stats.to_csv(csvf, index=False)
+
         print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
         print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
         print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
         print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")        
         print(f"File 'switch_results.csv' containing designated switch methods and switch values of fluency list data saved in '{oname}'")
+        print(f"File 'individual_descriptive_stats.csv' containing means and SDs of the lexical results and cluster lengths saved in '{oname}'")
 
 elif args.pipeline == 'models':
     switch_name = 'switch_results.csv'
@@ -399,7 +438,8 @@ elif args.pipeline == 'models':
     switch_results = run_switches(data,args.switch)
     print("Running Forager Models...")
     forager_results = run_model(data, args.model, args.switch)
-
+    
+    ind_stats = indiv_desc_stats(lexical_results, switch_results)
     with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
         # Save the first DataFrame as a CSV file inside the zip
         with zipf.open('evaluation_results.csv', 'w') as csvf:
@@ -422,6 +462,9 @@ elif args.pipeline == 'models':
         # save model results
         with zipf.open(models_name,'w') as csvf:
             forager_results.to_csv(csvf, index=False) 
+        # save individual descriptive statistics
+        with zipf.open('individual_descriptive_stats.csv', 'w') as csvf:
+            ind_stats.to_csv(csvf, index=False)
 
         print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
         print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
@@ -429,7 +472,7 @@ elif args.pipeline == 'models':
         print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")
         print(f"File 'switch_results.csv' containing designated switch methods and switch values of fluency list data saved in '{oname}'")
         print(f"File 'model_results.csv' containing model level NLL results of provided fluency data saved in '{oname}'")
-
+        print(f"File 'individual_descriptive_stats.csv' containing means and SDs of the lexical results and cluster lengths saved in '{oname}'")
 else:
     parser.error("Please specify a proper pipeline option (e.g. \'evaluate_data\', \'lexical\', \'switches\',\'models\')")
 
@@ -453,3 +496,9 @@ else:
 ## other possible arguments for --model include: 'static', 'dynamic', 'pstatic', 'pdynamic' ##
 
 # python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all
+
+# if __name__ == "__main__":
+#    data, replacement_df, processed_df = retrieve_data('data/fluency_lists/psyrev_data.txt') 
+#    lexical_results = run_lexical(data)
+#    switch_results = run_switches(data,'simdrop')
+#    print(indiv_desc_stats(lexical_results, switch_results))
