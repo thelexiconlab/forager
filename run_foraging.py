@@ -427,7 +427,7 @@ elif args.pipeline == 'switches':
         
         # save aggregate descriptive statistics
         with zipf.open('aggregate_descriptive_stats.csv', 'w') as csvf:
-            ind_stats.to_csv(csvf, index=False)
+            agg_stats.to_csv(csvf, index=False)
 
         print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
         print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
@@ -489,7 +489,7 @@ elif args.pipeline == 'models':
             ind_stats.to_csv(csvf, index=False)
         # save aggregate descriptive statistics
         with zipf.open('aggregate_descriptive_stats.csv', 'w') as csvf:
-            ind_stats.to_csv(csvf, index=False)
+            agg_stats.to_csv(csvf, index=False)
 
         print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
         print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
