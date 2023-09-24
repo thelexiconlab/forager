@@ -270,15 +270,18 @@ def indiv_desc_stats(lexical_results, switch_results = None):
     grouped = metrics.groupby('Subject').agg(['mean', 'std'])
     grouped.columns = ['{}_{}'.format(col[0], col[1]) for col in grouped.columns]
     grouped.reset_index(inplace=True)
-
+    num_items = lexical_results.groupby('Subject')['Fluency_Item'].size()
+    grouped['#_of_Items'] = num_items[grouped['Subject']].values
     # create column for each switch method per subject and get number of switches, mean cluster size, and sd of cluster size for each switch method
     if switch_results is not None:
         # count the number of unique values in the Switch_Method column of the switch_results DataFrame
         n_rows = len(switch_results['Switch_Method'].unique())
         new_df = pd.DataFrame(np.nan, index=np.arange(len(grouped) * (n_rows)), columns=grouped.columns)
 
-        # Insert the original DataFrame into the new DataFrame.
+        # Insert the original DataFrame into the new DataFrame but repeat the value in 'Subject' column n_rows-1 times
+
         new_df.iloc[(slice(None, None, n_rows)), :] = grouped
+        new_df['Subject'] = new_df['Subject'].ffill()
 
         switch_methods = []
         num_switches_arr = []
@@ -336,8 +339,16 @@ def agg_desc_stats(switch_results, model_results=None):
         grouped.reset_index(inplace=True)
 
         # add a column to the grouped dataframe that contains the switch method used for each model
-        grouped.loc[grouped['Model'].str.contains('static'), 'Model'] += '_none'
-        grouped[['Model', 'Switch_Method']] = grouped['Model'].str.rsplit('_', n=1, expand=True)
+        grouped.loc[grouped['Model'].str.contains('static'), 'Model'] += ' none'
+        # if the model name starts with 'forage_dynamic_', ''forage_phonologicaldynamicglobal_', 'forage_phonologicaldynamiclocal_', or 'forage_phonologicaldynamicswitch_', replace the second underscore with a space
+        switch_models = ['forage_dynamic_', 'forage_phonologicaldynamicglobal_', 'forage_phonologicaldynamiclocal_', 'forage_phonologicaldynamicswitch_']
+        for model in switch_models:
+            # replace only the second underscore with a space
+            grouped.loc[grouped['Model'].str.contains(model), 'Model'] = grouped.loc[grouped['Model'].str.contains(model), 'Model'].str.replace('_', ' ', 2)
+            grouped.loc[grouped['Model'].str.contains("forage "), 'Model'] = grouped.loc[grouped['Model'].str.contains("forage "), 'Model'].str.replace(' ', '_', 1)
+        
+        # split the Model column on the space
+        grouped[['Model', 'Switch_Method']] = grouped['Model'].str.rsplit(' ', n=1, expand=True)
 
         # merge the two dataframes on the Switch_Method column 
         agg_df = pd.merge(agg_df, grouped, how='outer', on='Switch_Method')
@@ -562,4 +573,3 @@ else:
 ## other possible arguments for --model include: 'static', 'dynamic', 'pstatic', 'pdynamic' ##
 
 # python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all
-
