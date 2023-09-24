@@ -308,9 +308,9 @@ def indiv_desc_stats(lexical_results, switch_results = None):
         new_df['Number_of_Switches'] = num_switches_arr
         new_df['Cluster_Size_mean'] = cluster_size_mean
         new_df['Cluster_Size_std'] = cluster_size_sd
+        grouped = new_df
         
-        
-    return new_df
+    return grouped
 
 def agg_desc_stats(switch_results, model_results=None):
     agg_df = pd.DataFrame()
