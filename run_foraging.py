@@ -320,7 +320,10 @@ def agg_desc_stats(switch_results, model_results=None):
         method = sub[1]
         if method not in switches_per_method:
             switches_per_method[method] = []
-        switches_per_method[method].append(fl_list['Switch_Value'].value_counts()[1])
+        if 1 in fl_list['Switch_Value'].values:
+            switches_per_method[method].append(fl_list['Switch_Value'].value_counts()[1])
+        else: 
+            switches_per_method[method].append(0)
     agg_df['Switch_Method'] = switches_per_method.keys()
     agg_df['Switches_per_Subj_mean'] = [np.average(switches_per_method[k]) for k in switches_per_method.keys()]
     agg_df['Switches_per_Subj_SD'] = [np.std(switches_per_method[k]) for k in switches_per_method.keys()]
