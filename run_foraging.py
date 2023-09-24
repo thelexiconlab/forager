@@ -263,46 +263,82 @@ def run_switches(data,switch_type):
     switch_results = pd.concat(switch_results, ignore_index=True)
     return switch_results
 
+
 def indiv_desc_stats(lexical_results, switch_results = None):
     metrics = lexical_results[['Subject', 'Semantic_Similarity', 'Frequency_Value', 'Phonological_Similarity']]
+    metrics.replace(.0001, np.nan, inplace=True)
     grouped = metrics.groupby('Subject').agg(['mean', 'std'])
     grouped.columns = ['{}_{}'.format(col[0], col[1]) for col in grouped.columns]
     grouped.reset_index(inplace=True)
+
+    # create column for each switch method per subject and get number of switches, mean cluster size, and sd of cluster size for each switch method
     if switch_results is not None:
+        # count the number of unique values in the Switch_Method column of the switch_results DataFrame
+        n_rows = len(switch_results['Switch_Method'].unique())
+        new_df = pd.DataFrame(np.nan, index=np.arange(len(grouped) * (n_rows)), columns=grouped.columns)
+
+        # Insert the original DataFrame into the new DataFrame.
+        new_df.iloc[(slice(None, None, n_rows)), :] = grouped
+
+        switch_methods = []
+        num_switches_arr = []
         cluster_size_mean = []
         cluster_size_sd = []
-        for sub, fl_list in switch_results.groupby("Subject"):
+        for sub, fl_list in switch_results.groupby(["Subject", "Switch_Method"]):
+            switch_method = sub[1]
             cluster_lengths = []
+            num_switches = 0
             ct = 0
             for x in fl_list['Switch_Value'].values:
                 ct += 1
                 if x == 1:
+                    num_switches += 1
                     cluster_lengths.append(ct)
                     ct = 0
             if ct != 0:
                 cluster_lengths.append(ct)
             avg = sum(cluster_lengths) / len(cluster_lengths)
             sd = np.std(cluster_lengths)
+            switch_methods.append(switch_method)
+            num_switches_arr.append(num_switches)
             cluster_size_mean.append(avg)
             cluster_size_sd.append(sd)
+
+        new_df['Switch_Method'] = switch_methods
+        new_df['Number_of_Switches'] = num_switches_arr
+        new_df['Cluster_Size_mean'] = cluster_size_mean
+        new_df['Cluster_Size_std'] = cluster_size_sd
         
-        grouped['Cluster_Size_mean'] = cluster_size_mean
-        grouped['Cluster_Size_std'] = cluster_size_sd
-    return grouped
+        
+    return new_df
 
 def agg_desc_stats(switch_results, model_results=None):
     agg_df = pd.DataFrame()
-    num_switches = []
-    for sub, fl_list in switch_results.groupby("Subject"):
-        num_switches.append(fl_list['Switch_Value'].value_counts()[1])
-    agg_df['Switches_per_Subj_mean'] = [np.average(num_switches)]
-    agg_df['Switches_per_Subj_SD'] = [np.std(num_switches)]
+    # get number of switches per subject for each switch method
+    switches_per_method = {}
+    for sub, fl_list in switch_results.groupby(["Subject", "Switch_Method"]):
+        method = sub[1]
+        if method not in switches_per_method:
+            switches_per_method[method] = []
+        switches_per_method[method].append(fl_list['Switch_Value'].value_counts()[1])
+    agg_df['Switch_Method'] = switches_per_method.keys()
+    agg_df['Switches_per_Subj_mean'] = [np.average(switches_per_method[k]) for k in switches_per_method.keys()]
+    agg_df['Switches_per_Subj_SD'] = [np.std(switches_per_method[k]) for k in switches_per_method.keys()]
+    
     if model_results is not None:
         betas = model_results.drop(columns=['Subject', 'Negative_Log_Likelihood_Optimized'])
+        betas.drop(betas[betas['Model'] == 'forage_random_baseline'].index, inplace=True)
         grouped = betas.groupby('Model').agg(['mean', 'std'])
         grouped.columns = ['{}_{}'.format(col[0], col[1]) for col in grouped.columns]
         grouped.reset_index(inplace=True)
-        agg_df = pd.concat([agg_df, grouped], axis=1)
+
+        # add a column to the grouped dataframe that contains the switch method used for each model
+        grouped.loc[grouped['Model'].str.contains('static'), 'Model'] += '_none'
+        grouped[['Model', 'Switch_Method']] = grouped['Model'].str.rsplit('_', n=1, expand=True)
+
+        # merge the two dataframes on the Switch_Method column 
+        agg_df = pd.merge(agg_df, grouped, how='outer', on='Switch_Method')
+
 
     return agg_df
  
@@ -376,7 +412,7 @@ elif args.pipeline == 'lexical':
         print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
         print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
         print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")
-        print(f"File 'individual_descriptive_stats.csv' containing means and SDs of the lexical results saved in '{oname}'")
+        print(f"File 'individual_descriptive_stats.csv' containing individual-level statistics saved in '{oname}'")
 
         
 elif args.pipeline == 'switches':
@@ -434,8 +470,8 @@ elif args.pipeline == 'switches':
         print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
         print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")        
         print(f"File 'switch_results.csv' containing designated switch methods and switch values of fluency list data saved in '{oname}'")
-        print(f"File 'individual_descriptive_stats.csv' containing means and SDs of the lexical results and cluster lengths per fluency list saved in '{oname}'")
-        print(f"File 'aggregate_descriptive_stats.csv' containing the overall mean number of switches per fluency list and mean beta parameters saved in '{oname}'")
+        print(f"File 'individual_descriptive_stats.csv' containing individual-level statistics saved in '{oname}'")
+        print(f"File 'aggregate_descriptive_stats.csv' containing the overall group-level statistics saved in '{oname}'")
 
 elif args.pipeline == 'models':
     switch_name = 'switch_results.csv'
@@ -497,8 +533,8 @@ elif args.pipeline == 'models':
         print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")
         print(f"File 'switch_results.csv' containing designated switch methods and switch values of fluency list data saved in '{oname}'")
         print(f"File 'model_results.csv' containing model level NLL results of provided fluency data saved in '{oname}'")
-        print(f"File 'individual_descriptive_stats.csv' containing means and SDs of the lexical results and cluster lengths saved in '{oname}'")
-        print(f"File 'aggregate_descriptive_stats.csv' containing the overall mean number of switches per fluency list and mean beta parameters saved in '{oname}'")
+        print(f"File 'individual_descriptive_stats.csv' containing individual-level statistics saved in '{oname}'")
+        print(f"File 'aggregate_descriptive_stats.csv' containing the overall group-level statistics saved in '{oname}'")
 
 else:
     parser.error("Please specify a proper pipeline option (e.g. \'evaluate_data\', \'lexical\', \'switches\',\'models\')")
