@@ -29,7 +29,7 @@ def exclude(word,df):
 
 # takes in a path to a data file to be read as a CSV, the first row will be assumed as a header 
 # accepted delimiters include commas, tabs, semicolons, pipes, and spaces
-def prepareDataforColab(path, choice = 'e', longitudinal=False):
+def prepareDataforColab(path, longitudinal=False):
     ### LOAD BEHAVIORAL DATA ###
     df = pd.read_csv(path, header=0, engine='python', sep=None, encoding='utf-8-sig')
     if len(df.columns) > 2 and longitudinal:

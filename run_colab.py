@@ -3,7 +3,7 @@ from scipy.optimize import fmin
 from forager.foraging import forage
 from forager.switch import switch_delta, switch_multimodal, switch_simdrop, switch_norms_associative, switch_norms_categorical
 from forager.cues import create_history_variables
-from forager.utils import prepareDataforColab
+from forager.utils import prepareDataforColab, prepareData
 import pandas as pd
 import numpy as np
 from scipy.optimize import fmin, minimize
@@ -45,7 +45,7 @@ def retrieve_data(path, oov_choice = 'e', longitudinal=False):
     if os.path.exists(path) == False:
         ex_str = "Provided path to data \"{path}\" does not exist. Please specify a proper path".format(path=path)
         raise Exception(ex_str)
-    data = prepareDataforColab(path)
+    data = prepareData(path)
     return data
 
 def get_lexical_data():
