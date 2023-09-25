@@ -17,10 +17,7 @@ import os
 class data: 
     '''
         Description: 
-            Embeddings class contains functions that help with creating the lexical data files. 
-            Files 
-    
-    
+            data class contains functions that help with creating the lexical data files.     
     '''
     
     def __init__(self, words):
@@ -34,21 +31,21 @@ class data:
         
         #creating embeddings 
         embeddings(words, self.path)
-        print("created embeddings") 
+        print("\nCreated and saved embeddings as USE_embeddings.csv inside " + self.path) 
         
         #get frequencies 
         get_frequencies(self.path + '/USE_embeddings.csv', self.path)
-        print("created frequencies") 
+        print("\nCreated and saved word frequencies as USE_frequencies.csv inside " + self.path)  
         
         
         # get semantic matrix 
         create_semantic_matrix(self.path + '/USE_embeddings.csv', self.path)
-        print("created semantic matrix") 
+        print("\nCreated and saved semantic similarity matrix as USE_semantic_matrix.csv inside " + self.path)  
         
         # get phonological matrix 
         labels, freq_matrix = get_labels_and_frequencies(self.path + '/USE_frequencies.csv')
         phonology_funcs.create_phonological_matrix(labels, self.path)
-        print("created phon matrix")
+        print("\nCreated and saved phonological similarity matrix as USE_phon_matrix.csv inside " + self.path) 
 
 #### SAMPLE RUN CODE ####
 # data(['apple', 'mango'])
