@@ -24,7 +24,7 @@ class data:
     '''
     
     def __init__(self, words):
-        self.path = '../data/lexical_data/NEW/'
+        self.path = 'data/lexical_data/NEW'
 
         # Check whether the specified path exists or not
         isExist = os.path.exists(self.path)
@@ -37,15 +37,18 @@ class data:
         print("created embeddings") 
         
         #get frequencies 
-        get_frequencies(self.path + '/USE_embeddings.csv')
+        get_frequencies(self.path + '/USE_embeddings.csv', self.path)
         print("created frequencies") 
         
         
         # get semantic matrix 
-        create_semantic_matrix(self.path + '/USE_embeddings.csv')
+        create_semantic_matrix(self.path + '/USE_embeddings.csv', self.path)
         print("created semantic matrix") 
         
         # get phonological matrix 
-        labels, freq_matrix = get_labels_and_frequencies(self.path + '/frequencies.csv')
-        phonology_funcs.create_phonological_matrix(labels)
+        labels, freq_matrix = get_labels_and_frequencies(self.path + '/USE_frequencies.csv')
+        phonology_funcs.create_phonological_matrix(labels, self.path)
         print("created phon matrix")
+
+#### SAMPLE RUN CODE ####
+# data(['apple', 'mango'])

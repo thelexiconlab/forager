@@ -92,7 +92,7 @@ def get_labels_and_frequencies(path_to_frequencies):
 
     return labels, freq_matrix
 
-def create_semantic_matrix(path_to_embeddings):
+def create_semantic_matrix(path_to_embeddings, path_for_lexical_data):
     '''
         Description:
             Takes in N word embeddings and returns a semantic similarity matrix (NxN np.array)
@@ -108,7 +108,7 @@ def create_semantic_matrix(path_to_embeddings):
     semantic_matrix = semantic_matrix.reshape((N,N))
     # convert to dataframe without header or index
     semantic_matrix_df = pd.DataFrame(semantic_matrix)
-    semantic_matrix_df.to_csv('../data/lexical_data/USE_semantic_matrix.csv', header=False, index=False)
+    semantic_matrix_df.to_csv(path_for_lexical_data + '/USE_semantic_matrix.csv', header=False, index=False)
     return semantic_matrix
 
 class phonology_funcs:
@@ -161,7 +161,7 @@ class phonology_funcs:
         '''
         return round(1-nltk.edit_distance(w1,w2)/(max(len(w1), len(w2))),4)
 
-    def create_phonological_matrix(labels):
+    def create_phonological_matrix(labels, path_for_lexical_data):
         '''
             Description:
                 Takes in a list of labels (size N) and returns a phonological similarity matrix (NxN np.array)
@@ -179,7 +179,7 @@ class phonology_funcs:
         np.fill_diagonal(sim, 1)
         # convert to dataframe without header or index
         phon_matrix_df = pd.DataFrame(sim)
-        phon_matrix_df.to_csv('USE_phon_matrix.csv', header=False, index=False)
+        phon_matrix_df.to_csv(path_for_lexical_data + '/USE_phon_matrix.csv', header=False, index=False)
         return sim
     
 

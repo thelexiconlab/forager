@@ -5,7 +5,6 @@ import tensorflow_hub as hub
 import numpy as np
 import os
 import re
-from alive_progress import alive_bar 
 
 class embeddings:
     '''
@@ -32,7 +31,7 @@ class embeddings:
         self.words.sort()
         # write to vocab.csv with column header 'vocab'
 
-        pd.DataFrame(self.words).to_csv('../data/lexical_data/vocab.csv', index=False, header=['vocab'])
+        pd.DataFrame(self.words).to_csv(path_for_lexical_data + '/vocab.csv', index=False, header=['vocab'])
 
         # load USE model
         module_url = "https://tfhub.dev/google/universal-sentence-encoder/4" #@param ["https://tfhub.dev/google/universal-sentence-encoder/4", "https://tfhub.dev/google/universal-sentence-encoder-large/5"]
@@ -40,10 +39,9 @@ class embeddings:
         print ("module %s loaded" % module_url)
         
         embeddings = []
-        with alive_bar(len(self.words)) as bar:
-            for v in self.words:
-                embeddings.append(model([v]).numpy()[0])
-                bar()
+        
+        for v in self.words:
+            embeddings.append(model([v]).numpy()[0])
         
         # create a dictionary of words and their embeddings without loop
         self.dict = dict(zip(self.words, embeddings))
