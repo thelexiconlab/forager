@@ -12,11 +12,7 @@ from forager.frequency import get_frequencies
 from forager.cues import get_labels_and_frequencies
 from forager.cues import phonology_funcs
 from forager.cues import create_semantic_matrix
-import difflib 
 import os 
-import re
-from alive_progress import alive_bar 
-
 
 class data: 
     '''
