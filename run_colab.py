@@ -356,7 +356,7 @@ def agg_desc_stats(switch_results, model_results=None):
 
     return agg_df
 
-def execute_forager(data, use, oov, longitudinal, switch = None, model = None):
+def execute_forager(data, use, switch = None, model = None):
     if os.path.exists('output') == False:
         os.mkdir('output')
     oname = 'output/' + data + '_forager_results.zip'
