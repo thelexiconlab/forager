@@ -3,7 +3,7 @@ from scipy.optimize import fmin
 from forager.foraging import forage
 from forager.switch import switch_delta, switch_multimodal, switch_simdrop, switch_norms_associative, switch_norms_categorical
 from forager.cues import create_history_variables
-from forager.utils import prepareDataforColab, prepareData
+from forager.utils import prepareData
 import pandas as pd
 import numpy as np
 from scipy.optimize import fmin, minimize
