@@ -37,7 +37,7 @@ models = ['static','dynamic','pstatic','pdynamic','all']
 switch_methods = ['simdrop','multimodal','norms_associative', 'norms_categorical', 'delta','all']
 
 #Methods
-def retrieve_data(path, oov_choice = 'e', longitudinal=False):
+def retrieve_data(path):
     """
     1. Verify that data path exists
 
@@ -362,7 +362,7 @@ def execute_forager(data, use, oov, longitudinal, switch = None, model = None):
     oname = 'output/' + data + '_forager_results.zip'
 
     if use == "evaluate_data":
-        data, replacement_df, processed_df = retrieve_data(data, oov, longitudinal)
+        data, replacement_df, processed_df = retrieve_data(data)
         with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
             # Save the first DataFrame as a CSV file inside the zip
             with zipf.open('evaluation_results.csv', 'w') as csvf:
@@ -384,7 +384,7 @@ def execute_forager(data, use, oov, longitudinal, switch = None, model = None):
     elif use == 'lexical':
         dname = 'lexical_results.csv'
         # Retrieve the Data for Getting Lexical Info
-        data, replacement_df, processed_df = retrieve_data(data, oov, longitudinal)
+        data, replacement_df, processed_df = retrieve_data(data)
         # Run subroutine for getting strictly the similarity & frequency values 
         lexical_results = run_lexical(data)
         ind_stats = indiv_desc_stats(lexical_results)
@@ -425,7 +425,7 @@ def execute_forager(data, use, oov, longitudinal, switch = None, model = None):
         # Run subroutine for getting strictly switch outputs 
         # Run subroutine for getting model outputs
         print("Checking Data ...")
-        data, replacement_df, processed_df = retrieve_data(data, oov, longitudinal)
+        data, replacement_df, processed_df = retrieve_data(data)
         print("Retrieving Lexical Data ...")
         lexical_results = run_lexical(data)
         print("Obtaining Switch Designations ...")
@@ -485,7 +485,7 @@ def execute_forager(data, use, oov, longitudinal, switch = None, model = None):
             print(f"Please specify a proper switch method (e.g. {switch_methods})")
         # Run subroutine for getting model outputs
         print("Checking Data ...")
-        data, replacement_df, processed_df = retrieve_data(data, oov, longitudinal)
+        data, replacement_df, processed_df = retrieve_data(data)
         print("Retrieving Lexical Data ...")
         lexical_results = run_lexical(data)
         print("Obtaining Switch Designations ...")
