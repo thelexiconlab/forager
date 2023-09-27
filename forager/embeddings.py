@@ -5,7 +5,6 @@ import tensorflow_hub as hub
 import numpy as np
 import os
 import re
-from alive_progress import alive_bar 
 
 class embeddings:
     '''
@@ -21,8 +20,9 @@ class embeddings:
             (2) test_embeddings: tests the similarity of two words using cosine similarity from scipy.
     
     '''
-    def __init__(self, path_to_words): 
-        words = pd.read_csv(path_to_words)['vocab'].values.tolist()
+    def __init__(self, words, path_for_lexical_data): 
+        #words = pd.read_csv(path_to_words)['vocab'].values.tolist()
+        self.path = path_for_lexical_data + '/USE_embeddings.csv'
         # keep only unique words
         self.words = list(set(words))
         # convert to lowercase and sort alphabetically
@@ -31,7 +31,7 @@ class embeddings:
         self.words.sort()
         # write to vocab.csv with column header 'vocab'
 
-        pd.DataFrame(self.words).to_csv('../data/lexical_data/vocab.csv', index=False, header=['vocab'])
+        pd.DataFrame(self.words).to_csv(path_for_lexical_data + '/vocab.csv', index=False, header=['vocab'])
 
         # load USE model
         module_url = "https://tfhub.dev/google/universal-sentence-encoder/4" #@param ["https://tfhub.dev/google/universal-sentence-encoder/4", "https://tfhub.dev/google/universal-sentence-encoder-large/5"]
@@ -39,19 +39,17 @@ class embeddings:
         print ("module %s loaded" % module_url)
         
         embeddings = []
-        with alive_bar(len(self.words)) as bar:
-            for v in self.words:
-                embeddings.append(model([v]).numpy()[0])
-                bar()
+        
+        for v in self.words:
+            embeddings.append(model([v]).numpy()[0])
         
         # create a dictionary of words and their embeddings without loop
         self.dict = dict(zip(self.words, embeddings))
         # convert dictionary to dataframe with column names as words and each column is the embedding
 
-
-        self.df = pd.DataFrame(self.dict)#.transpose()
+        self.df = pd.DataFrame(self.dict)
         # save dataframe as csv file
-        self.df.to_csv('../data/lexical_data/USE_embeddings.csv', index=False)
+        self.df.to_csv(self.path, index=False)
         
 #### SAMPLE RUN CODE ####
 # embeddings('../data/lexical_data/vocab.csv') 
