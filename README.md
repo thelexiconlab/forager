@@ -60,7 +60,7 @@ In order to utilize the package, there are a few key parameters that must be sat
         a. evaluate_data : passes the data through the pipeline to determine if there are any modifications needed to enable use by the rest of the pipeline
         b. lexical : provides the corresponding lexical information about data contained in fluency lists (e.g. semantic similarity, phonological similarity, word frequency).   
         c. switches : provides the coding of switches for the given fluency lists data depending on the designated method. 
-        d. model: fits the data according to the selected model(s) and switch method(s)  
+        d. models: fits the data according to the selected model(s) and switch method(s)  
 
 
     3. model: The --model flag requires you to pass one of the following arguments, to run corresponding model(s) you would like to execute.
@@ -96,19 +96,19 @@ Below are sample executions to execute the code, on example data we provide with
         ```
         python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch all
         ```
-4. Running the `model` pipeline  
+4. Running the `models` pipeline  
     a.  Sample execution with single model and all switches:
         ```
-        python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline model --model dynamic --switch all
+        python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model dynamic --switch all
         ```
     b. Sample execution with all models and single switch:
         ```
-        python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline model --model all --switch simdrop
+        python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all --switch simdrop
         ```
 
     c. Running all models and switches
         ```
-        python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline model --model all --switch all
+        python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all --switch all
         ```
 
 ## Functionality
