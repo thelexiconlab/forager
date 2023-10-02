@@ -8,7 +8,7 @@ import numpy as np
 # from string import punctuation
 import re
 
-def get_frequencies(embeddings):
+def get_frequencies(embeddings,path_for_lexical_data):
     '''
         Description:
             Creates a CSV file of frequencies for each word in the vocabulary, obtained from the Google Books Ngram Dataset (version 2)
@@ -40,10 +40,12 @@ def get_frequencies(embeddings):
     item_counts_df['count'] = item_counts_df['count'].astype(float)
     item_counts_df.loc[item_counts_df['count'] == 0, 'count'] = 1
     item_counts_df['log_count'] = item_counts_df['count'].apply(np.log10)
+    # if log_count is 0, then set to .0001
+    item_counts_df.loc[item_counts_df['log_count'] == 0, 'log_count'] = .0001
     item_counts_df = item_counts_df[['item', 'log_count', 'count']]
 
     #print(item_counts_df)
-    item_counts_df.to_csv('data/lexical data/frequencies.csv', index=False)
+    item_counts_df.to_csv(path_for_lexical_data + '/USE_frequencies.csv', index=False, header=None)
     return None
 
 #get_frequencies('data/lexical data/semantic_embeddings.csv')
