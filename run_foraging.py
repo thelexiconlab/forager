@@ -364,6 +364,7 @@ if args.data == None:
 if args.pipeline == None:
     parser.error("Please specify which part of the forager pipeline you would like to execute for your data (e.g. \'lexical\', \'switches\',\'model\')")
 
+args.data = os.path.join(os.getcwd(),args.data)
 oname = 'output/' + args.data.split('/')[-1].split('.')[0] + '_forager_results.zip'
 
 
