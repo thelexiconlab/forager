@@ -29,8 +29,13 @@ To install the broader package, including command-line interfacable programs alo
 
 ### Alternative Installation
 In order to install the package without auxilliary files, you can also install with the following command
-
+    ```
     pip install git+https://github.com/thelexiconlab/forager
+    ```
+We also provide a conda environment yaml file for those who wish to use the package with conda. You can install the conda environment with the following command
+    ```
+    conda env create -f environment_forager.yml
+    ```
 
 ## Installation Requirements
 Requires Python 3.8 
@@ -44,20 +49,28 @@ Requirements:
 - requests>=2.25
 - urllib>=1.26
 - tqdm>=4.59
+
 ## Usage: 
  
 In order to utilize the package, there are a few key parameters that must be satisfied
    
     1. data : The --data flag requires you to specify the path to the fluency list file that you would like to execute foraging methods on
 
-    2. model: The --model flag requires you to pass one of the following arguments, to run corresponding model(s) you would like to execute.
+    2. pipeline: The --pipeline flag requires you to execute one of four branches of the pipeline 
+        a. evaluate_data : passes the data through the pipeline to determine if there are any modifications needed to enable use by the rest of the pipeline
+        b. lexical : provides the corresponding lexical information about data contained in fluency lists (e.g. semantic similarity, phonological similarity, word frequency).   
+        c. switches : provides the coding of switches for the given fluency lists data depending on the designated method. 
+        d. models: fits the data according to the selected model(s) and switch method(s)  
+
+
+    3. model: The --model flag requires you to pass one of the following arguments, to run corresponding model(s) you would like to execute.
         a. static
         b. dynamic
         c. pstatic
         d. pdynamic
         e. all
 
-    3. switch: The --switch flag requires you to pass one of the following arguments to utilize corresponding switch method(s) in the model selected
+    4. switch: The --switch flag requires you to pass one of the following arguments to utilize corresponding switch method(s) in the model selected
         a. troyer
         b. simdrop
         c. multimodal
@@ -66,19 +79,36 @@ In order to utilize the package, there are a few key parameters that must be sat
 
 Below are sample executions to execute the code, on example data we provide with our package:
 
+1. Running the `evaluate_data` branch of the pipeline
+    ```
+    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline evaluate_data 
+    ```
+2. Running the `lexical` branch of the pipeline
+    ```
+    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline lexical
+    ```
+3. Running the `switches` branch of the pipeline
+    a. Sample execution running a single switch:
+        ```
+        python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch simdrop
+        ```
+    b. Sample execution running all switches:
+        ```
+        python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch all
+        ```
+4. Running the `models` pipeline  
     a.  Sample execution with single model and all switches:
         ```
-        python run_foraging.py --data data/fluency_lists/data-psyrev.txt --model dynamic --switch all
+        python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model dynamic --switch all
         ```
-
     b. Sample execution with all models and single switch:
         ```
-        python run_foraging.py --data data/fluency_lists/data-psyrev.txt --model all --switch simdrop
+        python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all --switch simdrop
         ```
 
     c. Running all models and switches
         ```
-        python run_foraging.py --data data/fluency_lists/data-psyrev.txt --model all --switch all
+        python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all --switch all
         ```
 
 ## Functionality

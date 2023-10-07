@@ -1,7 +1,7 @@
 import numpy as np
 from scipy import stats
 import pandas as pd
-
+import os
 import difflib
 import nltk
 import zipfile
@@ -29,7 +29,7 @@ def exclude(word,df):
 
 # takes in a path to a data file to be read as a CSV, the first row will be assumed as a header 
 # accepted delimiters include commas, tabs, semicolons, pipes, and spaces
-def prepareData(path):
+def prepareData(path, fp):
     ### LOAD BEHAVIORAL DATA ###
     df = pd.read_csv(path, header=0, engine='python', sep=None, encoding='utf-8-sig')
     if len(df.columns) > 2:
@@ -44,7 +44,7 @@ def prepareData(path):
         df.columns = ['SID', 'entry']
 
     # load labels
-    labels = pd.read_csv("data/lexical_data/USE_frequencies.csv", names=['word', 'logct', 'ct']) 
+    labels = pd.read_csv(os.path.join(fp,"data/lexical_data/USE_frequencies.csv"), names=['word', 'logct', 'ct']) 
 
     # set all replacements to actual word for all words in labels as the default
     replacements = {word: word for word in labels['word'].values}
