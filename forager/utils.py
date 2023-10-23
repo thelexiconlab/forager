@@ -58,7 +58,7 @@ def prepareData(path, fp):
         replacement_df = df.copy()
         print("We did not find exact matches for " + str(len(oov)) + " items in our vocabulary. Any items for which we find a reasonable match will be automatically replaced. For all other OOV items, you may:")
         while True:
-            choice = input("type 'e' to exclude these words from the fluency lists but continue with the rest of the list, \ntype 't' to truncate each fluency list at the first occurrence of such a word, \nor type 'r' to assign a random semantic vector and frequency to any such word and continue with the rest of the list. \nThen, press enter. \n")
+            choice = input("type 'e' to exclude these words from the fluency lists but continue with the rest of the list, \ntype 't' to truncate each fluency list at the first occurrence of such a word, \nor type 'r' to assign a mean semantic/phonological vector and random frequency to any such word and continue with the rest of the list. \nThen, press enter. \n")
             choices = ['e', 't', 'r']
             if choice not in choices:
                 print("Entry invalid. Try again.") 
