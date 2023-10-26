@@ -113,6 +113,35 @@ Below are sample executions to execute the code, on example data we provide with
 
 ## Functionality
 
+### Outputs
+
+Different output files are generated when forager is run, based on the use case:
+
+- **Evaluate/Check Data**: If the user first evaluates the data they wish to analyze, the following files will be available for download via a `.zip` file:
+  - `evaluation_results.csv`: This file will contain the results from *forager*'s evaluation of all the items in the data against its own vocabulary. The `evaluation` column in the file will describe whether an exact match to the item was found (FOUND), or a reasonable replacement was made (REPLACE), and how the OOV items were handled based on the user-specified policy (EXCLUDE/TRUNCATE/UNK). The `replacement` column in the file will describe the specific replacements made to the items.
+  - `processed_data.csv`: This file will contain the final data that will be submitted for further analyses to *forager*. Users should carefully inspect this file to ensure that it aligns with their expectations, and make changes if needed.
+  - `forager_vocab.csv`: This file contains the vocabulary used by *forager* to conduct the evaluation. We provide this file so that users can make changes to their data if needed before they proceed with other analyses.
+
+- **Get Lexical Values**: If the user selects this option, the following files will be available for download via a `.zip` file:
+
+  - `lexical_results.csv`: This file contains item-wise lexical metrics (semantic similarity, phonological similarity, and word frequency). The semantic and phonological similarities indicate the similarity between the previous item and current item (the first item will have an arbitrary value of .0001),  whereas the frequency values indicate the frequency of the current item in the English language (obtained via Google N-grams).
+  - `individual_descriptive_stats.csv`: This file contains some aggregate metrics at the participant level such as total number of items produced, as well as means/SDs of semantic similarity, phonological similarity, and word frequency.
+  - The three files from the evaluation phase
+
+- **Get Switches**: If the user selects this option, the following files will be available for download via a `.zip` file:
+
+  - `switch_results.csv`: This file contains the item-level cluster/switch designations for each method. A switch is indicated by a 1, and a cluster is indicated by a 0. A value of 2 either denotes the first item in the list or the last item(s) for switch methods that rely on previous/subsequent items (i.e., no switch/cluster prediction can be made).
+  - `lexical_results.csv`: This file will be identical to the one generated in the **Get Lexical Values** option.
+  - `individual_descriptive_stats.csv`: In addition to the metrics available from lexical results (mean/SD of lexical values and number of items), this file will also contain the total number of switches and mean cluster size for each switch method.
+  - `aggregate_descriptive_stats.csv`: This file will contain mean/SD for the number of switches (aggregated across all participants) for each switch method.
+  - The three files from the evaluation phase
+
+- **Get Models**: If the user selects this option, they will be redirected to a Colab notebook, where they can upload their data and run the models. In addition to the files generated in the **Get Switches** option, the following files will be available for download via a `.zip` file:
+
+  - `model_results.csv`: This file will contain the model-based negative log-likelihoods for the selected models, as well as the best-fitting parameter values for semantic, phonological, and frequency cues for each model, at the subject level.
+  - `aggregate_descriptive_stats.csv`: In addition to the metrics available from the **Get Switches** option, this file will also contain the mean/SD values of the parameters (aggregated across all participants) for each model and switch method.
+
+
 ### Semantic Foraging Models
 
 The source code for these models can be found inside `forager/foraging.py`. We currently implement four types of semantic foraging models, which can be executed by passing the corresponding model name to the ```--model``` flag in the command line interface. The models are as follows:
@@ -166,7 +195,7 @@ Frequency
 
 The source code for this data preprocessing method can be found inside `forager/utils.py`. 
 Prepare Data Function
-- The data preparation function cleans and reformats the fluency list data provided by the user. It takes in a path to data in the form of a file in which the first column contains a participant ID and the second contains one response item. The first row is assumed to be a header. If the file has more than two columns, users will be given the option to use the third as the timepoint for the fluency list (i.e., if a participant has multiple lists). Accepted delimiters separating the columns include commas, tabs, semicolons, pipes, and spaces. Each row should be on its own line. The function checks for any items outside of the vocabulary set used in the lexical metrics (OOV items). If a reasonable replacement is found for an OOV item, the item will be automatically replaced with the closest match. To handle all other OOV words, the user will be given three options. First, they can truncate the fluency list at the first occurrence of such a word. Second, they can exclude any such words but continue with the rest of the list, as if that word was never produced. Third, the word can be assigned a random semantic vector and frequency. A file outlining the edits made to the original data will be saved. The fluency data is then reformatted into a list of tuples, each containing the participant ID and the corresponding fluency list. 
+- The data preparation function cleans and reformats the fluency list data provided by the user. It takes in a path to data in the form of a file in which the first column contains a participant ID and the second contains one response item. The first row is assumed to be a header. If the file has more than two columns, users will be given the option to use the third as the timepoint for the fluency list (i.e., if a participant has multiple lists). Accepted delimiters separating the columns include commas, tabs, semicolons, pipes, and spaces. Each row should be on its own line. The function checks for any items outside of the vocabulary set used in the lexical metrics (OOV items). If a reasonable replacement is found for an OOV item, the item will be automatically replaced with the closest match. To handle all other OOV words, the user will be given three options. First, they can truncate the fluency list at the first occurrence of such a word. Second, they can exclude any such words but continue with the rest of the list, as if that word was never produced. Third, the word can be assigned a mean semantic vector, mean phonological similarity, and 0.0001 frequency. A file outlining the edits made to the original data will be saved. The fluency data is then reformatted into a list of tuples, each containing the participant ID and the corresponding fluency list. 
 
 
 ## Development Notes
