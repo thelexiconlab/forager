@@ -25,19 +25,28 @@ Workflow:
     b. Switches: returns switch values for each word in fluency list + lexical values
     c. Models: returns model outputs for each word in fluency list + lexical values + switch values
 """
-# Global Path Variabiles
-normspath =  'data/norms/animals_snafu_scheme_vocab.csv'
-similaritypath =  'data/lexical_data/USE_semantic_matrix.csv'
-frequencypath =  'data/lexical_data/USE_frequencies.csv'
-phonpath = 'data/lexical_data/USE_phonological_matrix.csv'
-vocabpath = 'data/lexical_data/vocab.csv'
+# Global Path Variables
+fp = "/".join(sys.argv[0].split('/')[:-1])
+
+if sys.argv[0] != 'run_foraging.py': # check the reference path
+    normspath = os.path.join(fp,'data/norms/animals_snafu_scheme_vocab.csv')
+    similaritypath =  os.path.join(fp,'data/lexical_data/USE_semantic_matrix.csv')
+    frequencypath =  os.path.join(fp,'data/lexical_data/USE_frequencies.csv')
+    phonpath = os.path.join(fp,'data/lexical_data/USE_phonological_matrix.csv')
+    vocabpath = os.path.join(fp,'data/lexical_data/vocab.csv')
+else:
+    normspath = 'data/norms/animals_snafu_scheme_vocab.csv'
+    similaritypath =  'data/lexical_data/USE_semantic_matrix.csv'
+    frequencypath =  'data/lexical_data/USE_frequencies.csv'
+    phonpath = 'data/lexical_data/USE_phonological_matrix.csv'
+    vocabpath = 'data/lexical_data/vocab.csv'
 
 # Global Variables
 models = ['static','dynamic','pstatic','pdynamic','all']
 switch_methods = ['simdrop','multimodal','norms_associative', 'norms_categorical', 'delta','all']
 
 #Methods
-def retrieve_data(path):
+def retrieve_data(path,fp):
     """
     1. Verify that data path exists
 
@@ -45,7 +54,7 @@ def retrieve_data(path):
     if os.path.exists(path) == False:
         ex_str = "Provided path to data \"{path}\" does not exist. Please specify a proper path".format(path=path)
         raise Exception(ex_str)
-    data = prepareData(path)
+    data = prepareData(path,fp)
     return data
 
 def get_lexical_data():
@@ -362,7 +371,7 @@ def execute_forager(data, use, switch = None, model = None):
     oname = 'output/' + data + '_forager_results.zip'
 
     if use == "evaluate_data":
-        data, replacement_df, processed_df = retrieve_data(data)
+        data, replacement_df, processed_df = retrieve_data(data, fp)
         with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
             # Save the first DataFrame as a CSV file inside the zip
             with zipf.open('evaluation_results.csv', 'w') as csvf:
@@ -384,7 +393,7 @@ def execute_forager(data, use, switch = None, model = None):
     elif use == 'lexical':
         dname = 'lexical_results.csv'
         # Retrieve the Data for Getting Lexical Info
-        data, replacement_df, processed_df = retrieve_data(data)
+        data, replacement_df, processed_df = retrieve_data(data, fp)
         # Run subroutine for getting strictly the similarity & frequency values 
         lexical_results = run_lexical(data)
         ind_stats = indiv_desc_stats(lexical_results)
@@ -425,7 +434,7 @@ def execute_forager(data, use, switch = None, model = None):
         # Run subroutine for getting strictly switch outputs 
         # Run subroutine for getting model outputs
         print("Checking Data ...")
-        data, replacement_df, processed_df = retrieve_data(data)
+        data, replacement_df, processed_df = retrieve_data(data, fp)
         print("Retrieving Lexical Data ...")
         lexical_results = run_lexical(data)
         print("Obtaining Switch Designations ...")
@@ -485,7 +494,7 @@ def execute_forager(data, use, switch = None, model = None):
             print(f"Please specify a proper switch method (e.g. {switch_methods})")
         # Run subroutine for getting model outputs
         print("Checking Data ...")
-        data, replacement_df, processed_df = retrieve_data(data)
+        data, replacement_df, processed_df = retrieve_data(data, fp)
         print("Retrieving Lexical Data ...")
         lexical_results = run_lexical(data)
         print("Obtaining Switch Designations ...")

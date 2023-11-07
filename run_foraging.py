@@ -26,11 +26,9 @@ Workflow:
     c. Models: returns model outputs for each word in fluency list + lexical values + switch values
 """
 # Global Path Variables
-print(sys.argv)
 fp = "/".join(sys.argv[0].split('/')[:-1])
 
 if sys.argv[0] != 'run_foraging.py': # check the reference path
-    print(fp)
     normspath = os.path.join(fp,'data/norms/animals_snafu_scheme_vocab.csv')
     similaritypath =  os.path.join(fp,'data/lexical_data/USE_semantic_matrix.csv')
     frequencypath =  os.path.join(fp,'data/lexical_data/USE_frequencies.csv')
