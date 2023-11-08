@@ -28,18 +28,12 @@ Workflow:
 # Global Path Variables
 fp = "/".join(sys.argv[0].split('/')[:-1])
 
-if sys.argv[0] != 'run_foraging.py': # check the reference path
-    normspath = os.path.join(fp,'data/norms/animals_snafu_scheme_vocab.csv')
-    similaritypath =  os.path.join(fp,'data/lexical_data/USE_semantic_matrix.csv')
-    frequencypath =  os.path.join(fp,'data/lexical_data/USE_frequencies.csv')
-    phonpath = os.path.join(fp,'data/lexical_data/USE_phonological_matrix.csv')
-    vocabpath = os.path.join(fp,'data/lexical_data/vocab.csv')
-else:
-    normspath = 'data/norms/animals_snafu_scheme_vocab.csv'
-    similaritypath =  'data/lexical_data/USE_semantic_matrix.csv'
-    frequencypath =  'data/lexical_data/USE_frequencies.csv'
-    phonpath = 'data/lexical_data/USE_phonological_matrix.csv'
-    vocabpath = 'data/lexical_data/vocab.csv'
+
+normspath = 'data/norms/animals_snafu_scheme_vocab.csv'
+similaritypath =  'data/lexical_data/USE_semantic_matrix.csv'
+frequencypath =  'data/lexical_data/USE_frequencies.csv'
+phonpath = 'data/lexical_data/USE_phonological_matrix.csv'
+vocabpath = 'data/lexical_data/vocab.csv'
 
 # Global Variables
 models = ['static','dynamic','pstatic','pdynamic','all']
