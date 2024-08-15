@@ -214,6 +214,6 @@ Prepare Data Function
 
 Please cite the following work if you use the package:
 - Kumar, A. A., Apsel, M., Zhang, L., Xing, N., & Jones, M. N. (2023). forager: A Python package and web interface for modeling mental search. Behavior Research Methods, 1-17.
+- Lundin, N. B., Brown, J. W., Johns, B. T., Jones, M. N., Purcell, J. R., Hetrick, W. P., ... & Todd, P. M. (2023). Neural evidence of switch processes during semantic and phonetic foraging in human memory. Proceedings of the National Academy of Sciences, 120(42), e2312462120.
 - Hills, T. T, Jones, M. N, & Todd, P. M (2012). Optimal foraging in semantic memory. *Psychological Review*, *119*(2), 431–440.
 - Kumar, A. A, Lundin, N. B, & Jones, M. N (2022). Mouse-mole-vole: The inconspicuous benefit of phonology during retrieval from semantic memory. *Proceedings of the Annual Meeting of the Cognitive Science Society*. 
-- Troyer A. K, Moscovitch M., Winocur G. (1997). Clustering and switching as two components of verbal fluency: evidence from younger and older healthy adults. *Neuropsychology*. Jan;11(1):138-46. 
