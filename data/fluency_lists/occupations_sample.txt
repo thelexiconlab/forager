@@ -1,0 +1,7 @@
+id	entry
+50001	farmer
+50001	driver
+50001	carpenter
+50002	doctor
+50002	lawyer
+50002	engineer

@@ -1,0 +1,648 @@
+Category,snafu_item,in_vocab,Item,levenstein_distance
+Asianfood,beef and brocolli,TRUE,beef and brocolli,0
+Asianfood,beef and noodles,TRUE,beef and noodles,0
+Asianfood,beef fried rice,TRUE,beef fried rice,0
+Asianfood,buddhas delight,TRUE,buddhas delight,0
+Asianfood,chicken and rice,TRUE,chicken and rice,0
+Asianfood,chicken fried rice,TRUE,chicken fried rice,0
+Asianfood,chicken lo mein,TRUE,chicken lo mein,0
+Asianfood,chinese food,TRUE,chinese food,0
+Asianfood,chowmein,TRUE,chowmein,0
+Asianfood,combination fried rice,TRUE,combination fried rice,0
+Asianfood,congee,TRUE,congee,0
+Asianfood,crispy duck,TRUE,crispy duck,0
+Asianfood,eggroll,TRUE,eggroll,0
+Asianfood,fried rice,TRUE,fried rice,0
+Asianfood,general tsos chicken,TRUE,general tsos chicken,0
+Asianfood,ginger pork,TRUE,ginger pork,0
+Asianfood,hibachi,TRUE,hibachi,0
+Asianfood,house fried rice,TRUE,house fried rice,0
+Asianfood,mapo tofu,TRUE,mapo tofu,0
+Asianfood,miso soup,TRUE,miso soup,0
+Asianfood,onigiri,TRUE,onigiri,0
+Asianfood,orange chicken,TRUE,orange chicken,0
+Asianfood,peking duck,TRUE,peking duck,0
+Asianfood,sashimi,TRUE,sashimi,0
+Asianfood,shrimp fried rice,TRUE,shrimp fried rice,0
+Asianfood,spring rolls,TRUE,spring rolls,0
+Asianfood,stir fried pork,TRUE,stir fried pork,0
+Asianfood,stir fried vegetables,TRUE,stir fried vegetables,0
+Asianfood,stir fry,TRUE,stir fry,0
+Asianfood,sushi,TRUE,sushi,0
+Asianfood,tempura,TRUE,tempura,0
+Asianfood,vegetable delight,TRUE,vegetable delight,0
+Breakfast,boiled egg,TRUE,boiled egg,0
+Breakfast,cereal,TRUE,cereal,0
+Breakfast,French toast,FALSE,french toast,1
+Breakfast,hashbrowns,TRUE,hashbrowns,0
+Breakfast,syrup,TRUE,syrup,0
+Breakfast,toast,TRUE,toast,0
+Breakfast,waffle,TRUE,waffle,0
+Breakfast,omelet,TRUE,omelet,0
+Breakfast,pancake,TRUE,pancake,0
+Breakfast,quiche,TRUE,quiche,0
+Breakfast,scrambled eggs,TRUE,scrambled eggs,0
+Candy,candy,TRUE,candy,0
+Candy,candy bar,TRUE,candy bar,0
+Candy,chocolate,TRUE,chocolate,0
+Candy,gummy bears,TRUE,gummy bears,0
+Candy,gummy worms,TRUE,gummy worms,0
+Candy,jellybeans,TRUE,jellybeans,0
+Candy,lollipop,TRUE,lollipop,0
+Candy,snickers,TRUE,snickers,0
+Candy,starbursts,TRUE,starbursts,0
+Candy,suckers,TRUE,suckers,0
+Candy,twinkies,TRUE,twinkies,0
+Candy,Twix,FALSE,twix,1
+Condiment,chutney,TRUE,chutney,0
+Condiment,ketchup,TRUE,ketchup,0
+Condiment,mayonnaise,TRUE,mayonnaise,0
+Condiment,mustard,TRUE,mustard,0
+Condiment,ranch dressing,TRUE,ranch dressing,0
+Condiment,relish,TRUE,relish,0
+Condiment,tahini,TRUE,tahini,0
+Dairy,asiago,TRUE,asiago,0
+Dairy,bleu cheese,TRUE,bleu cheese,0
+Dairy,blue cheese,TRUE,blue cheese,0
+Dairy,brie,TRUE,brie,0
+Dairy,cheddar cheese,TRUE,cheddar cheese,0
+Dairy,cheese,TRUE,cheese,0
+Dairy,cottage cheese,TRUE,cottage cheese,0
+Dairy,cream,TRUE,cream,0
+Dairy,cream cheese,TRUE,cream cheese,0
+Dairy,feta cheese,TRUE,feta cheese,0
+Dairy,gouda,TRUE,gouda,0
+Dairy,mozzarella,TRUE,mozzarella,0
+Dairy,parmesan,TRUE,parmesan,0
+Dairy,sour cream,TRUE,sour cream,0
+Dairy,Swiss cheese,FALSE,swiss cheese,1
+Dairy,yogurt,TRUE,yogurt,0
+Dessert,angel food cake,TRUE,angel food cake,0
+Dessert,apple pie,TRUE,apple pie,0
+Dessert,apple turnover,TRUE,apple turnover,0
+Dessert,banana bread,TRUE,banana bread,0
+Dessert,banana cream pie,TRUE,banana cream pie,0
+Dessert,banana pudding,TRUE,banana pudding,0
+Dessert,bread pudding,TRUE,bread pudding,0
+Dessert,brookie,TRUE,brookie,0
+Dessert,brownie,TRUE,brownie,0
+Dessert,cake,TRUE,cake,0
+Dessert,cannoli,TRUE,cannoli,0
+Dessert,carrot cake,TRUE,carrot cake,0
+Dessert,cheesecake,TRUE,cheesecake,0
+Dessert,chocolate cream pie,TRUE,chocolate cream pie,0
+Dessert,cinnamon bun,TRUE,cinnamon bun,0
+Dessert,cinnamon roll,TRUE,cinnamon roll,0
+Dessert,coco,TRUE,coco,0
+Dessert,coconut custard pie,TRUE,coconut custard pie,0
+Dessert,cookie,TRUE,cookie,0
+Dessert,creme brulee,TRUE,creme brulee,0
+Dessert,crumpet,TRUE,crumpet,0
+Dessert,cupcake,TRUE,cupcake,0
+Dessert,custard,TRUE,custard,0
+Dessert,dark chocolate,TRUE,dark chocolate,0
+Dessert,donut,TRUE,donut,0
+Dessert,eclair,TRUE,eclair,0
+Dessert,eclaire,TRUE,eclaire,0
+Dessert,flan,TRUE,flan,0
+Dessert,fortune cookie,TRUE,fortune cookie,0
+Dessert,fudge,TRUE,fudge,0
+Dessert,funnel cake,TRUE,funnel cake,0
+Dessert,honeybun,TRUE,honeybun,0
+Dessert,ice cream,TRUE,ice cream,0
+Dessert,key lime pie,TRUE,key lime pie,0
+Dessert,macaron,TRUE,macaron,0
+Dessert,marshmallow,TRUE,marshmallow,0
+Dessert,milkshake,TRUE,milkshake,0
+Dessert,mochi,TRUE,mochi,0
+Dessert,muffin,TRUE,muffin,0
+Dessert,pastry,TRUE,pastry,0
+Dessert,pie,TRUE,pie,0
+Dessert,pudding,TRUE,pudding,0
+Dessert,pumpkin pie,TRUE,pumpkin pie,0
+Dessert,sherbet,TRUE,sherbet,0
+Dessert,sorbet,TRUE,sorbet,0
+Dessert,souffle,TRUE,souffle,0
+Dessert,sweet potato pie,TRUE,sweet potato pie,0
+Dessert,tart,TRUE,tart,0
+Dip,Baba ghanoush,FALSE,baba ghanoush,1
+Dip,bean dip,TRUE,bean dip,0
+Dip,dip,TRUE,dip,0
+Dip,guacamole,TRUE,guacamole,0
+Dip,hummus,TRUE,hummus,0
+Dip,salsa,TRUE,salsa,0
+Dish,beef and egg noodles,TRUE,beef and egg noodles,0
+Dish,casserole,TRUE,casserole,0
+Dish,chicken potpie,TRUE,chicken potpie,0
+Dish,potpie,TRUE,potpie,0
+Drink,almond milk,TRUE,almond milk,0
+Drink,beer,TRUE,beer,0
+Drink,coconut milk,TRUE,coconut milk,0
+Drink,coffee,TRUE,coffee,0
+Drink,juice,TRUE,juice,0
+Drink,lemonade,TRUE,lemonade,0
+Drink,milk,TRUE,milk,0
+Drink,mocha,TRUE,mocha,0
+Drink,orange juice,TRUE,orange juice,0
+Drink,smoothie,TRUE,smoothie,0
+Drink,soda,TRUE,soda,0
+Drink,soymilk,TRUE,soymilk,0
+Drink,tea,TRUE,tea,0
+Drink,wine,TRUE,wine,0
+Europeanfood,bangers and mash,TRUE,bangers and mash,0
+Europeanfood,chitterlings,TRUE,chitterlings,0
+Europeanfood,corned beef and cabbage,TRUE,corned beef and cabbage,0
+Europeanfood,fish and chips,TRUE,fish and chips,0
+Europeanfood,haggis,TRUE,haggis,0
+Europeanfood,hash,TRUE,hash,0
+Europeanfood,pate,TRUE,pate,0
+Europeanfood,pierogi,TRUE,pierogi,0
+Europeanfood,shepherds pie,TRUE,shepherds pie,0
+Europeanfood,stuffed cabbage,TRUE,stuffed cabbage,0
+Fastfood,buffalo wings,TRUE,buffalo wings,0
+Fastfood,chicken fingers,TRUE,chicken fingers,0
+Fastfood,chicken nuggets,TRUE,chicken nuggets,0
+Fastfood,chicken strips,TRUE,chicken strips,0
+Fastfood,chicken tenders,TRUE,chicken tenders,0
+Fastfood,chicken wings,TRUE,chicken wings,0
+Fastfood,corndog,TRUE,corndog,0
+Fastfood,fish sticks,TRUE,fish sticks,0
+Fastfood,french-fry,FALSE,french fry,1
+Fastfood,fried chicken,TRUE,fried chicken,0
+Fastfood,gyro,TRUE,gyro,0
+Fastfood,mozzarella sticks,TRUE,mozzarella sticks,0
+Fastfood,nuggets,TRUE,nuggets,0
+Fastfood,onion rings,TRUE,onion rings,0
+Fastfood,pizza,TRUE,pizza,0
+Fastfood,Tater tots,FALSE,tater tots,1
+Fastfood,TV dinner,FALSE,tv dinner,2
+Fruit,apple,TRUE,apple,0
+Fruit,apricot,TRUE,apricot,0
+Fruit,avocado,TRUE,avocado,0
+Fruit,banana,TRUE,banana,0
+Fruit,berries,TRUE,berries,0
+Fruit,blackberry,TRUE,blackberry,0
+Fruit,blueberry,TRUE,blueberry,0
+Fruit,boysenberry,TRUE,boysenberry,0
+Fruit,breadfruit,TRUE,breadfruit,0
+Fruit,cantaloupe,TRUE,cantaloupe,0
+Fruit,cherry,TRUE,cherry,0
+Fruit,clementine,TRUE,clementine,0
+Fruit,coconut,TRUE,coconut,0
+Fruit,cranberry,TRUE,cranberry,0
+Fruit,date,TRUE,date,0
+Fruit,dragon fruit,TRUE,dragon fruit,0
+Fruit,durian,TRUE,durian,0
+Fruit,fig,TRUE,fig,0
+Fruit,fruits,TRUE,fruits,0
+Fruit,grape,TRUE,grape,0
+Fruit,grapefruit,TRUE,grapefruit,0
+Fruit,guava,TRUE,guava,0
+Fruit,honeydew,TRUE,honeydew,0
+Fruit,honeydew melon,TRUE,honeydew melon,0
+Fruit,jackfruit,TRUE,jackfruit,0
+Fruit,kiwi,TRUE,kiwi,0
+Fruit,kumquat,TRUE,kumquat,0
+Fruit,lemon,TRUE,lemon,0
+Fruit,lime,TRUE,lime,0
+Fruit,lingonberry,TRUE,lingonberry,0
+Fruit,lychee,TRUE,lychee,0
+Fruit,mandarin,TRUE,mandarin,0
+Fruit,mango,TRUE,mango,0
+Fruit,melon,TRUE,melon,0
+Fruit,nectarine,TRUE,nectarine,0
+Fruit,olive,TRUE,olive,0
+Fruit,orange,TRUE,orange,0
+Fruit,papaya,TRUE,papaya,0
+Fruit,peach,TRUE,peach,0
+Fruit,pear,TRUE,pear,0
+Fruit,pineapple,TRUE,pineapple,0
+Fruit,plum,TRUE,plum,0
+Fruit,pomegranate,TRUE,pomegranate,0
+Fruit,prune,TRUE,prune,0
+Fruit,pumpkin,TRUE,pumpkin,0
+Fruit,raisin,TRUE,raisin,0
+Fruit,raspberry,TRUE,raspberry,0
+Fruit,raspeberry,TRUE,raspeberry,0
+Fruit,soursop,TRUE,soursop,0
+Fruit,starfruit,TRUE,starfruit,0
+Fruit,strawberry,TRUE,strawberry,0
+Fruit,tangerine,TRUE,tangerine,0
+Fruit,watermelon,TRUE,watermelon,0
+Fruit,zucchini,TRUE,zucchini,0
+Grain,bagel,TRUE,bagel,0
+Grain,baguette,TRUE,baguette,0
+Grain,barley,TRUE,barley,0
+Grain,biscuit,TRUE,biscuit,0
+Grain,bread,TRUE,bread,0
+Grain,brown rice,TRUE,brown rice,0
+Grain,bun,TRUE,bun,0
+Grain,buttermilk biscuit,TRUE,buttermilk biscuit,0
+Grain,cornbread,TRUE,cornbread,0
+Grain,croissant,TRUE,croissant,0
+Grain,crouton,TRUE,crouton,0
+Grain,dough,TRUE,dough,0
+Grain,flour,TRUE,flour,0
+Grain,granola,TRUE,granola,0
+Grain,grits,TRUE,grits,0
+Grain,hominy,TRUE,hominy,0
+Grain,millet,TRUE,millet,0
+Grain,oatmeal,TRUE,oatmeal,0
+Grain,oats,TRUE,oats,0
+Grain,pita,TRUE,pita,0
+Grain,pita bread,TRUE,pita bread,0
+Grain,rice,TRUE,rice,0
+Grain,roll,TRUE,roll,0
+Grain,ryebread,TRUE,ryebread,0
+Grain,seitan,TRUE,seitan,0
+Grain,soba,TRUE,soba,0
+Grain,stuffing,TRUE,stuffing,0
+Grain,subway bread,TRUE,subway bread,0
+Grain,tempeh,TRUE,tempeh,0
+Grain,wheat,TRUE,wheat,0
+Italianfood,alfredo,TRUE,alfredo,0
+Italianfood,calzone,TRUE,calzone,0
+Italianfood,chicken Alfredo,FALSE,chicken alfredo,1
+Italianfood,chicken marsala,TRUE,chicken marsala,0
+Italianfood,chicken parmesan,TRUE,chicken parmesan,0
+Italianfood,chicken Stromboli,FALSE,chicken stromboli,1
+Italianfood,fettucine Alfredo,FALSE,fettucine alfredo,1
+Italianfood,flatbread,TRUE,flatbread,0
+Italianfood,garlic bread,TRUE,garlic bread,0
+Italianfood,lasagna,TRUE,lasagna,0
+Italianfood,muffuletta,TRUE,muffuletta,0
+Italianfood,polenta,TRUE,polenta,0
+Italianfood,ravioli,TRUE,ravioli,0
+Italianfood,risotto,TRUE,risotto,0
+Italianfood,spaghetti and meatballs,TRUE,spaghetti and meatballs,0
+Meat,bacon,TRUE,bacon,0
+Meat,baked turkey,TRUE,baked turkey,0
+Meat,BBQ,FALSE,UNKNOWN,7
+Meat,beef,TRUE,beef,0
+Meat,beef pastrami,TRUE,beef pastrami,0
+Meat,bison,TRUE,bison,0
+Meat,bologna,TRUE,bologna,0
+Meat,brisket,TRUE,brisket,0
+Meat,bull testicles,TRUE,bull testicles,0
+Meat,Canadian bacon,FALSE,canadian bacon,1
+Meat,chicken,TRUE,chicken,0
+Meat,cooked chicken,TRUE,cooked chicken,0
+Meat,cooked ham,TRUE,cooked ham,0
+Meat,dolphin,TRUE,dolphin,0
+Meat,duck,TRUE,duck,0
+Meat,egg,TRUE,egg,0
+Meat,filet mignon,TRUE,filet mignon,0
+Meat,frog leg,TRUE,frog leg,0
+Meat,gizzard,TRUE,gizzard,0
+Meat,grilled chicken,TRUE,grilled chicken,0
+Meat,ground beef,TRUE,ground beef,0
+Meat,ham,TRUE,ham,0
+Meat,hotdog,TRUE,hotdog,0
+Meat,intestine,TRUE,intestine,0
+Meat,Italian sausage,FALSE,italian sausage,1
+Meat,jerk chicken,TRUE,jerk chicken,0
+Meat,lamb,TRUE,lamb,0
+Meat,lambchops,TRUE,lambchops,0
+Meat,liver,TRUE,liver,0
+Meat,meat,TRUE,meat,0
+Meat,meatball,TRUE,meatball,0
+Meat,meatloaf,TRUE,meatloaf,0
+Meat,New York strip,FALSE,new york strip,2
+Meat,pastrami,TRUE,pastrami,0
+Meat,pepperoni,TRUE,pepperoni,0
+Meat,pig feet,TRUE,pig feet,0
+Meat,polish sausage,TRUE,polish sausage,0
+Meat,pork,TRUE,pork,0
+Meat,porkchop,TRUE,porkchop,0
+Meat,pork loin,TRUE,pork loin,0
+Meat,pork roast,TRUE,pork roast,0
+Meat,pork shoulder,TRUE,pork shoulder,0
+Meat,porterhouse steak,TRUE,porterhouse steak,0
+Meat,pot roast,TRUE,pot roast,0
+Meat,potted meat,TRUE,potted meat,0
+Meat,prime rib,TRUE,prime rib,0
+Meat,pulled pork,TRUE,pulled pork,0
+Meat,quail,TRUE,quail,0
+Meat,rabbit,TRUE,rabbit,0
+Meat,ribeye,TRUE,ribeye,0
+Meat,riblets,TRUE,riblets,0
+Meat,ribs,TRUE,ribs,0
+Meat,roast,TRUE,roast,0
+Meat,roast beef,TRUE,roast beef,0
+Meat,rooster,TRUE,rooster,0
+Meat,salami,TRUE,salami,0
+Meat,sausage,TRUE,sausage,0
+Meat,shawarma,TRUE,shawarma,0
+Meat,sirloin,TRUE,sirloin,0
+Meat,spam,TRUE,spam,0
+Meat,spareribs,TRUE,spareribs,0
+Meat,steak,TRUE,steak,0
+Meat,T-bone,FALSE,t bone,2
+Meat,turkey,TRUE,turkey,0
+Meat,veal,TRUE,veal,0
+Meat,venison,TRUE,venison,0
+Meat,wiener,TRUE,wiener,0
+Middleeasternfood,chicken tandoori,TRUE,chicken tandoori,0
+Middleeasternfood,falafel,TRUE,falafel,0
+Middleeasternfood,kebab,TRUE,kebab,0
+Middleeasternfood,pad Thai,FALSE,pad thai,1
+Middleeasternfood,tikka masala,TRUE,tikka masala,0
+Nut,almond,TRUE,almond,0
+Nut,almonds,TRUE,almonds,0
+Nut,Brazil nut,FALSE,brazil nut,1
+Nut,cashew,TRUE,cashew,0
+Nut,hazelnut,TRUE,hazelnut,0
+Nut,macadamia,TRUE,macadamia,0
+Nut,nut,TRUE,nut,0
+Nut,peanut,TRUE,peanut,0
+Nut,pecan,TRUE,pecan,0
+Nut,pine nuts,TRUE,pine nuts,0
+Nut,pistachio,TRUE,pistachio,0
+Nut,walnut,TRUE,walnut,0
+Nut,water chestnut,TRUE,water chestnut,0
+Pasta,elbow macaroni,TRUE,elbow macaroni,0
+Pasta,fettuccine,TRUE,fettuccine,0
+Pasta,gnocchi,TRUE,gnocchi,0
+Pasta,linguine,TRUE,linguine,0
+Pasta,mac and cheese,TRUE,mac and cheese,0
+Pasta,macaroni,TRUE,macaroni,0
+Pasta,macaroni and cheese,TRUE,macaroni and cheese,0
+Pasta,noodle,TRUE,noodle,0
+Pasta,pasta,TRUE,pasta,0
+Pasta,penne,TRUE,penne,0
+Pasta,ramen,TRUE,ramen,0
+Pasta,rigatoni,TRUE,rigatoni,0
+Pasta,spaghetti,TRUE,spaghetti,0
+Pasta,tortellini,TRUE,tortellini,0
+Pasta,udon,TRUE,udon,0
+Salad,Caesar salad,FALSE,caesar salad,1
+Salad,chopped salad,TRUE,chopped salad,0
+Salad,salad,TRUE,salad,0
+Salad,seaweed salad,TRUE,seaweed salad,0
+Salad,zucchini salad,TRUE,zucchini salad,0
+Sandwich,banh mi,TRUE,banh mi,0
+Sandwich,BLT sandwich,FALSE,sandwich,4
+Sandwich,breakfast sandwich,TRUE,breakfast sandwich,0
+Sandwich,burger,TRUE,burger,0
+Sandwich,cheeseburger,TRUE,cheeseburger,0
+Sandwich,cheesesteak,TRUE,cheesesteak,0
+Sandwich,chicken salad,TRUE,chicken salad,0
+Sandwich,club sandwich,TRUE,club sandwich,0
+Sandwich,egg salad,TRUE,egg salad,0
+Sandwich,fish sandwich,TRUE,fish sandwich,0
+Sandwich,French dip,FALSE,french dip,1
+Sandwich,grilled cheese,TRUE,grilled cheese,0
+Sandwich,ham and cheese sandwich,TRUE,ham and cheese sandwich,0
+Sandwich,hamburger,TRUE,hamburger,0
+Sandwich,lettuce wrap,TRUE,lettuce wrap,0
+Sandwich,meatball hoagie,TRUE,meatball hoagie,0
+Sandwich,meatball sandwich,TRUE,meatball sandwich,0
+Sandwich,panini,TRUE,panini,0
+Sandwich,patty melt,TRUE,patty melt,0
+Sandwich,sandwich,TRUE,sandwich,0
+Sandwich,sloppy joe,TRUE,sloppy joe,0
+Sandwich,torta,TRUE,torta,0
+Sandwich,tuna sandwich,TRUE,tuna sandwich,0
+Sandwich,veggie burger,TRUE,veggie burger,0
+Sauce,curry,TRUE,curry,0
+Sauce,gravy,TRUE,gravy,0
+Sauce,hot sauce,TRUE,hot sauce,0
+Sauce,pesto,TRUE,pesto,0
+Sauce,picante sauce,TRUE,picante sauce,0
+Sauce,soy sauce,TRUE,soy sauce,0
+Sauce,tzatziki,TRUE,tzatziki,0
+Seafood,anchovies,TRUE,anchovies,0
+Seafood,bass,TRUE,bass,0
+Seafood,calamari,TRUE,calamari,0
+Seafood,catfish,TRUE,catfish,0
+Seafood,caviar,TRUE,caviar,0
+Seafood,clam,TRUE,clam,0
+Seafood,cod,TRUE,cod,0
+Seafood,cooked catfish,TRUE,cooked catfish,0
+Seafood,crab,TRUE,crab,0
+Seafood,crab legs,TRUE,crab legs,0
+Seafood,Dungeness crab,FALSE,dungeness crab,1
+Seafood,eel,TRUE,eel,0
+Seafood,escargot,TRUE,escargot,0
+Seafood,fish,TRUE,fish,0
+Seafood,fish fillet,TRUE,fish fillet,0
+Seafood,fried fish,TRUE,fried fish,0
+Seafood,fried scallops,TRUE,fried scallops,0
+Seafood,fried shrimp,TRUE,fried shrimp,0
+Seafood,grilled fish,TRUE,grilled fish,0
+Seafood,halibut,TRUE,halibut,0
+Seafood,lobster,TRUE,lobster,0
+Seafood,lobster bisque,TRUE,lobster bisque,0
+Seafood,mackerel,TRUE,mackerel,0
+Seafood,mahimahi,TRUE,mahimahi,0
+Seafood,mussel,TRUE,mussel,0
+Seafood,octopus,TRUE,octopus,0
+Seafood,oyster,TRUE,oyster,0
+Seafood,popcorn shrimp,TRUE,popcorn shrimp,0
+Seafood,salmon,TRUE,salmon,0
+Seafood,salmon poke,TRUE,salmon poke,0
+Seafood,sardine,TRUE,sardine,0
+Seafood,scallions,TRUE,scallions,0
+Seafood,scallop,TRUE,scallop,0
+Seafood,shark,TRUE,shark,0
+Seafood,shrimp,TRUE,shrimp,0
+Seafood,shrimp scampi,TRUE,shrimp scampi,0
+Seafood,snails,TRUE,snails,0
+Seafood,squid,TRUE,squid,0
+Seafood,stuffed flounder,TRUE,stuffed flounder,0
+Seafood,swordfish,TRUE,swordfish,0
+Seafood,tilapia,TRUE,tilapia,0
+Seafood,trout,TRUE,trout,0
+Seafood,tuna,TRUE,tuna,0
+Seafood,tuna poke,TRUE,tuna poke,0
+Seasoning,basil,TRUE,basil,0
+Seasoning,cilantro,TRUE,cilantro,0
+Seasoning,cinnamon,TRUE,cinnamon,0
+Seasoning,dill,TRUE,dill,0
+Seasoning,garlic,TRUE,garlic,0
+Seasoning,ghee,TRUE,ghee,0
+Seasoning,ginger,TRUE,ginger,0
+Seasoning,mint,TRUE,mint,0
+Seasoning,miso,TRUE,miso,0
+Seasoning,oil,TRUE,oil,0
+Seasoning,olive oil,TRUE,olive oil,0
+Seasoning,oregano,TRUE,oregano,0
+Seasoning,parsley,TRUE,parsley,0
+Seasoning,pepper,TRUE,pepper,0
+Seasoning,rosemary,TRUE,rosemary,0
+Seasoning,sage,TRUE,sage,0
+Seasoning,salt,TRUE,salt,0
+Seasoning,sauce,TRUE,sauce,0
+Seasoning,sesame seeds,TRUE,sesame seeds,0
+Seasoning,sugar,TRUE,sugar,0
+Seasoning,vinegar,TRUE,vinegar,0
+Side,coleslaw,TRUE,coleslaw,0
+Side,couscous,TRUE,couscous,0
+Side,dumplings,TRUE,dumplings,0
+Side,kimchi,TRUE,kimchi,0
+Side,pasta salad,TRUE,pasta salad,0
+Side,potato salad,TRUE,potato salad,0
+Side,poutine,TRUE,poutine,0
+Side,stuffed peppers,TRUE,stuffed peppers,0
+Snack,balut,TRUE,balut,0
+Snack,beef jerky,TRUE,beef jerky,0
+Snack,cereal bar,TRUE,cereal bar,0
+Snack,Cheetos,FALSE,cheetos,1
+Snack,chips,TRUE,chips,0
+Snack,coffee bean,TRUE,coffee bean,0
+Snack,cracker,TRUE,cracker,0
+Snack,Doritos,FALSE,doritos,1
+Snack,English muffin,FALSE,english muffin,1
+Snack,graham crackers,TRUE,graham crackers,0
+Snack,hot pocket,TRUE,hot pocket,0
+Snack,Jell-O,FALSE,UNKNOWN,7
+Snack,jerky,TRUE,jerky,0
+Snack,nachos,TRUE,nachos,0
+Snack,popcorn,TRUE,popcorn,0
+Snack,popsicle,TRUE,popsicle,0
+Snack,pop tart,TRUE,pop tart,0
+Snack,potato chips,TRUE,potato chips,0
+Snack,pretzel,TRUE,pretzel,0
+Snack,pringles,TRUE,pringles,0
+Snack,pumpkinseeds,TRUE,pumpkinseeds,0
+Snack,seeds,TRUE,seeds,0
+Snack,snack cakes,TRUE,snack cakes,0
+Snack,sunflower seeds,TRUE,sunflower seeds,0
+Snack,tortilla chips,TRUE,tortilla chips,0
+Snack,Tostitos,FALSE,tostitos,1
+Soup,beef stew,TRUE,beef stew,0
+Soup,chicken noodles,TRUE,chicken noodles,0
+Soup,chicken noodle soup,TRUE,chicken noodle soup,0
+Soup,chili,TRUE,chili,0
+Soup,chowder,TRUE,chowder,0
+Soup,clam chowder,TRUE,clam chowder,0
+Soup,french onion soup,TRUE,french onion soup,0
+Soup,pho,TRUE,pho,0
+Soup,sopa,TRUE,sopa,0
+Soup,soup,TRUE,soup,0
+Soup,stew,TRUE,stew,0
+Soup,tomato basil soup,TRUE,tomato basil soup,0
+Soup,tomato soup,TRUE,tomato soup,0
+Southernfood,Frito pie,FALSE,frito pie,1
+Southernfood,gumbo,TRUE,gumbo,0
+Southernfood,hushpuppy,TRUE,hushpuppy,0
+Southernfood,jambalaya,TRUE,jambalaya,0
+Spanishfood,beef taco,TRUE,beef taco,0
+Spanishfood,burrito,TRUE,burrito,0
+Spanishfood,burrito bowl,TRUE,burrito bowl,0
+Spanishfood,carne asada,TRUE,carne asada,0
+Spanishfood,carnitas,TRUE,carnitas,0
+Spanishfood,chalupa,TRUE,chalupa,0
+Spanishfood,chicken enchilada,TRUE,chicken enchilada,0
+Spanishfood,chipotle chicken,TRUE,chipotle chicken,0
+Spanishfood,churro,TRUE,churro,0
+Spanishfood,enchilada,TRUE,enchilada,0
+Spanishfood,fajita,TRUE,fajita,0
+Spanishfood,quesadilla,TRUE,quesadilla,0
+Spanishfood,taco,TRUE,taco,0
+Spanishfood,taco salad,TRUE,taco salad,0
+Spanishfood,tamale,TRUE,tamale,0
+Spanishfood,taquito,TRUE,taquito,0
+Spanishfood,toquito,TRUE,toquito,0
+Spanishfood,tortilla,TRUE,tortilla,0
+Spanishfood,tostada,TRUE,tostada,0
+Spread,almond butter,TRUE,almond butter,0
+Spread,butter,TRUE,butter,0
+Spread,honey,TRUE,honey,0
+Spread,jam,TRUE,jam,0
+Spread,jelly,TRUE,jelly,0
+Spread,Nutella,FALSE,nutella,1
+Spread,peanut butter,TRUE,peanut butter,0
+Vegetable,alfalfa,TRUE,alfalfa,0
+Vegetable,artichoke,TRUE,artichoke,0
+Vegetable,arugula,TRUE,arugula,0
+Vegetable,asparagus,TRUE,asparagus,0
+Vegetable,baked beans,TRUE,baked beans,0
+Vegetable,baked potato,TRUE,baked potato,0
+Vegetable,bamboo shoots,TRUE,bamboo shoots,0
+Vegetable,beans,TRUE,beans,0
+Vegetable,beansprouts,TRUE,beansprouts,0
+Vegetable,beets,TRUE,beets,0
+Vegetable,bell pepper,TRUE,bell pepper,0
+Vegetable,black beans,TRUE,black beans,0
+Vegetable,blackeyed peas,TRUE,blackeyed peas,0
+Vegetable,black olives,TRUE,black olives,0
+Vegetable,Bok choy,FALSE,bok choy,1
+Vegetable,Boston lettuce,FALSE,boston lettuce,1
+Vegetable,broccoli,TRUE,broccoli,0
+Vegetable,brussels sprouts,TRUE,brussels sprouts,0
+Vegetable,butternut squash,TRUE,butternut squash,0
+Vegetable,cabbage,TRUE,cabbage,0
+Vegetable,carrot,TRUE,carrot,0
+Vegetable,cauliflower,TRUE,cauliflower,0
+Vegetable,celeriac,TRUE,celeriac,0
+Vegetable,celery,TRUE,celery,0
+Vegetable,chickpea,TRUE,chickpea,0
+Vegetable,chili bean,TRUE,chili bean,0
+Vegetable,chili pepper,TRUE,chili pepper,0
+Vegetable,chives,TRUE,chives,0
+Vegetable,collard,TRUE,collard,0
+Vegetable,collard greens,TRUE,collard greens,0
+Vegetable,corn,TRUE,corn,0
+Vegetable,corn on the cob,TRUE,corn on the cob,0
+Vegetable,creamed corn,TRUE,creamed corn,0
+Vegetable,cucumber,TRUE,cucumber,0
+Vegetable,daikon,TRUE,daikon,0
+Vegetable,edamame,TRUE,edamame,0
+Vegetable,eggplant,TRUE,eggplant,0
+Vegetable,garbanzo beans,TRUE,garbanzo beans,0
+Vegetable,green bean,TRUE,green bean,0
+Vegetable,green onion,TRUE,green onion,0
+Vegetable,green pepper,TRUE,green pepper,0
+Vegetable,greens,TRUE,greens,0
+Vegetable,grilled vegetables,TRUE,grilled vegetables,0
+Vegetable,iceberg lettuce,TRUE,iceberg lettuce,0
+Vegetable,jalapeno,TRUE,jalapeno,0
+Vegetable,jicama,TRUE,jicama,0
+Vegetable,kale,TRUE,kale,0
+Vegetable,leaf lettuce,TRUE,leaf lettuce,0
+Vegetable,leek,TRUE,leek,0
+Vegetable,lentils,TRUE,lentils,0
+Vegetable,lettuce,TRUE,lettuce,0
+Vegetable,lima bean,TRUE,lima bean,0
+Vegetable,mashed potato,TRUE,mashed potato,0
+Vegetable,mushroom,TRUE,mushroom,0
+Vegetable,okra,TRUE,okra,0
+Vegetable,onion,TRUE,onion,0
+Vegetable,orange pepper,TRUE,orange pepper,0
+Vegetable,parsnip,TRUE,parsnip,0
+Vegetable,peas,TRUE,peas,0
+Vegetable,pickle,TRUE,pickle,0
+Vegetable,pinto bean,TRUE,pinto bean,0
+Vegetable,portabella,TRUE,portabella,0
+Vegetable,potato,TRUE,potato,0
+Vegetable,quinoa,TRUE,quinoa,0
+Vegetable,radicchio,TRUE,radicchio,0
+Vegetable,radish,TRUE,radish,0
+Vegetable,rapini,TRUE,rapini,0
+Vegetable,red cabbage,TRUE,red cabbage,0
+Vegetable,red pepper,TRUE,red pepper,0
+Vegetable,red potatoes,TRUE,red potatoes,0
+Vegetable,romaine,TRUE,romaine,0
+Vegetable,russet potatoes,TRUE,russet potatoes,0
+Vegetable,rutabaga,TRUE,rutabaga,0
+Vegetable,seaweed,TRUE,seaweed,0
+Vegetable,snap peas,TRUE,snap peas,0
+Vegetable,soup beans,TRUE,soup beans,0
+Vegetable,soybeans,TRUE,soybeans,0
+Vegetable,spinach,TRUE,spinach,0
+Vegetable,sprouts,TRUE,sprouts,0
+Vegetable,squash,TRUE,squash,0
+Vegetable,steamed vegetables,TRUE,steamed vegetables,0
+Vegetable,sweet potato,TRUE,sweet potato,0
+Vegetable,sweet potato,TRUE,sweet potato,0
+Vegetable,tofu,TRUE,tofu,0
+Vegetable,tomato,TRUE,tomato,0
+Vegetable,turnip,TRUE,turnip,0
+Vegetable,tvp,TRUE,tvp,0
+Vegetable,vegetables,TRUE,vegetables,0
+Vegetable,Vidalia onion,FALSE,vidalia onion,1
+Vegetable,wheatgrass,TRUE,wheatgrass,0
+Vegetable,winter squash,TRUE,winter squash,0
+Vegetable,yam,TRUE,yam,0
+Vegetable,yellow pepper,TRUE,yellow pepper,0

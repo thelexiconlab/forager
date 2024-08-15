@@ -1,0 +1,15 @@
+id	entry
+51	cat
+51	dog
+51	mouse
+51	rat
+51	giraffe
+71	cheetah
+71	panther
+71	snake
+71	shark
+71	elephant
+71	gazelle
+71	deer
+71	monkey
+71	orangutan
