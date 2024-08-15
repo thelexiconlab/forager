@@ -100,7 +100,6 @@ Below are sample executions to execute the code, on example data we provide with
 3. Running the `switches` branch of the pipeline
 
     a. Sample execution running a single switch method:
-
         ```
         python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch simdrop --domain animals
         ```
