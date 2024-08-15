@@ -28,7 +28,7 @@ To install the broader package, including command-line interfacable programs alo
     3. To utilize the package, you can now change your current working directory to the forager package, and execute the run_foraging.py file to utilize the command line interface  
         ```
         cd forager
-        python run_foraging.py --data <datapath> --model <modelname> --switch <switchmethod> 
+        python run_foraging.py --data <datapath> --pipeline <usecase> --model <modelname> --switch <switchmethod> --domain <domainname> 
         ```
 
 ### Alternative Installation
@@ -88,33 +88,44 @@ In order to utilize the package, there are a few key parameters that must be sat
 Below are sample executions to execute the code, on example data we provide with our package:
 
 1. Running the `evaluate_data` branch of the pipeline
+
     ```
     python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline evaluate_data --domain animals
     ```
 2. Running the `lexical` branch of the pipeline
+
     ```
     python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline lexical --domain animals
     ```
 3. Running the `switches` branch of the pipeline
+
     a. Sample execution running a single switch method:
+
         ```
         python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch simdrop --domain animals
         ```
+
     b. Sample execution running all switches:
+
         ```
         python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch all --domain animals
         ```
 4. Running the `models` pipeline  
+
     a.  Sample execution with single model and all switches:
+
         ```
         python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model dynamic --switch all --domain animals
         ```
+
     b. Sample execution with all models and single switch method:
+
         ```
         python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all --switch simdrop --domain animals
         ```
 
     c. Running all models and switches
+
         ```
         python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all --switch all --domain animals
         ```
