@@ -99,16 +99,14 @@ Below are sample executions to execute the code, on example data we provide with
     ```
 3. Running the `switches` branch of the pipeline
 
-    a. Sample execution running a single switch method:
-        ```
-        python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch simdrop --domain animals
-        ```
+    ```
+    # single switch method
+    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch simdrop --domain animals
 
-    b. Sample execution running all switches:
+    # all switch methods
+    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch all --domain animals
 
-        ```
-        python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch all --domain animals
-        ```
+    ```
 4. Running the `models` pipeline  
 
     a.  Sample execution with single model and all switches:
