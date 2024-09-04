@@ -1,0 +1,604 @@
+vocab
+academic advisor
+accountant
+accounting
+actor
+actress
+actuary
+administrative assistant
+administrator
+advertiser
+adviser
+advisor
+agent
+air traffic control
+analyst
+anchor
+anchorman
+anesthesiologist
+animal protection agency
+animal rights activist
+animal shelter worker
+animator
+anthropologist
+antiques dealer
+appraiser
+archaeologist
+architect
+army
+arranger
+art collector
+artist
+assistant
+associate
+astronaut
+astronomer
+athlete
+athletic director
+attendant
+attorney
+audiologist
+auditor
+author
+babysitter
+bagboy
+bagger
+baker
+baler
+ballerina
+bank teller
+banker
+bar back
+bar owner
+barber
+barista
+bartender
+baseball player
+basketball coach
+basketball player
+beautician
+biologist
+blogger
+bodyguard
+bondsman
+book editor
+botanist
+bouncer
+breeder
+brewer
+brick layer
+broadcaster
+builder
+bum
+bus driver
+busboy
+business
+business marketing
+business person
+businessman
+busser
+butcher
+butler
+buyer
+cab driver
+cabdriver
+cabinet
+cabinet maker
+cabinet member
+cable digger
+cacantor
+cafeteria worker
+camera man
+car maker
+car salesman
+cardiologist
+caretaker
+carpenter
+cartographer
+cashier
+caterer
+celebrity
+ceo
+certified nursing assistant
+cfo
+chauffer
+chauffeur
+cheese maker
+chef
+chemical engineer
+chemist
+chief executive officer
+chiropractor
+chocolatier
+cia
+cleaner
+cleaning lady
+clerk
+climatologist
+clinical psychologist
+clown
+coach
+coder
+colonel
+columnist
+comedian
+commissioner of the nba
+composer
+computer
+computer engineer
+computer programmer
+computer technician
+conductor
+congressman
+construction
+construction worker
+consultant
+contractor
+coo
+cook
+coordinator
+cop
+coroner
+cosmetologist
+cosmologist
+counselor
+cowboy
+craftsperson
+curator
+custodian
+customer service
+customer service representative
+cyclist
+dance instructor
+dancer
+data analyst
+daycare counselor
+daycare worker
+dealer
+dean
+decorator
+delivery driver
+delivery person
+deliveryman
+dental hygienist
+dentist
+dermatologist
+designer
+developer
+dietetics
+dietician
+dietitian
+director
+dish tanker
+dishwasher
+diver
+dj
+doctor
+dog walker
+door person
+doormen
+doula
+drafter
+dressmaker
+driver
+ear nose and throat specialist
+editor
+electrical engineer
+electrician
+electronics
+elevator operator
+employee
+emt
+emt doctor
+engineer
+entertainer
+entomologist
+entrepreneur
+estate
+etymologist
+event manager
+event planner
+excavator
+executive
+explorer
+exporting
+eye doctor
+factory worker
+farmer
+fashion designer
+fast food worker
+father
+fbi
+ferry driver
+fighting
+figure skater
+film archivist
+financial adviser
+financial analyst
+firefighter
+fireman
+fisherman
+fishing
+fitness educator
+fitness instructor
+floor worker
+florist
+fluffer
+flute player
+foot doctor
+football coach
+football player
+foreman
+front desk attendant
+funeral home manager
+game designer
+garbage man
+garbageman
+gardener
+gas attendant
+gas station attendant
+gas station clerk
+general
+geologist
+golfer
+government official
+government worker
+governor
+gravedigger
+grill cook
+grocer
+groundskeeper
+guard
+gym teacher
+gymnast
+gynecologist
+hacker
+hair dresser
+hair stylist
+haircutter
+hairdresser
+handler
+herder
+homeless person
+homemaker
+host
+hostess
+house cleaner
+house member
+housekeeper
+hunter
+hunting
+hygienist
+importer
+importing
+instructor
+insurance
+interior designer
+intern
+interpreter
+investigator
+it help desk
+it manager
+it person
+jailer
+janitor
+jazz band arranger
+jazz musician
+journalist
+judge
+juggler
+kindergarten teacher
+king
+lab technician
+lab worker
+landlord
+landscaper
+language arts teacher
+lawn mower
+lawnmower
+lawyer
+leader of an organization
+librarian
+life coach
+life guard
+lifeguard
+lineman
+locksmith
+lunch lady
+lyricist
+machinist
+magician
+maid
+mailman
+maintenance person
+maker
+makeup artist
+mall cop
+management
+manager
+managers
+manicurist
+manufacturer
+marine
+marine biologist
+marines
+marketer
+marketing
+marketing person
+mason
+massage therapist
+masseuse
+math teacher
+mathematician
+mayor
+mechanic
+mechanical engineer
+mechanist
+mediator
+merchandising
+military
+military officer
+millworker
+miner
+minister
+model
+mortician
+mother
+mover
+movie star
+mowing lawns
+mri technician
+musician
+nail tech
+nail technician
+nanny
+nasa
+navy
+neurologist
+neuroscientist
+news anchor
+news photographer
+news reporter
+nurse
+nurse anesthetist
+nurse assistant
+nurse practitioner
+nutritionist
+obstetrician
+occupational therapist
+office
+office worker
+officer
+oncologist
+ophthalmologist
+optometrist
+organizer
+orthodontist
+overseas coordinator
+owner
+painter
+paleontologist
+paralegal
+paramedic
+pathologist
+payroll administrator
+pediatrician
+performer
+personal trainer
+pet groomer
+pharmaceutical practitioner
+pharmaceutical worker
+pharmacist
+philosopher
+phlebotomist
+phone salesman
+photographer
+physical therapist
+physician assistant
+physicist
+piano player
+picker
+pilot
+pimp
+pipefitter
+planner
+plastic surgeon
+plumber
+podiatrist
+poet
+police
+police officer
+policeman
+policemen
+politician
+pool
+post office worker
+postal worker
+practitioner
+preacher
+prep cook
+president
+priest
+principal
+printer
+private manuscript consultant
+proctologist
+producer
+professional athlete
+professional baseball
+professional basketball player
+professional football player
+professional hockey player
+professional sports player
+professor
+program manager
+programmer
+prostitute
+psychiatrist
+psychic
+psychologist
+public relations representative
+public speaker
+publicist
+publisher
+rabbi
+radiologist
+railroad worker
+real estate
+real estate agent
+realtor
+realty
+receptionist
+recreational therapist
+recruiter
+relations
+religious or spiritual leader
+renderer
+repairman
+reporter
+representative
+research assistant
+researcher
+respiratory therapist
+restaurant owner
+retail
+retail associate
+retail manager
+retail person
+retail salesman
+retail worker
+retailer
+reviewer
+riding
+ring maker
+risk manager
+roadie
+rock musician
+safety and health specialist
+safety director
+safety inspector
+sales
+sales manager
+sales representative
+salesclerk
+salesman
+salesperson
+sanitation department
+school bus driver
+scientist
+sculptor
+sculpture
+seamstress
+secretary
+security
+security guard
+security officer
+senator
+sergeant
+server
+set dresser
+sewer worker
+sex worker
+sheriff
+shop owner
+shopkeeper
+singer
+small motors technician
+social media specialist
+social studies teacher
+social worker
+sociologist
+software developer
+soldier
+sommelier
+songwriter
+sous chef
+speaker
+speech pathologist
+sports agent
+sportscaster
+spy
+star
+statistician
+stockbroker
+stockist
+store owner
+storeowner
+stripper
+student
+superintendent
+supervisor
+supply chain manager
+surgeon
+swim coach
+swimmer
+tailor
+taste tester
+taster
+tax collector
+tax person
+tax preparer
+taxi driver
+taxidermist
+teacher
+teacher aid
+teachers assistant
+technician
+telemarketer
+teller
+theater actor
+theater manager
+therapist
+thief
+tollbooth
+tour guide
+trader
+trading
+traffic cop
+train conductor
+trainer
+translator
+trapeze artist
+trash collector
+trash man
+trashman
+travel agent
+treasurer
+tree trimmer
+trombone player
+truck driver
+tutor
+uber driver
+undertaker
+unemployed
+ups worker
+urologist
+usher
+vacation planner
+vagabond
+valet
+vendor
+veterinarian
+vice president
+vice principal
+videographer
+volunteer
+wait staff
+waiter
+waitress
+warehouse employee
+weatherman
+weatherperson
+weaver
+welder
+wildlife rehabilitator protector
+wine maker
+wood smith
+woodworker
+worker
+wrangler
+writer
+x ray technician
+yoga instructor
+zookeeper
+zoologist

@@ -1,0 +1,13 @@
+id	entry
+50001	chips
+50001	rice
+50001	sushi
+50001	noodles
+50001	spinach
+50001	squash
+50001	orange
+50002	noodles
+50002	chofan
+50002	udon
+50002	penne
+50002	adobo

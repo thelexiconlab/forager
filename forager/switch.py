@@ -269,6 +269,74 @@ def switch_delta(fluency_list, semantic_similarity, rise_thresh, fall_thresh):
 
     return switchVector
 
+def switch_multimodaldelta(fluency_list, semantic_similarity, phonological_similarity, rise_thresh, fall_thresh, alpha):
+    '''
+        Delta Similarity Switch Method proposed by Nancy Lundin & Peter Todd. 
+        
+        Args:
+            fluency_list (list, size = L): fluency list to predict switches on
+            semantic_similarity (list, size = L): a list of semantic similarities between items in the fluency list, obtained via create_history_variables
+            rise_thresh (float): after a switch occurs, the threshold that the increase in z-scored similarity must exceed to be a cluster  
+            fall_thresh (float): while in a cluster, the threshold that the decrease in z-scored similarity must exceed to be a switch
+
+        Returns:
+            a list, size L, of switches, where 0 = no switch, 1 = switch, 2 = boundary case
+    '''
+    if rise_thresh > 1 or rise_thresh < 0:
+        raise Exception("Rise Threshold parameter must be within range [0,1]")
+
+    if fall_thresh > 1 or fall_thresh < 0:
+        raise Exception("Fall Threshold parameter must be within range [0,1]")
+    
+    if alpha > 1 or alpha < 0:
+        raise Exception("Alpha parameter must be within range [0,1]")
+    
+    simphon = alpha * np.array(semantic_similarity) + (1 - alpha) * np.array(phonological_similarity)
+
+    switchVector = [2] # first item designated with 2
+
+    # obtain consecutive semantic similarities b/w responses
+    # z-score similarities within participant
+    similaritiesZ = stats.zscore(simphon[1:])
+    medianSim = statistics.median(similaritiesZ)
+    meanSim = 0
+    similaritiesZ = np.concatenate(([np.nan], similaritiesZ))
+
+    # define subject level threshold = median (zscored similarities)
+    # firstSwitchSimThreshold = meanSim
+    firstSwitchSimThreshold = medianSim
+    # for second item, if similarity < median, then switch, else cluster
+    if similaritiesZ[1] < firstSwitchSimThreshold:
+        switchVector.append(1)
+    else:
+        switchVector.append(0)
+
+    currentState = switchVector[1]
+    previousState = currentState
+
+    # for all other items:
+    for n in range(1,len(fluency_list)-1):
+    #   consider n-1, n, n+1 items
+        
+        simPrecedingToCurrentWord = similaritiesZ[n]
+        
+        simCurrentToNextWord = similaritiesZ[n+1]
+        if previousState == 0: #if previous state was a cluster
+            if fall_thresh < (simPrecedingToCurrentWord - simCurrentToNextWord): # similarity diff fell more than threshold
+                currentState = 1 # switch
+            else:
+                currentState = 0 # cluster
+        else: # previous state was a switch
+            if rise_thresh < (simCurrentToNextWord - simPrecedingToCurrentWord): # similarity diff is greater than our rise threshold
+                currentState = 0 # cluster
+            else:
+                currentState = 1 # switch
+
+        switchVector.append(currentState)
+        previousState = currentState
+
+    return switchVector
+
 ### SAMPLE RUN CODE ###
 # normspath =  '../data/norms/animals_snafu_scheme_vocab.csv'
 # norms = pd.read_csv(normspath, encoding="unicode-escape")

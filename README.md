@@ -1,8 +1,10 @@
-# forager
+# forager [version 2.0]
+
+**NOTE**: If you are looking for the original version of *forager*, please refer to the [v1 release](https://github.com/thelexiconlab/forager/releases/tag/v1).
 
 `forager` is a Python package for analyzing verbal fluency data and implementing models of memory search. The package can be used for obtaining automated cluster/switch designations for verbal fluency lists, as well as for implementing optimal foraging models on verbal fluency data. The package includes a command-line as well as a web interface for executing the models on fluency data.
 
-The details below describe how to install and use the package from the command line. You can also use `forager` through the [web interface](https://forager.research.bowdoin.edu/).
+The details below describe how to install and use the package from the command line. For *animals* data, you can also use `forager` through the [web interface](https://forager.research.bowdoin.edu/).
 
 ## Installation:
 
@@ -24,7 +26,7 @@ To install the broader package, including command-line interfacable programs alo
     3. To utilize the package, you can now change your current working directory to the forager package, and execute the run_foraging.py file to utilize the command line interface  
         ```
         cd forager
-        python run_foraging.py --data <datapath> --model <modelname> --switch <switchmethod> 
+        python run_foraging.py --data <datapath> --pipeline <usecase> --model <modelname> --switch <switchmethod> --domain <domainname> 
         ```
 
 ### Alternative Installation
@@ -62,7 +64,6 @@ In order to utilize the package, there are a few key parameters that must be sat
         c. switches : provides the coding of switches for the given fluency lists data depending on the designated method. 
         d. models: fits the data according to the selected model(s) and switch method(s)  
 
-
     3. model: The --model flag requires you to pass one of the following arguments, to run corresponding model(s) you would like to execute.
         a. static
         b. dynamic
@@ -75,41 +76,47 @@ In order to utilize the package, there are a few key parameters that must be sat
         b. simdrop
         c. multimodal
         d. delta
-        e. all
+        e. multimodaldelta
+        f. all
 
+    5. domain: The --domain flag requires you to specify which domain the data is from, so that the appropriate lexical metrics can be used. Currently, forager supports three domains: 
+        a. animals 
+        b. foods
+        c. occupations
+    
 Below are sample executions to execute the code, on example data we provide with our package:
 
 1. Running the `evaluate_data` branch of the pipeline
+
     ```
-    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline evaluate_data 
+    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline evaluate_data --domain animals
     ```
 2. Running the `lexical` branch of the pipeline
+
     ```
-    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline lexical
+    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline lexical --domain animals
     ```
 3. Running the `switches` branch of the pipeline
-    a. Sample execution running a single switch:
-        ```
-        python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch simdrop
-        ```
-    b. Sample execution running all switches:
-        ```
-        python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch all
-        ```
-4. Running the `models` pipeline  
-    a.  Sample execution with single model and all switches:
-        ```
-        python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model dynamic --switch all
-        ```
-    b. Sample execution with all models and single switch:
-        ```
-        python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all --switch simdrop
-        ```
 
-    c. Running all models and switches
-        ```
-        python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all --switch all
-        ```
+    ```
+    # single switch method
+    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch simdrop --domain animals
+
+    # all switch methods
+    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch all --domain animals
+
+    ```
+4. Running the `models` pipeline  
+    ```
+    # single model and all switch methods
+    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model dynamic --switch all --domain animals
+
+    # all models and single switch method
+    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all --switch simdrop --domain animals
+
+    # all models and all switch methods
+    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all --switch all --domain animals
+    ```
 
 ## Functionality
 
@@ -161,9 +168,11 @@ The source code for these methods can be found inside `forager/switch.py`. We cu
 - Similarity Drop
     - the similarity drop switching method (```simdrop```) is based on a switch heuristic used in Hills TT, Jones MN, Todd PM (2012) to mimic optimal foraging behavior. A switch is predicted within a series of items A,B,C,D after B if S(A,B) > S(B,C) and S(B,C) < S(C,D).
 - Delta Similarity
-    - the delta similarity switching method (```delta```) is a switch method proposed by Nancy Lundin in her dissertation to bypass the limits of the similarity drop switching method by allowing for consecutive switches and accounting for small dips in similarity that similarity drop may deem as a switch. This is done through the inclusion of z-scoring semantic similarity across all transitions in a list, and the inclusion of rise and fall threshold parameters to control clustering and switching via thresholding on z-score similarity values.
+    - the delta similarity switching method (```delta```) is a switch method proposed by Lundin et al. (2023) to bypass the limits of the similarity drop switching method by allowing for consecutive switches and accounting for small dips in similarity that similarity drop may deem as a switch. This is done through the inclusion of z-scoring semantic similarity across all transitions in a list, and the inclusion of rise and fall threshold parameters to control clustering and switching via thresholding on z-score similarity values.
 - Multimodal Similarity Drop
     - the multimodal similarity drop switching method (```multimodal```) is a switch method developed to include phonological similarity into the switch heuristic proposed by Hills TT, Jones MN, Todd PM (2012). It includes an alpha parameter which dictates the weighting of semantic versus phonological similarity in switching from cluster to cluster.
+- Multimodal Delta
+    - the multimodal delta switching method (```multimodaldelta```) is a switch method developed to include phonological similarity into the delta similarity switching method proposed by Lundin et al. (2023). It includes an alpha parameter which dictates the weighting of semantic versus phonological similarity in switching from cluster to cluster.
 
 ### Cues (Semantic, Phonological, and Frequency Matrix) Generation
 
@@ -173,7 +182,7 @@ Semantic Similarity Matrix Generation
 - The semantic similarity matrix is generated using an underlying semantic representational model ("embeddings"). The package currently uses the word2vec model and computes pairwise cosine similarity for all items in the space (indexed by the size of embeddings).
 
 Phonological Matrix Generation
-- The phonological similarity matrix computes the pairwise normalized edit distance between the phonemic transcriptions of all items in the space (indexed by a list (```labels```). Phonemic transcriptions are obtained via CMUdict, which uses Arpabet phonemic transcriptions.
+- The phonological similarity matrix computes the pairwise normalized edit distance between the phonemic transcriptions of all items in the space indexed by a list (```labels```). Phonemic transcriptions are obtained via CMUdict, which uses Arpabet phonemic transcriptions.
 
 Frequency Data Generation
 - A table of item frequencies is generated by obtaining raw counts for each item in the embedding labels from the Google Books Ngram Dataset via the PhraseFinder API. The raw counts are log transformed, and these log counts are the metrics used later by the models.
@@ -186,16 +195,22 @@ History Variabile Creation:
 We also provide functions to obtain embeddings and frequency data for a given vocabulary set. The source code for these methods can be found inside `forager/embeddings.py` and `forager/frequency.py`. 
 
 Embeddings
-- We use the `pymagnitude` packagae to obtain word vector embeddings. Currently, we use the word2vec model trained on the GoogleNews corpus that produces 300-dimensional word embeddings. `pymagnitude` also provides other embedding models.
+- We use the Universal Sentence Encoder to obtain word embeddings for a given vocabulary set. We use the model trained with a deep averaging network (DAN) encoder. 
 
 Frequency
-- We use the Google Books Ngram Dataset to obtain word frequency data. The package provides a function to obtain raw counts for a given vocabulary set. The raw counts are log transformed, and these log counts are the metrics used later by the models.
+- We use the `wordfreq` package to obtain zipfian frequency values for a given vocabulary set.
 
 ### Util Functions (Data Preprocessing)
 
 The source code for this data preprocessing method can be found inside `forager/utils.py`. 
-Prepare Data Function
-- The data preparation function cleans and reformats the fluency list data provided by the user. It takes in a path to data in the form of a file in which the first column contains a participant ID and the second contains one response item. The first row is assumed to be a header. If the file has more than two columns, users will be given the option to use the third as the timepoint for the fluency list (i.e., if a participant has multiple lists). Accepted delimiters separating the columns include commas, tabs, semicolons, pipes, and spaces. Each row should be on its own line. The function checks for any items outside of the vocabulary set used in the lexical metrics (OOV items). If a reasonable replacement is found for an OOV item, the item will be automatically replaced with the closest match. To handle all other OOV words, the user will be given three options. First, they can truncate the fluency list at the first occurrence of such a word. Second, they can exclude any such words but continue with the rest of the list, as if that word was never produced. Third, the word can be assigned a mean semantic vector, mean phonological similarity, and 0.0001 frequency. A file outlining the edits made to the original data will be saved. The fluency data is then reformatted into a list of tuples, each containing the participant ID and the corresponding fluency list. 
+
+**prepareData function**
+- The data preparation function cleans and reformats the fluency list data provided by the user. 
+- It takes in a path to data in the form of a file in which the first column contains a participant ID and the second contains one response item. The first row is assumed to be a header. Each row should be on its own line.
+- If the file has more than two columns, users will be given the option to use the third as the timepoint for the fluency list (i.e., if a participant has multiple lists). Accepted delimiters separating the columns include commas, tabs, semicolons, pipes, and spaces.  
+- The function checks for any items outside of the vocabulary set used in the lexical metrics (OOV items). If a reasonable replacement is found for an OOV item, the item will be automatically replaced with the closest match. 
+- To handle all other OOV words, the user will be given three options. First, they can *truncate* the fluency list at the first occurrence of such a word. Second, they can *exclude* any such words but continue with the rest of the list, as if that word was never produced. Third, the word can be assigned a mean semantic vector (denoted by *UNK* in the vocabulary), mean phonological similarity, and 0.0001 frequency. 
+- A file outlining the edits made to the original data will be saved. The fluency data is then reformatted into a list of tuples, each containing the participant ID and the corresponding fluency list. 
 
 
 ## Development Notes
@@ -203,7 +218,8 @@ Prepare Data Function
 ## References
 
 Please cite the following work if you use the package:
-- Kumar, A.A., Apsel, M., Zhang, L., Xing, N., Jones. M.N. (2023). forager: A Python package and web interface for modeling mental search.
+- Kumar, A. A., Apsel, M., Zhang, L., Xing, N., & Jones, M. N. (2023). forager: A Python package and web interface for modeling mental search. Behavior Research Methods, 1-17.
+- Kumar, A.A., Lundin, N.B, Jones, M.N. What’s in my cluster? Evaluating automated clustering methods to understand idiosyncratic search behavior in verbal fluency.
+- Lundin, N. B., Brown, J. W., Johns, B. T., Jones, M. N., Purcell, J. R., Hetrick, W. P., ... & Todd, P. M. (2023). Neural evidence of switch processes during semantic and phonetic foraging in human memory. Proceedings of the National Academy of Sciences, 120(42), e2312462120.
 - Hills, T. T, Jones, M. N, & Todd, P. M (2012). Optimal foraging in semantic memory. *Psychological Review*, *119*(2), 431–440.
 - Kumar, A. A, Lundin, N. B, & Jones, M. N (2022). Mouse-mole-vole: The inconspicuous benefit of phonology during retrieval from semantic memory. *Proceedings of the Annual Meeting of the Cognitive Science Society*. 
-- Troyer A. K, Moscovitch M., Winocur G. (1997). Clustering and switching as two components of verbal fluency: evidence from younger and older healthy adults. *Neuropsychology*. Jan;11(1):138-46. 
