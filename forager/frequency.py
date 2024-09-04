@@ -1,4 +1,3 @@
-# code adapted from He et al. (2022)
 
 import urllib
 import requests
@@ -11,7 +10,7 @@ from wordfreq import zipf_frequency
 def get_frequencies(embeddings,path_for_lexical_data):
     '''
         Description:
-            Creates a CSV file of frequencies for each word in the vocabulary, obtained from the Google Books Ngram Dataset (version 2)
+            Creates a CSV file of frequencies for each word in the vocabulary, obtained from the wordfreq package.
             The first column is the word, the second is the log count, and the third is the raw count.
             The resulting file is saved in the data/lexical data folder.
         Args:

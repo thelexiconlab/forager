@@ -191,6 +191,7 @@ def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity,
 
     if switch == switch_methods[1] or switch == switch_methods[6]:
         for i, a in enumerate(alpha):
+            a = round(a, 1)
             switch_names.append('multimodal_alpha={alpha}'.format(alpha=a))
             switch_vecs.append(switch_multimodal(fluency_list, semantic_similarity, phon_similarity, a))
 
@@ -215,6 +216,8 @@ def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity,
     if switch == switch_methods[4] or switch == switch_methods[6]:
         for i, r in enumerate(rise):
             for j, f in enumerate(fall):
+                r = round(r, 1)
+                f = round(f, 1)
                 switch_names.append("delta_rise={rise}_fall={fall}".format(rise=r,fall=f))
                 switch_vecs.append(switch_delta(fluency_list, semantic_similarity, r, f))
     
@@ -222,6 +225,10 @@ def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity,
         for i, a in enumerate(alpha):
             for i, r in enumerate(rise):
                 for j, f in enumerate(fall):
+                    # round a, r, f to 1 decimal places
+                    a = round(a, 1)
+                    r = round(r, 1)
+                    f = round(f, 1)
                     switch_names.append("multimodaldelta_alpha={alpha}_rise={rise}_fall={fall}".format(alpha=a,rise=r,fall=f))
                     switch_vecs.append(switch_multimodaldelta(fluency_list, semantic_similarity, phon_similarity, r, f, a))
 

@@ -1,6 +1,4 @@
-# forager
-
-**version 2.0** 
+# forager [version 2.0]
 
 **NOTE**: If you are looking for the original version of *forager*, please refer to the [v1 release](https://github.com/thelexiconlab/forager/releases/tag/v1).
 
@@ -78,7 +76,8 @@ In order to utilize the package, there are a few key parameters that must be sat
         b. simdrop
         c. multimodal
         d. delta
-        e. all
+        e. multimodaldelta
+        f. all
 
     5. domain: The --domain flag requires you to specify which domain the data is from, so that the appropriate lexical metrics can be used. Currently, forager supports three domains: 
         a. animals 
@@ -204,8 +203,14 @@ Frequency
 ### Util Functions (Data Preprocessing)
 
 The source code for this data preprocessing method can be found inside `forager/utils.py`. 
-Prepare Data Function
-- The data preparation function cleans and reformats the fluency list data provided by the user. It takes in a path to data in the form of a file in which the first column contains a participant ID and the second contains one response item. The first row is assumed to be a header. If the file has more than two columns, users will be given the option to use the third as the timepoint for the fluency list (i.e., if a participant has multiple lists). Accepted delimiters separating the columns include commas, tabs, semicolons, pipes, and spaces. Each row should be on its own line. The function checks for any items outside of the vocabulary set used in the lexical metrics (OOV items). If a reasonable replacement is found for an OOV item, the item will be automatically replaced with the closest match. To handle all other OOV words, the user will be given three options. First, they can truncate the fluency list at the first occurrence of such a word. Second, they can exclude any such words but continue with the rest of the list, as if that word was never produced. Third, the word can be assigned a mean semantic vector, mean phonological similarity, and 0.0001 frequency. A file outlining the edits made to the original data will be saved. The fluency data is then reformatted into a list of tuples, each containing the participant ID and the corresponding fluency list. 
+
+**prepareData function**
+- The data preparation function cleans and reformats the fluency list data provided by the user. 
+- It takes in a path to data in the form of a file in which the first column contains a participant ID and the second contains one response item. The first row is assumed to be a header. Each row should be on its own line.
+- If the file has more than two columns, users will be given the option to use the third as the timepoint for the fluency list (i.e., if a participant has multiple lists). Accepted delimiters separating the columns include commas, tabs, semicolons, pipes, and spaces.  
+- The function checks for any items outside of the vocabulary set used in the lexical metrics (OOV items). If a reasonable replacement is found for an OOV item, the item will be automatically replaced with the closest match. 
+- To handle all other OOV words, the user will be given three options. First, they can *truncate* the fluency list at the first occurrence of such a word. Second, they can *exclude* any such words but continue with the rest of the list, as if that word was never produced. Third, the word can be assigned a mean semantic vector (denoted by *UNK* in the vocabulary), mean phonological similarity, and 0.0001 frequency. 
+- A file outlining the edits made to the original data will be saved. The fluency data is then reformatted into a list of tuples, each containing the participant ID and the corresponding fluency list. 
 
 
 ## Development Notes
@@ -214,6 +219,7 @@ Prepare Data Function
 
 Please cite the following work if you use the package:
 - Kumar, A. A., Apsel, M., Zhang, L., Xing, N., & Jones, M. N. (2023). forager: A Python package and web interface for modeling mental search. Behavior Research Methods, 1-17.
+- Kumar, A.A., Lundin, N.B, Jones, M.N. What’s in my cluster? Evaluating automated clustering methods to understand idiosyncratic search behavior in verbal fluency.
 - Lundin, N. B., Brown, J. W., Johns, B. T., Jones, M. N., Purcell, J. R., Hetrick, W. P., ... & Todd, P. M. (2023). Neural evidence of switch processes during semantic and phonetic foraging in human memory. Proceedings of the National Academy of Sciences, 120(42), e2312462120.
 - Hills, T. T, Jones, M. N, & Todd, P. M (2012). Optimal foraging in semantic memory. *Psychological Review*, *119*(2), 431–440.
 - Kumar, A. A, Lundin, N. B, & Jones, M. N (2022). Mouse-mole-vole: The inconspicuous benefit of phonology during retrieval from semantic memory. *Proceedings of the Annual Meeting of the Cognitive Science Society*. 
