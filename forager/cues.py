@@ -6,6 +6,9 @@ from functools import lru_cache
 from itertools import product as iterprod
 import re
 from tqdm import tqdm
+import time
+import pickle  # for saving and loading the wordbreak_labels
+
 
 '''
 
@@ -161,6 +164,29 @@ class phonology_funcs:
         '''
         return round(1-nltk.edit_distance(w1,w2)/(max(len(w1), len(w2))),4)
 
+    def update_wordbreak_labels(new_labels, path_for_lexical_data):
+        wordbreak_labels_file = path_for_lexical_data + '/wordbreak_labels.pkl'
+        try:
+            # Try to load the existing wordbreak_labels from the file
+            with open(wordbreak_labels_file, 'rb') as f:
+                wordbreak_labels = pickle.load(f)
+        except FileNotFoundError:
+            # If the file doesn't exist, create a new empty list
+            wordbreak_labels = []
+
+        start_time = time.time()
+        # Compute the wordbreak for only the new labels
+        new_wordbreak_labels = [phonology_funcs.wordbreak(l) for l in new_labels if l not in [label for sublist in wordbreak_labels for label in sublist]]
+        wordbreak_labels.extend(new_wordbreak_labels)
+        print(f"Time taken to update wordbreak_labels: {time.time() - start_time:.6f} seconds")
+
+        start_time = time.time()
+        # Save the updated wordbreak_labels to the file
+        with open(wordbreak_labels_file, 'wb') as f:
+            pickle.dump(wordbreak_labels, f)
+        print(f"Time taken to save updated wordbreak_labels: {time.time() - start_time:.6f} seconds")
+
+        return wordbreak_labels
     def create_phonological_matrix(labels, path_for_lexical_data):
         '''
             Description:
@@ -170,18 +196,128 @@ class phonology_funcs:
             Returns: 
                 (1) phonological_matrix: phonological similarity matrix (NxN np.array)
         '''
+        start_time = time.time()
         labels = [re.sub('[^a-zA-Z]+', '', str(v)) for v in labels]
+        print(f"Time taken to strip labels: {time.time() - start_time:.6f} seconds")
+
+        wordbreak_labels_file = path_for_lexical_data + '/wordbreak_labels.pkl'
+        wordbreak_labels = {}
+        start_time = time.time()
+        for i in tqdm(range(len(labels))):
+            label = labels[i]
+            wordbreak_labels[label] = phonology_funcs.wordbreak(label)
+        print(f"Time taken for wordbreaks: {time.time() - start_time:.6f} seconds")
+
+        with open(wordbreak_labels_file, 'wb') as f:
+            pickle.dump(wordbreak_labels, f)
+        print(f"Time taken to save wordbreak_labels: {time.time() - start_time:.6f} seconds")
+
+        start_time = time.time()
         sim = np.zeros((len(labels), len(labels)))
         for i in tqdm(range(len(labels))):
             for j in range(i):
-                sim[i, j] = phonology_funcs.normalized_edit_distance(phonology_funcs.wordbreak(labels[i])[0], phonology_funcs.wordbreak(labels[j])[0])
+                sim[i, j] = phonology_funcs.normalized_edit_distance(wordbreak_labels[labels[i]][0], wordbreak_labels[labels[j]][0])
         sim = sim + sim.T
         np.fill_diagonal(sim, 1)
-        # convert to dataframe without header or index
+        print(f"Time taken for similarity calculation: {time.time() - start_time:.6f} seconds")
+
+        start_time = time.time()
         phon_matrix_df = pd.DataFrame(sim)
         phon_matrix_df.to_csv(path_for_lexical_data + '/USE_phon_matrix.csv', header=False, index=False)
+        print(f"Time taken to save the matrix: {time.time() - start_time:.6f} seconds")
+
         return sim
+
+
+    def update_phonological_matrix(existing_labels, new_labels, path_for_lexical_data):
+        wordbreak_labels_file = path_for_lexical_data + '/wordbreak_labels.pkl'
+        try:
+            # Load the existing wordbreak_labels from the file
+            with open(wordbreak_labels_file, 'rb') as f:
+                wordbreak_labels = pickle.load(f)
+        except FileNotFoundError:
+            # If the file doesn't exist, create a new dictionary
+            wordbreak_labels = {}
+
+        # Compute the wordbreak for the new labels and update the dictionary
+        start_time = time.time()
+        for label in new_labels:
+            if label not in wordbreak_labels:
+                wordbreak_labels[label] = phonology_funcs.wordbreak(label)
+        print(f"Time taken to update wordbreak_labels: {time.time() - start_time:.6f} seconds")
+
+        start_time = time.time()
+        # Save the updated wordbreak_labels to the file
+        with open(wordbreak_labels_file, 'wb') as f:
+            pickle.dump(wordbreak_labels, f)
+        print(f"Time taken to save updated wordbreak_labels: {time.time() - start_time:.6f} seconds")
+
+        all_labels = list(wordbreak_labels.keys())
+        start_time = time.time()
+        # Compute the new phonological similarity matrix
+        sim = np.zeros((len(all_labels), len(all_labels)))
+        for i in tqdm(range(len(all_labels))):
+            for j in range(i):
+                sim[i, j] = phonology_funcs.normalized_edit_distance(wordbreak_labels[all_labels[i]][0], wordbreak_labels[all_labels[j]][0])
+        sim = sim + sim.T
+        np.fill_diagonal(sim, 1)
+        print(f"Time taken for similarity calculation: {time.time() - start_time:.6f} seconds")
+
+        start_time = time.time()
+        phon_matrix_df = pd.DataFrame(sim)
+        phon_matrix_df.to_csv(path_for_lexical_data + '/USE_new_phon_matrix.csv', header=False, index=False)
+        print(f"Time taken to save the matrix: {time.time() - start_time:.6f} seconds")
+
+        return sim
+    
+    def get_phonological_similarity(word1, word2):
+        '''
+            Description:
+                Takes in two words and returns their phonological similarity
+            Args:
+                (1) word1 (str): first word
+                (2) word2 (str): second word
+            Returns:
+                (1) phonological_similarity (float): phonological similarity between word1 and word2
+        '''
+        
+        word1 = re.sub('[^a-zA-Z]+', '', str(word1))
+        word2 = re.sub('[^a-zA-Z]+', '', str(word2))
+        print(f"word1={word1}, word2={word2}")
+        phon1 = phonology_funcs.wordbreak(word1)[0]
+        phon2 = phonology_funcs.wordbreak(word2)[0]
+        print(f"phon1={phon1}, phon2={phon2}")
+        print(phonology_funcs.normalized_edit_distance(phon1, phon2))
+    
+    def check_phon_matrix(path_for_lexical_data):
+        phon_matrix = np.loadtxt(path_for_lexical_data +'USE_new_phon_matrix.csv',delimiter=',')
+        print("shape of phon_matrix: ", phon_matrix.shape)
+        labels = pd.read_csv(path_for_lexical_data +'vocab_semantigories.csv')['word'].values.tolist()
+        # generate 5 random pairs of words
+        for i in range(5):
+            word1 = labels[np.random.randint(0, len(labels))]
+            word2 = labels[np.random.randint(0, len(labels))]
+            matrix_sim= np.round(phon_matrix[labels.index(word1), labels.index(word2)], 2)
+            word1 = re.sub('[^a-zA-Z]+', '', str(word1))
+            word2 = re.sub('[^a-zA-Z]+', '', str(word2))
+            phon1 = phonology_funcs.wordbreak(word1)[0]
+            phon2 = phonology_funcs.wordbreak(word2)[0]
+            phon_similarity = np.round(phonology_funcs.normalized_edit_distance(phon1, phon2), 2)
+            print(f"Direct Phonological similarity for {word1} and {word2} is {phon_similarity}")
+            print(f"Matrix Phonological similarity for {word1} and {word2} is {matrix_sim}")
+            assert phon_similarity == matrix_sim
+            # print message if all assertions pass
+            print("assertion passed")
+        
+        if phon_matrix.shape[0] != phon_matrix.shape[1]:
+            raise ValueError("Phonological matrix is not square")
     
 
 ### SAMPLE RUN CODE ###
 #create_semantic_matrix('../data/lexical_data/USE_embeddings.csv')
+# v = pd.read_csv('../data/lexical_data/animals/vocab_semantigories.csv')['word'].values.tolist()
+# print("length of v: ", len(v))
+# phonology_funcs.create_phonological_matrix(v, '../data/lexical_data/animals')
+
+# phonology_funcs.get_phonological_similarity('able seaman', 'accounts payable')
+# phonology_funcs.check_phon_matrix('../data/lexical_data/occupations/')
