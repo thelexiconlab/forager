@@ -1,15 +1,14 @@
 import argparse
-from scipy.optimize import fmin
+from scipy.optimize import minimize
 from forager.foraging import forage
 from forager.switch import *
 from forager.cues import create_history_variables
 from forager.utils import prepareData
 import pandas as pd
 import numpy as np
-from scipy.optimize import fmin, minimize
 import os, sys
 from tqdm import tqdm
-import warnings 
+import warnings
 import zipfile
 
 warnings.simplefilter('ignore')
@@ -45,10 +44,30 @@ fp = "/".join(sys.argv[0].split('/')[:-1])
 
 # Global Variables
 models = ['static','dynamic','pstatic','pdynamic','all']
-switch_methods = ['simdrop','multimodal','norms_associative','norms_categorical', 'delta', 'multimodaldelta', 'all']
+switch_methods = ['simdrop','multimodal','norms_associative','norms_categorical', 'delta', 'multimodaldelta', 'slope_difference', 'pei', 'all']
+
+# Method family names (without 'all') used to group switch results into separate files
+_switch_families = [m for m in switch_methods if m != 'all']
+
+def _get_switch_family(method_name):
+    """Extract the method family from a Switch_Method string (e.g. 'pei_alpha=0.5_beta=0.3_prior=0.5' -> 'pei')."""
+    for family in sorted(_switch_families, key=len, reverse=True):
+        if method_name == family or method_name.startswith(family + '_'):
+            return family
+    return method_name
+
+def save_switch_results_to_zip(zipf, switch_results, oname):
+    """Save switch results as separate CSVs per method family inside the zip."""
+    switch_results = switch_results.copy()
+    switch_results['_family'] = switch_results['Switch_Method'].apply(_get_switch_family)
+    for family, group in switch_results.groupby('_family'):
+        fname = f'switch_results_{family}.csv'
+        with zipf.open(fname, 'w') as csvf:
+            group.drop(columns=['_family']).to_csv(csvf, index=False)
+        print(f"File '{fname}' containing {family} switch results saved in '{oname}'")
 
 #Methods
-def retrieve_data(path, domain):
+def retrieve_data(path, domain, time_type='cumulative', time_units='s'):
     """
     1. Verify that data path exists
 
@@ -56,7 +75,7 @@ def retrieve_data(path, domain):
     if os.path.exists(path) == False:
         ex_str = "Provided path to data \"{path}\" does not exist. Please specify a proper path".format(path=path)
         raise Exception(ex_str)
-    data = prepareData(path, domain)
+    data = prepareData(path, domain, time_type=time_type, time_units=time_units)
     return data
 
 def get_lexical_data(domain):
@@ -171,12 +190,12 @@ def calculate_model(model, history_vars, switch_names, switch_vecs):
     model_results.append((0, 0, nll_baseline, nll_baseline_vec))
     return model_name, model_results
 
-def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity, norms,domain, alpha = np.arange(0, 1.1, 0.1), rise = np.arange(0, 1.25, 0.25), fall = np.arange(0, 1.25, 0.25)):
+def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity, norms, domain, times=None, alpha = np.arange(0, 1.1, 0.1), rise = np.arange(0, 1.25, 0.25), fall = np.arange(0, 1.25, 0.25), pei_beta = np.arange(0, 1.1, 0.1), pei_prior = np.arange(0.1, 1.0, 0.1)):
     '''
     1. Check if specified switch model is valid
     2. Return set of switches, including parameter value, if required
 
-    switch_methods = ['simdrop','multimodal','norms_associative', 'norms_categorical', 'delta','multimodaldelta','all']
+    switch_methods = ['simdrop','multimodal','norms_associative', 'norms_categorical', 'delta','multimodaldelta', 'slope_difference', 'pei', 'all']
     '''
     switch_names = []
     switch_vecs = []
@@ -185,27 +204,27 @@ def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity,
         ex_str = "Specified switch method is invalid. Switch method must be one of the following: {switch}".format(switch=switch_methods)
         raise Exception(ex_str)
 
-    if switch == switch_methods[0] or switch == switch_methods[6]:
+    if switch == switch_methods[0] or switch == switch_methods[8]:
         switch_names.append(switch_methods[0])
         switch_vecs.append(switch_simdrop(fluency_list, semantic_similarity))
 
-    if switch == switch_methods[1] or switch == switch_methods[6]:
+    if switch == switch_methods[1] or switch == switch_methods[8]:
         for i, a in enumerate(alpha):
             a = round(a, 1)
             switch_names.append('multimodal_alpha={alpha}'.format(alpha=a))
             switch_vecs.append(switch_multimodal(fluency_list, semantic_similarity, phon_similarity, a))
 
-    if (switch == switch_methods[2] or switch == switch_methods[6]) and domain in ['animals','foods']:
-        
+    if (switch == switch_methods[2] or switch == switch_methods[8]) and domain in ['animals','foods']:
+
         if domain == 'animals':
             switch_names.append("norms_associative")
             switch_vecs.append(switch_norms_associative(fluency_list,norms[0]))
         else:
             switch_names.append("norms_associative")
             switch_vecs.append(switch_norms_associative(fluency_list,norms[1]))
-    
-    if switch == switch_methods[3] or switch == switch_methods[6] and domain in ['animals','foods']:
-        
+
+    if switch == switch_methods[3] or switch == switch_methods[8] and domain in ['animals','foods']:
+
         if domain == 'animals':
             switch_names.append("norms_categorical")
             switch_vecs.append(switch_norms_categorical(fluency_list,norms[0]))
@@ -213,15 +232,15 @@ def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity,
             switch_names.append("norms_categorical")
             switch_vecs.append(switch_norms_categorical(fluency_list,norms[1]))
 
-    if switch == switch_methods[4] or switch == switch_methods[6]:
+    if switch == switch_methods[4] or switch == switch_methods[8]:
         for i, r in enumerate(rise):
             for j, f in enumerate(fall):
                 r = round(r, 1)
                 f = round(f, 1)
                 switch_names.append("delta_rise={rise}_fall={fall}".format(rise=r,fall=f))
                 switch_vecs.append(switch_delta(fluency_list, semantic_similarity, r, f))
-    
-    if switch == switch_methods[5] or switch == switch_methods[6]:
+
+    if switch == switch_methods[5] or switch == switch_methods[8]:
         for i, a in enumerate(alpha):
             for i, r in enumerate(rise):
                 for j, f in enumerate(fall):
@@ -232,6 +251,31 @@ def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity,
                     switch_names.append("multimodaldelta_alpha={alpha}_rise={rise}_fall={fall}".format(alpha=a,rise=r,fall=f))
                     switch_vecs.append(switch_multimodaldelta(fluency_list, semantic_similarity, phon_similarity, r, f, a))
 
+    if switch == switch_methods[6] or switch == switch_methods[8]:
+        if times is None:
+            if switch == switch_methods[6]:
+                raise Exception("Slope difference method requires timing data. Please provide cumulative response times in seconds via the 'times' parameter.")
+            # skip when running 'all' without timing data
+        else:
+            switch_names.append("slope_difference")
+            decisions, _ = switch_slope_difference(fluency_list, times)
+            switch_vecs.append(decisions)
+
+    if switch == switch_methods[7] or switch == switch_methods[8]:
+        if times is None:
+            if switch == switch_methods[7]:
+                raise Exception("PEI method requires timing data. Please provide cumulative response times in seconds via the 'times' parameter.")
+            # skip when running 'all' without timing data
+        else:
+            for i, a in enumerate(alpha):
+                for j, b in enumerate(pei_beta):
+                    for k, p in enumerate(pei_prior):
+                        a = round(a, 1)
+                        b = round(b, 1)
+                        p = round(p, 1)
+                        switch_names.append("pei_alpha={alpha}_beta={beta}_prior={prior}".format(alpha=a, beta=b, prior=p))
+                        switch_vecs.append(switch_pei(fluency_list, times, semantic_similarity, phon_similarity, alpha=a, beta=b, prior_probability=p))
+
     return switch_names, switch_vecs
 
 def run_model(data, model_type, switch_type, domain):
@@ -239,15 +283,17 @@ def run_model(data, model_type, switch_type, domain):
     norms, similarity_matrix, phon_matrix, frequency_list, labels = get_lexical_data(domain)
     forager_results = []
     # Run through each fluency list in dataset
-    for i, (subj, fl_list) in enumerate(tqdm(data)):
+    for i, item in enumerate(tqdm(data)):
+        subj, fl_list = item[0], item[1]
+        fl_times = item[2] if len(item) == 3 else None
         print("\nRunning Model for Subject {subj}".format(subj=subj))
         import time
         start_time = time.time()
-        # Get History Variables 
+        # Get History Variables
         history_vars = create_history_variables(fl_list, labels, similarity_matrix, frequency_list, phon_matrix)
-        
+
         # Calculate Switch Vector(s)
-        switch_names, switch_vecs = calculate_switch(switch_type, fl_list, history_vars[0],   history_vars[4], norms, domain)
+        switch_names, switch_vecs = calculate_switch(switch_type, fl_list, history_vars[0], history_vars[4], norms, domain, times=fl_times)
 
         #Execute Individual Model(s) and get result(s)
         model_names, model_results = calculate_model(model_type,history_vars, switch_names, switch_vecs)
@@ -276,7 +322,8 @@ def run_lexical(data, domain):
     # Get Lexical Data needed for executing methods
     norms, similarity_matrix, phon_matrix, frequency_list, labels = get_lexical_data(domain)
     lexical_results = []
-    for i, (subj, fl_list) in enumerate(tqdm(data)):
+    for i, item in enumerate(tqdm(data)):
+        subj, fl_list = item[0], item[1]
         history_vars = create_history_variables(fl_list, labels, similarity_matrix, frequency_list, phon_matrix)
         lexical_df = pd.DataFrame()
         lexical_df['Subject'] = len(fl_list) * [subj]
@@ -291,9 +338,11 @@ def run_lexical(data, domain):
 def run_switches(data,switch_type, domain):
     norms, similarity_matrix, phon_matrix, frequency_list, labels = get_lexical_data(domain)
     switch_results = []
-    for i, (subj, fl_list) in enumerate(tqdm(data)):
+    for i, item in enumerate(tqdm(data)):
+        subj, fl_list = item[0], item[1]
+        fl_times = item[2] if len(item) == 3 else None
         history_vars = create_history_variables(fl_list, labels, similarity_matrix, frequency_list, phon_matrix)
-        switch_names, switch_vecs = calculate_switch(switch_type, fl_list, history_vars[0], history_vars[4], norms, domain)
+        switch_names, switch_vecs = calculate_switch(switch_type, fl_list, history_vars[0], history_vars[4], norms, domain, times=fl_times)
     
         switch_df = []
         for j, switch in enumerate(switch_vecs):
@@ -414,6 +463,8 @@ parser.add_argument('--pipeline',type=str, help='specifies which part of pipelin
 parser.add_argument('--model', type=str, help='specifies foraging model to use')
 parser.add_argument('--switch', type=str, help='specifies switch model to use')
 parser.add_argument('--domain', type=str, help='specifies domain to use')
+parser.add_argument('--time_type', type=str, default='cumulative', help="type of timing data: 'cumulative' or 'irt' (inter-response time). Default: cumulative")
+parser.add_argument('--time_units', type=str, default='s', help="units of timing data: 's' (seconds) or 'ms' (milliseconds). Default: s")
 
 args = parser.parse_args()
 
@@ -435,7 +486,7 @@ oname = os.path.join(output_dir, file_name)
 
 
 if args.pipeline == 'evaluate_data':
-    data, replacement_df, processed_df = retrieve_data(args.data, args.domain)
+    data, replacement_df, processed_df = retrieve_data(args.data, args.domain, time_type=args.time_type, time_units=args.time_units)
     with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
         # Save the first DataFrame as a CSV file inside the zip
         with zipf.open('evaluation_results.csv', 'w') as csvf:
@@ -457,7 +508,7 @@ if args.pipeline == 'evaluate_data':
 
 elif args.pipeline == 'lexical':
     # Retrieve the Data for Getting Lexical Info
-    data, replacement_df, processed_df = retrieve_data(args.data, args.domain)
+    data, replacement_df, processed_df = retrieve_data(args.data, args.domain, time_type=args.time_type, time_units=args.time_units)
     # Run subroutine for getting strictly the similarity & frequency values 
     lexical_results = run_lexical(data, args.domain)
     ind_stats = indiv_desc_stats(lexical_results)
@@ -497,7 +548,7 @@ elif args.pipeline == 'switches':
     # Run subroutine for getting strictly switch outputs 
     # Run subroutine for getting model outputs
     print("Checking Data ...")
-    data, replacement_df, processed_df = retrieve_data(args.data, args.domain)
+    data, replacement_df, processed_df = retrieve_data(args.data, args.domain, time_type=args.time_type, time_units=args.time_units)
     print("Retrieving Lexical Data ...")
     lexical_results = run_lexical(data, args.domain)
     print("Obtaining Switch Designations ...")
@@ -524,14 +575,13 @@ elif args.pipeline == 'switches':
         with zipf.open('lexical_results.csv','w') as csvf:
             lexical_results.to_csv(csvf, index=False) 
         
-        # save switch results
-        with zipf.open('switch_results.csv','w') as csvf:
-            switch_results.to_csv(csvf, index=False) 
+        # save switch results (separate file per method family)
+        save_switch_results_to_zip(zipf, switch_results, oname)
 
         # save individual descriptive statistics
         with zipf.open('individual_descriptive_stats.csv', 'w') as csvf:
             ind_stats.to_csv(csvf, index=False)
-        
+
         # save aggregate descriptive statistics
         with zipf.open('aggregate_descriptive_stats.csv', 'w') as csvf:
             agg_stats.to_csv(csvf, index=False)
@@ -539,8 +589,7 @@ elif args.pipeline == 'switches':
         print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
         print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
         print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
-        print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")        
-        print(f"File 'switch_results.csv' containing designated switch methods and switch values of fluency list data saved in '{oname}'")
+        print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")
         print(f"File 'individual_descriptive_stats.csv' containing individual-level statistics saved in '{oname}'")
         print(f"File 'aggregate_descriptive_stats.csv' containing the overall group-level statistics saved in '{oname}'")
 
@@ -556,7 +605,7 @@ elif args.pipeline == 'models':
         parser.error(f"Please specify a proper switch method (e.g. {switch_methods})")
     # Run subroutine for getting model outputs
     print("Checking Data ...")
-    data, replacement_df, processed_df = retrieve_data(args.data, args.domain)
+    data, replacement_df, processed_df = retrieve_data(args.data, args.domain, time_type=args.time_type, time_units=args.time_units)
     print("Retrieving Lexical Data ...")
     lexical_results = run_lexical(data, args.domain)
     print("Obtaining Switch Designations ...")
@@ -583,12 +632,11 @@ elif args.pipeline == 'models':
         # save lexical results
         with zipf.open('lexical_results.csv','w') as csvf:
             lexical_results.to_csv(csvf, index=False) 
-        # save switch results
-        with zipf.open('switch_results.csv','w') as csvf:
-            switch_results.to_csv(csvf, index=False) 
+        # save switch results (separate file per method family)
+        save_switch_results_to_zip(zipf, switch_results, oname)
         # save model results
         with zipf.open('model_results.csv','w') as csvf:
-            forager_results.to_csv(csvf, index=False) 
+            forager_results.to_csv(csvf, index=False)
         # save individual descriptive statistics
         with zipf.open('individual_descriptive_stats.csv', 'w') as csvf:
             ind_stats.to_csv(csvf, index=False)
@@ -600,7 +648,6 @@ elif args.pipeline == 'models':
         print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
         print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
         print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")
-        print(f"File 'switch_results.csv' containing designated switch methods and switch values of fluency list data saved in '{oname}'")
         print(f"File 'model_results.csv' containing model level NLL results of provided fluency data saved in '{oname}'")
         print(f"File 'individual_descriptive_stats.csv' containing individual-level statistics saved in '{oname}'")
         print(f"File 'aggregate_descriptive_stats.csv' containing the overall group-level statistics saved in '{oname}'")

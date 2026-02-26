@@ -52,10 +52,41 @@ Requirements:
 - urllib>=1.26
 - tqdm>=4.59
 
-## Usage: 
- 
+## Input File Format
+
+The input data file should be a delimited text file (CSV, TSV, TXT, etc.) with a header row. Columns are detected by name (case-insensitive), not by position. Accepted delimiters include commas, tabs, semicolons, pipes, and spaces.
+
+| Column | Required | Aliases | Description |
+|--------|----------|---------|-------------|
+| `SID` | Yes | `id`, `subject`, `participant` | Participant ID |
+| `entry` | Yes | `item`, `word`, `response` | Response item (word produced by the participant) |
+| `timepoint` | No | | Timepoint identifier for grouping multiple lists per participant |
+| `time` | No | `rt`, `response_time` | Response time for each item (required for `slope_difference` and `pei` switch methods) |
+
+Example with required columns only:
+```
+SID,entry
+1,dog
+1,cat
+1,horse
+2,lion
+2,tiger
+```
+
+Example with timing data:
+```
+SID,entry,time
+1,dog,2.1
+1,cat,4.3
+1,horse,8.7
+2,lion,1.9
+2,tiger,3.5
+```
+
+## Usage:
+
 In order to utilize the package, there are a few key parameters that must be satisfied
-   
+
     1. data : The --data flag requires you to specify the path to the fluency list file that you would like to execute foraging methods on
 
     2. pipeline: The --pipeline flag requires you to execute one of four branches of the pipeline 
@@ -72,17 +103,28 @@ In order to utilize the package, there are a few key parameters that must be sat
         e. all
 
     4. switch: The --switch flag requires you to pass one of the following arguments to utilize corresponding switch method(s) in the model selected
-        a. troyer
-        b. simdrop
-        c. multimodal
-        d. delta
-        e. multimodaldelta
-        f. all
+        a. simdrop
+        b. multimodal
+        c. norms_associative
+        d. norms_categorical
+        e. delta
+        f. multimodaldelta
+        g. slope_difference
+        h. pei
+        i. all
 
-    5. domain: The --domain flag requires you to specify which domain the data is from, so that the appropriate lexical metrics can be used. Currently, forager supports three domains: 
-        a. animals 
+    5. domain: The --domain flag requires you to specify which domain the data is from, so that the appropriate lexical metrics can be used. Currently, forager supports three domains:
+        a. animals
         b. foods
         c. occupations
+
+    6. time_type (optional): The --time_type flag specifies the format of timing data in your input file
+        a. cumulative (default)
+        b. irt (inter-response time)
+
+    7. time_units (optional): The --time_units flag specifies the units of timing data
+        a. s (seconds, default)
+        b. ms (milliseconds)
     
 Below are sample executions to execute the code, on example data we provide with our package:
 
@@ -162,17 +204,23 @@ The source code for these models can be found inside `forager/foraging.py`. We c
     - the phonological dynamic (```pdynamic```) model has 3 versions, indexed by the ```phoncue``` parameter. The "local" model uses frequency, semantic, and phonological similarity during within-cluster transitions and frequency during between-cluster transitions. The "global" model uses frequency, semantic, and phonological similarity during within-cluster transitions, and frequency and phonological similarity during between-cluster transitions. Finally, the "switch" model uses only semantic similarity and frequency during within-cluster transitions and phonological similarity and frequency for between-cluster transitions. By default, if using run_foraging.py, if ```pdynamic``` is passed to --model flag, it will execute all three versions of the model. The phonological dynamic model was introduced in Kumar AA, Lundin NB, & Jones MN (2022)
 
 ### Switch Methods
-The source code for these methods can be found inside `forager/switch.py`. We currently implement four types of switch methods, which can be executed by passing the corresponding switch name to the ```--switch``` flag in the command line interface. The methods are as follows:
-- Norms-based (Troyer Norms)
-    - the troyer norms switching method (```troyer```) adapts the categorization norms proposed by Troyer, AK, Moscovitch, M, & Winocur, G (1997), subsequently extended by our lab for analysis. Switches are predicted when moving from one subcategory of the Troyer categorization norms to another.  
+The source code for these methods can be found inside `forager/switch.py`. We currently implement seven types of switch methods, which can be executed by passing the corresponding switch name to the ```--switch``` flag in the command line interface. The methods are as follows:
 - Similarity Drop
     - the similarity drop switching method (```simdrop```) is based on a switch heuristic used in Hills TT, Jones MN, Todd PM (2012) to mimic optimal foraging behavior. A switch is predicted within a series of items A,B,C,D after B if S(A,B) > S(B,C) and S(B,C) < S(C,D).
-- Delta Similarity
-    - the delta similarity switching method (```delta```) is a switch method proposed by Lundin et al. (2023) to bypass the limits of the similarity drop switching method by allowing for consecutive switches and accounting for small dips in similarity that similarity drop may deem as a switch. This is done through the inclusion of z-scoring semantic similarity across all transitions in a list, and the inclusion of rise and fall threshold parameters to control clustering and switching via thresholding on z-score similarity values.
+- Norms-based Associative
+    - the norms-based associative switching method (```norms_associative```) adapts the categorization norms proposed by Troyer, AK, Moscovitch, M, & Winocur, G (1997), subsequently extended by Zemla & Austerweil (2018) via SNAFU. Switches are predicted when the current item does not share categories with the preceding item.
+- Norms-based Categorical
+    - the norms-based categorical switching method (```norms_categorical```) is based on the same categorization norms, but switches are predicted when the current item does not share categories with all items in the preceding cluster. See Hills et al. (2015) for more details.
 - Multimodal Similarity Drop
     - the multimodal similarity drop switching method (```multimodal```) is a switch method developed to include phonological similarity into the switch heuristic proposed by Hills TT, Jones MN, Todd PM (2012). It includes an alpha parameter which dictates the weighting of semantic versus phonological similarity in switching from cluster to cluster.
+- Delta Similarity
+    - the delta similarity switching method (```delta```) is a switch method proposed by Lundin et al. (2023) to bypass the limits of the similarity drop switching method by allowing for consecutive switches and accounting for small dips in similarity that similarity drop may deem as a switch. This is done through the inclusion of z-scoring semantic similarity across all transitions in a list, and the inclusion of rise and fall threshold parameters to control clustering and switching via thresholding on z-score similarity values.
 - Multimodal Delta
     - the multimodal delta switching method (```multimodaldelta```) is a switch method developed to include phonological similarity into the delta similarity switching method proposed by Lundin et al. (2023). It includes an alpha parameter which dictates the weighting of semantic versus phonological similarity in switching from cluster to cluster.
+- Slope Difference
+    - the slope difference switching method (```slope_difference```) fits an exponential model to cumulative word count vs response time, and predicts a switch when the actual retrieval rate falls below the predicted rate (negative slope difference). This method was implemented following the procedure described in Bushnell et al. (2022). It requires cumulative response times in seconds, specified via a timing column in the input data.
+- Probabilistic Evidence Integration (PEI)
+    - the PEI switching method (```pei```) is a Bayesian method that combines similarity-based evidence with temporal evidence from the slope difference method using log-odds integration. It requires cumulative response times in seconds and at least one similarity measure (semantic, phonological, or both). The method uses an alpha parameter to weight semantic vs. phonological similarity and a beta parameter to weight similarity-based vs. temporal evidence.
 
 ### Cues (Semantic, Phonological, and Frequency Matrix) Generation
 
@@ -206,8 +254,8 @@ The source code for this data preprocessing method can be found inside `forager/
 
 **prepareData function**
 - The data preparation function cleans and reformats the fluency list data provided by the user. 
-- It takes in a path to data in the form of a file in which the first column contains a participant ID and the second contains one response item. The first row is assumed to be a header. Each row should be on its own line.
-- If the file has more than two columns, users will be given the option to use the third as the timepoint for the fluency list (i.e., if a participant has multiple lists). Accepted delimiters separating the columns include commas, tabs, semicolons, pipes, and spaces.  
+- It takes in a path to a delimited data file (CSV, TXT, TSV, etc.). The first row is assumed to be a header. Columns are mapped by header name (case-insensitive), not by position. Required columns are `SID` (participant ID) and `entry` (response item). Optional columns are `timepoint` (for grouping multiple lists per participant) and `time` (response times for timing-based switch methods). Accepted delimiters include commas, tabs, semicolons, pipes, and spaces.
+- When a `time` column is present, the timing format and units can be specified via the `--time_type` (`cumulative` or `irt`) and `--time_units` (`s` or `ms`) flags. Timing data is required for the `slope_difference` and `pei` switch methods.
 - The function checks for any items outside of the vocabulary set used in the lexical metrics (OOV items). If a reasonable replacement is found for an OOV item, the item will be automatically replaced with the closest match. 
 - To handle all other OOV words, the user will be given three options. First, they can *truncate* the fluency list at the first occurrence of such a word. Second, they can *exclude* any such words but continue with the rest of the list, as if that word was never produced. Third, the word can be assigned a mean semantic vector (denoted by *UNK* in the vocabulary), mean phonological similarity, and 0.0001 frequency. 
 - A file outlining the edits made to the original data will be saved. The fluency data is then reformatted into a list of tuples, each containing the participant ID and the corresponding fluency list. 
@@ -218,6 +266,7 @@ The source code for this data preprocessing method can be found inside `forager/
 ## References
 
 Please cite the following work if you use the package:
+- Bushnell, J., Svaldi, D., Ayers, M. R., Gao, S., Unverzagt, F., Del Gaizo, J., Wadley, V. G., Kennedy, R., Goñi, J., & Clark, D. G. (2022). A comparison of techniques for deriving clustering and switching scores from verbal fluency word lists. *Frontiers in Psychology*, *13*, 743557.
 - Kumar, A. A., Apsel, M., Zhang, L., Xing, N., & Jones, M. N. (2023). forager: A Python package and web interface for modeling mental search. Behavior Research Methods, 1-17.
 - Kumar, A.A., Lundin, N.B, Jones, M.N. What’s in my cluster? Evaluating automated clustering methods to understand idiosyncratic search behavior in verbal fluency.
 - Lundin, N. B., Brown, J. W., Johns, B. T., Jones, M. N., Purcell, J. R., Hetrick, W. P., ... & Todd, P. M. (2023). Neural evidence of switch processes during semantic and phonetic foraging in human memory. Proceedings of the National Academy of Sciences, 120(42), e2312462120.
