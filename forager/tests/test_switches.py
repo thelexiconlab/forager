@@ -111,16 +111,19 @@ def test_pei():
             Fluency list is of size <= 2: returns all boundary markers
             Missing similarity raises ValueError
     '''
+    # Precompute slope differences
+    _, slope_diffs = switch_slope_difference(ex_list_1, ex_times_1)
+
     # Semantic only
-    assert switch_pei(ex_list_1, ex_times_1, semantic_similarity=history_vars[0]) == [2, 0, 0, 0, 1, 0]
+    assert switch_pei(ex_list_1, ex_times_1, semantic_similarity=history_vars[0], slope_diffs=slope_diffs) == [2, 0, 0, 0, 1, 0]
 
     # Both modalities
     assert switch_pei(ex_list_1, ex_times_1, semantic_similarity=history_vars[0],
-                      phonological_similarity=history_vars[4]) == [2, 0, 0, 0, 1, 0]
+                      phonological_similarity=history_vars[4], slope_diffs=slope_diffs) == [2, 0, 0, 0, 1, 0]
 
     # Boundary: short list
     assert switch_pei(['cat', 'dog'], [2.0, 4.5], semantic_similarity=[0, 0.5]) == [2, 2]
 
     # Missing similarity raises error
     with pytest.raises(ValueError):
-        switch_pei(ex_list_1, ex_times_1)
+        switch_pei(ex_list_1, ex_times_1, slope_diffs=slope_diffs)

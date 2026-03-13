@@ -442,7 +442,7 @@ def switch_slope_difference(fluency_list, times):
 
 
 def switch_pei(fluency_list, times, semantic_similarity=None, phonological_similarity=None,
-               alpha=0.8, beta=0.5, prior_probability=0.5):
+               slope_diffs=None, alpha=0.8, beta=0.5, prior_probability=0.5):
     '''
         Probabilistic Evidence Integration (PEI) method for identifying switches.
         Combines similarity-based evidence with temporal evidence from the slope
@@ -456,6 +456,8 @@ def switch_pei(fluency_list, times, semantic_similarity=None, phonological_simil
                 must be provided.
             phonological_similarity (list, size = L, optional): phonological similarities
                 between consecutive items.
+            slope_diffs (np.ndarray): precomputed slope differences from
+                switch_slope_difference.
             alpha (float): weight for semantic vs phonological similarity (0-1).
                 alpha=1.0 uses semantic only, alpha=0.0 phonological only. Default: 0.8.
             beta (float): weight for similarity vs temporal evidence (0-1).
@@ -485,10 +487,7 @@ def switch_pei(fluency_list, times, semantic_similarity=None, phonological_simil
     if len(fluency_list) < 3:
         return [2] * len(fluency_list)
 
-    # Get slope differences from the slope difference method
-    _, slope_diffs = switch_slope_difference(fluency_list, times)
-
-    if len(slope_diffs) == 0:
+    if slope_diffs is None or len(slope_diffs) == 0:
         return [2] * len(fluency_list)
 
     # Combined similarity (skip first element, which is a placeholder)

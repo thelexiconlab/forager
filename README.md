@@ -10,39 +10,30 @@ The details below describe how to install and use the package from the command l
 
 In order to install the package as is , there are two options
 
-### Recommended Installation 
+### Recommended Installation
+
 To install the broader package, including command-line interfacable programs along with metadata, we encourage you to use the following installation instructions:
 
-    1. Clone this github repository to a home directory of your choice
-        ```
-        git clone https://github.com/thelexiconlab/forager.git
-        ```
+    1. Clone this github repository to a home directory of your choice``        git clone https://github.com/thelexiconlab/forager.git        ``
 
-    2. In current home directory, execute:
-        ```
-        pip install forager -r forager/requirements.txt
-        ```
+    2. In current home directory, execute:``        pip install forager -r forager/requirements.txt        ``
 
-    3. To utilize the package, you can now change your current working directory to the forager package, and execute the run_foraging.py file to utilize the command line interface  
-        ```
-        cd forager
-        python run_foraging.py --data <datapath> --pipeline <usecase> --model <modelname> --switch <switchmethod> --domain <domainname> 
-        ```
+    3. To utilize the package, you can now change your current working directory to the forager package, and execute the run_foraging.py file to utilize the command line interface
+    ``        cd forager         python run_foraging.py --data <datapath> --pipeline <usecase> --model <modelname> --switch <switchmethod> --domain <domainname>         ``
 
 ### Alternative Installation
+
 In order to install the package without auxilliary files, you can also install with the following command
-    ```
-    pip install git+https://github.com/thelexiconlab/forager
-    ```
+    ``    pip install git+https://github.com/thelexiconlab/forager    ``
 We also provide a conda environment yaml file for those who wish to use the package with conda. You can install the conda environment with the following command
-    ```
-    conda env create -f environment_forager.yml
-    ```
+    ``    conda env create -f environment_forager.yml    ``
 
 ## Installation Requirements
-Requires Python 3.8 
+
+Requires Python 3.8
 
 Requirements:
+
 - nltk>=3.6
 - numpy>=1.20
 - pandas>=1.3
@@ -56,14 +47,15 @@ Requirements:
 
 The input data file should be a delimited text file (CSV, TSV, TXT, etc.) with a header row. Columns are detected by name (case-insensitive), not by position. Accepted delimiters include commas, tabs, semicolons, pipes, and spaces.
 
-| Column | Required | Aliases | Description |
-|--------|----------|---------|-------------|
-| `SID` | Yes | `id`, `subject`, `participant` | Participant ID |
-| `entry` | Yes | `item`, `word`, `response` | Response item (word produced by the participant) |
-| `timepoint` | No | | Timepoint identifier for grouping multiple lists per participant |
-| `time` | No | `rt`, `response_time` | Response time for each item (required for `slope_difference` and `pei` switch methods) |
+| Column        | Required | Aliases                              | Description                                                                                |
+| ------------- | -------- | ------------------------------------ | ------------------------------------------------------------------------------------------ |
+| `SID`       | Yes      | `id`, `subject`, `participant` | Participant ID                                                                             |
+| `entry`     | Yes      | `item`, `word`, `response`     | Response item (word produced by the participant)                                           |
+| `timepoint` | No       |                                      | Timepoint identifier for grouping multiple lists per participant                           |
+| `time`      | No       | `rt`, `response_time`            | Response time for each item (required for `slope_difference` and `pei` switch methods) |
 
 Example with required columns only:
+
 ```
 SID,entry
 1,dog
@@ -74,6 +66,7 @@ SID,entry
 ```
 
 Example with timing data:
+
 ```
 SID,entry,time
 1,dog,2.1
@@ -89,11 +82,11 @@ In order to utilize the package, there are a few key parameters that must be sat
 
     1. data : The --data flag requires you to specify the path to the fluency list file that you would like to execute foraging methods on
 
-    2. pipeline: The --pipeline flag requires you to execute one of four branches of the pipeline 
+    2. pipeline: The --pipeline flag requires you to execute one of four branches of the pipeline
         a. evaluate_data : passes the data through the pipeline to determine if there are any modifications needed to enable use by the rest of the pipeline
-        b. lexical : provides the corresponding lexical information about data contained in fluency lists (e.g. semantic similarity, phonological similarity, word frequency).   
-        c. switches : provides the coding of switches for the given fluency lists data depending on the designated method. 
-        d. models: fits the data according to the selected model(s) and switch method(s)  
+        b. lexical : provides the corresponding lexical information about data contained in fluency lists (e.g. semantic similarity, phonological similarity, word frequency).
+    c. switches : provides the coding of switches for the given fluency lists data depending on the designated method.
+        d. models: fits the data according to the selected model(s) and switch method(s)
 
     3. model: The --model flag requires you to pass one of the following arguments, to run corresponding model(s) you would like to execute.
         a. static
@@ -125,40 +118,51 @@ In order to utilize the package, there are a few key parameters that must be sat
     7. time_units (optional): The --time_units flag specifies the units of timing data
         a. s (seconds, default)
         b. ms (milliseconds)
-    
+
+    8. parallel (optional): The --parallel flag enables multiprocessing to process subjects in parallel (switches and models pipelines)
+
+    9. n_workers (optional): The --n_workers flag specifies the number of parallel workers (default: number of physical CPU cores). Requires --parallel
+
 Below are sample executions to execute the code, on example data we provide with our package:
 
 1. Running the `evaluate_data` branch of the pipeline
 
-    ```
-    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline evaluate_data --domain animals
-    ```
+   ```
+   python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline evaluate_data --domain animals
+   ```
 2. Running the `lexical` branch of the pipeline
 
-    ```
-    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline lexical --domain animals
-    ```
+   ```
+   python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline lexical --domain animals
+   ```
 3. Running the `switches` branch of the pipeline
 
-    ```
-    # single switch method
-    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch simdrop --domain animals
+   ```
+   # single switch method
+   python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch simdrop --domain animals
 
-    # all switch methods
-    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch all --domain animals
+   # all switch methods
+   python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch all --domain animals
 
-    ```
-4. Running the `models` pipeline  
-    ```
-    # single model and all switch methods
-    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model dynamic --switch all --domain animals
+   ```
+4. Running the `models` pipeline
 
-    # all models and single switch method
-    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all --switch simdrop --domain animals
+   ```
+   # single model and all switch methods
+   python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model dynamic --switch all --domain animals
 
-    # all models and all switch methods
-    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all --switch all --domain animals
-    ```
+   # all models and single switch method
+   python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all --switch simdrop --domain animals
+
+   # all models and all switch methods
+   python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all --switch all --domain animals
+
+   # parallel execution (uses all physical CPU cores)
+   python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all --switch all --domain animals --parallel
+
+   # parallel execution with specific number of workers
+   python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline models --model all --switch all --domain animals --parallel --n_workers 4
+   ```
 
 ## Functionality
 
@@ -167,16 +171,15 @@ Below are sample executions to execute the code, on example data we provide with
 Different output files are generated when forager is run, based on the use case:
 
 - **Evaluate/Check Data**: If the user first evaluates the data they wish to analyze, the following files will be available for download via a `.zip` file:
+
   - `evaluation_results.csv`: This file will contain the results from *forager*'s evaluation of all the items in the data against its own vocabulary. The `evaluation` column in the file will describe whether an exact match to the item was found (FOUND), or a reasonable replacement was made (REPLACE), and how the OOV items were handled based on the user-specified policy (EXCLUDE/TRUNCATE/UNK). The `replacement` column in the file will describe the specific replacements made to the items.
   - `processed_data.csv`: This file will contain the final data that will be submitted for further analyses to *forager*. Users should carefully inspect this file to ensure that it aligns with their expectations, and make changes if needed.
   - `forager_vocab.csv`: This file contains the vocabulary used by *forager* to conduct the evaluation. We provide this file so that users can make changes to their data if needed before they proceed with other analyses.
-
 - **Get Lexical Values**: If the user selects this option, the following files will be available for download via a `.zip` file:
 
-  - `lexical_results.csv`: This file contains item-wise lexical metrics (semantic similarity, phonological similarity, and word frequency). The semantic and phonological similarities indicate the similarity between the previous item and current item (the first item will have an arbitrary value of .0001),  whereas the frequency values indicate the frequency of the current item in the English language (obtained via Google N-grams).
+  - `lexical_results.csv`: This file contains item-wise lexical metrics (semantic similarity, phonological similarity, and word frequency). The semantic and phonological similarities indicate the similarity between the previous item and current item (the first item will have an arbitrary value of .0001),  whereas the frequency values indicate the frequency of the current item in the English language (obtained via Google N-grams). When timing data is provided, this file also includes: `Cumulative_IRT` (cumulative response time in seconds), `IRT` (inter-response time in seconds, where the first item's IRT equals its cumulative time), and `Slope_Difference` (the difference between actual and predicted retrieval rates from an exponential fit; NaN for the first item).
   - `individual_descriptive_stats.csv`: This file contains some aggregate metrics at the participant level such as total number of items produced, as well as means/SDs of semantic similarity, phonological similarity, and word frequency.
   - The three files from the evaluation phase
-
 - **Get Switches**: If the user selects this option, the following files will be available for download via a `.zip` file:
 
   - `switch_results.csv`: This file contains the item-level cluster/switch designations for each method. A switch is indicated by a 1, and a cluster is indicated by a 0. A value of 2 either denotes the first item in the list or the last item(s) for switch methods that rely on previous/subsequent items (i.e., no switch/cluster prediction can be made).
@@ -184,91 +187,99 @@ Different output files are generated when forager is run, based on the use case:
   - `individual_descriptive_stats.csv`: In addition to the metrics available from lexical results (mean/SD of lexical values and number of items), this file will also contain the total number of switches and mean cluster size for each switch method.
   - `aggregate_descriptive_stats.csv`: This file will contain mean/SD for the number of switches (aggregated across all participants) for each switch method.
   - The three files from the evaluation phase
-
 - **Get Models**: If the user selects this option, they will be redirected to a Colab notebook, where they can upload their data and run the models. In addition to the files generated in the **Get Switches** option, the following files will be available for download via a `.zip` file:
 
-  - `model_results.csv`: This file will contain the model-based negative log-likelihoods for the selected models, as well as the best-fitting parameter values for semantic, phonological, and frequency cues for each model, at the subject level.
+  - `model_results.csv`: This file will contain the model-based negative log-likelihoods for the selected models, as well as the best-fitting parameter values for semantic, phonological, and frequency cues for each model, at the subject level.e
   - `aggregate_descriptive_stats.csv`: In addition to the metrics available from the **Get Switches** option, this file will also contain the mean/SD values of the parameters (aggregated across all participants) for each model and switch method.
-
 
 ### Semantic Foraging Models
 
-The source code for these models can be found inside `forager/foraging.py`. We currently implement four types of semantic foraging models, which can be executed by passing the corresponding model name to the ```--model``` flag in the command line interface. The models are as follows:
-- Static Model 
-    - the original static model (```static```) executes foraging where all transitions are based on the same set of cues over the entire retrieval interval, effectively ignoring the patchy structure of the memory retrieval environment. All transitions are based on a combined product of semantic similarity and word frequency. The static foraging model was introduced in Hills TT, Jones MN, Todd PM (2012).
+The source code for these models can be found inside `forager/foraging.py`. We currently implement four types of semantic foraging models, which can be executed by passing the corresponding model name to the ``--model`` flag in the command line interface. The models are as follows:
+
+- Static Model
+  - the original static model (``static``) executes foraging where all transitions are based on the same set of cues over the entire retrieval interval, effectively ignoring the patchy structure of the memory retrieval environment. All transitions are based on a combined product of semantic similarity and word frequency. The static foraging model was introduced in Hills TT, Jones MN, Todd PM (2012).
 - Dynamic Model
-    - the original dynamic model (```dynamic```) executes foraging by employing a clustering and switching mechanism that exploits the patchy structure of memory. The dynamic model utilizes word frequency and semantic similarity during within-clustering transitions, and word frequency during between-cluster transitions. Cluster and switching behavior is captured via the ```switchvals``` parameter, which can be calculated by the provided switch methods in the package. The static foraging model was introduced in Hills TT, Jones MN, Todd PM (2012).
+  - the original dynamic model (``dynamic``) executes foraging by employing a clustering and switching mechanism that exploits the patchy structure of memory. The dynamic model utilizes word frequency and semantic similarity during within-clustering transitions, and word frequency during between-cluster transitions. Cluster and switching behavior is captured via the ``switchvals`` parameter, which can be calculated by the provided switch methods in the package. The static foraging model was introduced in Hills TT, Jones MN, Todd PM (2012).
 - Phonological Static Model
-    - the phonological static model (```pstatic```) is an extension of the static model, where all transitions are based on a combined product of semantic similarity, word frequency, and phonological similarity. The phonological static model was introduced in Kumar AA, Lundin NB, & Jones MN (2022)
+  - the phonological static model (``pstatic``) is an extension of the static model, where all transitions are based on a combined product of semantic similarity, word frequency, and phonological similarity. The phonological static model was introduced in Kumar AA, Lundin NB, & Jones MN (2022)
 - Phonological Dynamic Model
-    - the phonological dynamic (```pdynamic```) model has 3 versions, indexed by the ```phoncue``` parameter. The "local" model uses frequency, semantic, and phonological similarity during within-cluster transitions and frequency during between-cluster transitions. The "global" model uses frequency, semantic, and phonological similarity during within-cluster transitions, and frequency and phonological similarity during between-cluster transitions. Finally, the "switch" model uses only semantic similarity and frequency during within-cluster transitions and phonological similarity and frequency for between-cluster transitions. By default, if using run_foraging.py, if ```pdynamic``` is passed to --model flag, it will execute all three versions of the model. The phonological dynamic model was introduced in Kumar AA, Lundin NB, & Jones MN (2022)
+  - the phonological dynamic (``pdynamic``) model has 3 versions, indexed by the ``phoncue`` parameter. The "local" model uses frequency, semantic, and phonological similarity during within-cluster transitions and frequency during between-cluster transitions. The "global" model uses frequency, semantic, and phonological similarity during within-cluster transitions, and frequency and phonological similarity during between-cluster transitions. Finally, the "switch" model uses only semantic similarity and frequency during within-cluster transitions and phonological similarity and frequency for between-cluster transitions. By default, if using run_foraging.py, if ``pdynamic`` is passed to --model flag, it will execute all three versions of the model. The phonological dynamic model was introduced in Kumar AA, Lundin NB, & Jones MN (2022)
 
 ### Switch Methods
-The source code for these methods can be found inside `forager/switch.py`. We currently implement seven types of switch methods, which can be executed by passing the corresponding switch name to the ```--switch``` flag in the command line interface. The methods are as follows:
+
+The source code for these methods can be found inside `forager/switch.py`. We currently implement seven types of switch methods, which can be executed by passing the corresponding switch name to the ``--switch`` flag in the command line interface. The methods are as follows:
+
 - Similarity Drop
-    - the similarity drop switching method (```simdrop```) is based on a switch heuristic used in Hills TT, Jones MN, Todd PM (2012) to mimic optimal foraging behavior. A switch is predicted within a series of items A,B,C,D after B if S(A,B) > S(B,C) and S(B,C) < S(C,D).
+  - the similarity drop switching method (``simdrop``) is based on a switch heuristic used in Hills TT, Jones MN, Todd PM (2012) to mimic optimal foraging behavior. A switch is predicted within a series of items A,B,C,D after B if S(A,B) > S(B,C) and S(B,C) < S(C,D).
 - Norms-based Associative
-    - the norms-based associative switching method (```norms_associative```) adapts the categorization norms proposed by Troyer, AK, Moscovitch, M, & Winocur, G (1997), subsequently extended by Zemla & Austerweil (2018) via SNAFU. Switches are predicted when the current item does not share categories with the preceding item.
+  - the norms-based associative switching method (``norms_associative``) adapts the categorization norms proposed by Troyer, AK, Moscovitch, M, & Winocur, G (1997), subsequently extended by Zemla & Austerweil (2018) via SNAFU. Switches are predicted when the current item does not share categories with the preceding item.
 - Norms-based Categorical
-    - the norms-based categorical switching method (```norms_categorical```) is based on the same categorization norms, but switches are predicted when the current item does not share categories with all items in the preceding cluster. See Hills et al. (2015) for more details.
+  - the norms-based categorical switching method (``norms_categorical``) is based on the same categorization norms, but switches are predicted when the current item does not share categories with all items in the preceding cluster. See Hills et al. (2015) for more details.
 - Multimodal Similarity Drop
-    - the multimodal similarity drop switching method (```multimodal```) is a switch method developed to include phonological similarity into the switch heuristic proposed by Hills TT, Jones MN, Todd PM (2012). It includes an alpha parameter which dictates the weighting of semantic versus phonological similarity in switching from cluster to cluster.
+  - the multimodal similarity drop switching method (``multimodal``) is a switch method developed to include phonological similarity into the switch heuristic proposed by Hills TT, Jones MN, Todd PM (2012). It includes an alpha parameter which dictates the weighting of semantic versus phonological similarity in switching from cluster to cluster.
 - Delta Similarity
-    - the delta similarity switching method (```delta```) is a switch method proposed by Lundin et al. (2023) to bypass the limits of the similarity drop switching method by allowing for consecutive switches and accounting for small dips in similarity that similarity drop may deem as a switch. This is done through the inclusion of z-scoring semantic similarity across all transitions in a list, and the inclusion of rise and fall threshold parameters to control clustering and switching via thresholding on z-score similarity values.
+  - the delta similarity switching method (``delta``) is a switch method proposed by Lundin et al. (2023) to bypass the limits of the similarity drop switching method by allowing for consecutive switches and accounting for small dips in similarity that similarity drop may deem as a switch. This is done through the inclusion of z-scoring semantic similarity across all transitions in a list, and the inclusion of rise and fall threshold parameters to control clustering and switching via thresholding on z-score similarity values.
 - Multimodal Delta
-    - the multimodal delta switching method (```multimodaldelta```) is a switch method developed to include phonological similarity into the delta similarity switching method proposed by Lundin et al. (2023). It includes an alpha parameter which dictates the weighting of semantic versus phonological similarity in switching from cluster to cluster.
+  - the multimodal delta switching method (``multimodaldelta``) is a switch method developed to include phonological similarity into the delta similarity switching method proposed by Lundin et al. (2023). It includes an alpha parameter which dictates the weighting of semantic versus phonological similarity in switching from cluster to cluster.
 - Slope Difference
-    - the slope difference switching method (```slope_difference```) fits an exponential model to cumulative word count vs response time, and predicts a switch when the actual retrieval rate falls below the predicted rate (negative slope difference). This method was implemented following the procedure described in Bushnell et al. (2022). It requires cumulative response times in seconds, specified via a timing column in the input data.
+  - the slope difference switching method (``slope_difference``) fits an exponential model to cumulative word count vs response time, and predicts a switch when the actual retrieval rate falls below the predicted rate (negative slope difference). This method was implemented following the procedure described in Bushnell et al. (2022). It requires cumulative response times in seconds, specified via a timing column in the input data.
 - Probabilistic Evidence Integration (PEI)
-    - the PEI switching method (```pei```) is a Bayesian method that combines similarity-based evidence with temporal evidence from the slope difference method using log-odds integration. It requires cumulative response times in seconds and at least one similarity measure (semantic, phonological, or both). The method uses an alpha parameter to weight semantic vs. phonological similarity and a beta parameter to weight similarity-based vs. temporal evidence.
+  - the PEI switching method (``pei``) is a Bayesian method that combines similarity-based evidence with temporal evidence from the slope difference method using log-odds integration. It requires cumulative response times in seconds and at least one similarity measure (semantic, phonological, or both). The method uses an alpha parameter to weight semantic vs. phonological similarity and a beta parameter to weight similarity-based vs. temporal evidence.
 
 ### Cues (Semantic, Phonological, and Frequency Matrix) Generation
 
 The source code for these methods can be found inside `forager/cues.py`. We currently implement three types of cue generation methods, which are as follows:
 
 Semantic Similarity Matrix Generation
+
 - The semantic similarity matrix is generated using an underlying semantic representational model ("embeddings"). The package currently uses the word2vec model and computes pairwise cosine similarity for all items in the space (indexed by the size of embeddings).
 
 Phonological Matrix Generation
-- The phonological similarity matrix computes the pairwise normalized edit distance between the phonemic transcriptions of all items in the space indexed by a list (```labels```). Phonemic transcriptions are obtained via CMUdict, which uses Arpabet phonemic transcriptions.
+
+- The phonological similarity matrix computes the pairwise normalized edit distance between the phonemic transcriptions of all items in the space indexed by a list (``labels``). Phonemic transcriptions are obtained via CMUdict, which uses Arpabet phonemic transcriptions.
 
 Frequency Data Generation
+
 - A table of item frequencies is generated by obtaining raw counts for each item in the embedding labels from the Google Books Ngram Dataset via the PhraseFinder API. The raw counts are log transformed, and these log counts are the metrics used later by the models.
 
 History Variabile Creation:
+
 - History variables is a utility function that keeps track of lexical metrics (frequency, semantic, and phonological similarity) within a given fluency list. Specifically, the function uses underlying semantic and phonological similarity matrices as well as word frequency, and returns the similarites between consecutive items within a specific fluency list.
 
 ### Lexical Metrics (Embeddings and Frequency)
 
-We also provide functions to obtain embeddings and frequency data for a given vocabulary set. The source code for these methods can be found inside `forager/embeddings.py` and `forager/frequency.py`. 
+We also provide functions to obtain embeddings and frequency data for a given vocabulary set. The source code for these methods can be found inside `forager/embeddings.py` and `forager/frequency.py`.
 
 Embeddings
-- We use the Universal Sentence Encoder to obtain word embeddings for a given vocabulary set. We use the model trained with a deep averaging network (DAN) encoder. 
+
+- We use the Universal Sentence Encoder to obtain word embeddings for a given vocabulary set. We use the model trained with a deep averaging network (DAN) encoder.
 
 Frequency
+
 - We use the `wordfreq` package to obtain zipfian frequency values for a given vocabulary set.
 
 ### Util Functions (Data Preprocessing)
 
-The source code for this data preprocessing method can be found inside `forager/utils.py`. 
+The source code for this data preprocessing method can be found inside `forager/utils.py`.
 
 **prepareData function**
-- The data preparation function cleans and reformats the fluency list data provided by the user. 
+
+- The data preparation function cleans and reformats the fluency list data provided by the user.
 - It takes in a path to a delimited data file (CSV, TXT, TSV, etc.). The first row is assumed to be a header. Columns are mapped by header name (case-insensitive), not by position. Required columns are `SID` (participant ID) and `entry` (response item). Optional columns are `timepoint` (for grouping multiple lists per participant) and `time` (response times for timing-based switch methods). Accepted delimiters include commas, tabs, semicolons, pipes, and spaces.
 - When a `time` column is present, the timing format and units can be specified via the `--time_type` (`cumulative` or `irt`) and `--time_units` (`s` or `ms`) flags. Timing data is required for the `slope_difference` and `pei` switch methods.
-- The function checks for any items outside of the vocabulary set used in the lexical metrics (OOV items). If a reasonable replacement is found for an OOV item, the item will be automatically replaced with the closest match. 
-- To handle all other OOV words, the user will be given three options. First, they can *truncate* the fluency list at the first occurrence of such a word. Second, they can *exclude* any such words but continue with the rest of the list, as if that word was never produced. Third, the word can be assigned a mean semantic vector (denoted by *UNK* in the vocabulary), mean phonological similarity, and 0.0001 frequency. 
-- A file outlining the edits made to the original data will be saved. The fluency data is then reformatted into a list of tuples, each containing the participant ID and the corresponding fluency list. 
-
+- The function checks for any items outside of the vocabulary set used in the lexical metrics (OOV items). If a reasonable replacement is found for an OOV item, the item will be automatically replaced with the closest match.
+- To handle all other OOV words, the user will be given three options. First, they can *truncate* the fluency list at the first occurrence of such a word. Second, they can *exclude* any such words but continue with the rest of the list, as if that word was never produced. Third, the word can be assigned a mean semantic vector (denoted by *UNK* in the vocabulary), mean phonological similarity, and 0.0001 frequency.
+- A file outlining the edits made to the original data will be saved. The fluency data is then reformatted into a list of tuples, each containing the participant ID and the corresponding fluency list.
 
 ## Development Notes
 
 ## References
 
 Please cite the following work if you use the package:
+
 - Bushnell, J., Svaldi, D., Ayers, M. R., Gao, S., Unverzagt, F., Del Gaizo, J., Wadley, V. G., Kennedy, R., Goñi, J., & Clark, D. G. (2022). A comparison of techniques for deriving clustering and switching scores from verbal fluency word lists. *Frontiers in Psychology*, *13*, 743557.
 - Kumar, A. A., Apsel, M., Zhang, L., Xing, N., & Jones, M. N. (2023). forager: A Python package and web interface for modeling mental search. Behavior Research Methods, 1-17.
 - Kumar, A.A., Lundin, N.B, Jones, M.N. What’s in my cluster? Evaluating automated clustering methods to understand idiosyncratic search behavior in verbal fluency.
 - Lundin, N. B., Brown, J. W., Johns, B. T., Jones, M. N., Purcell, J. R., Hetrick, W. P., ... & Todd, P. M. (2023). Neural evidence of switch processes during semantic and phonetic foraging in human memory. Proceedings of the National Academy of Sciences, 120(42), e2312462120.
 - Hills, T. T, Jones, M. N, & Todd, P. M (2012). Optimal foraging in semantic memory. *Psychological Review*, *119*(2), 431–440.
-- Kumar, A. A, Lundin, N. B, & Jones, M. N (2022). Mouse-mole-vole: The inconspicuous benefit of phonology during retrieval from semantic memory. *Proceedings of the Annual Meeting of the Cognitive Science Society*. 
+- Kumar, A. A, Lundin, N. B, & Jones, M. N (2022). Mouse-mole-vole: The inconspicuous benefit of phonology during retrieval from semantic memory. *Proceedings of the Annual Meeting of the Cognitive Science Society*.
