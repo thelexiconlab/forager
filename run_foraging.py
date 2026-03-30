@@ -1,15 +1,15 @@
 import argparse
-from scipy.optimize import fmin
+from concurrent.futures import ProcessPoolExecutor
+from scipy.optimize import minimize
 from forager.foraging import forage
 from forager.switch import *
 from forager.cues import create_history_variables
 from forager.utils import prepareData
 import pandas as pd
 import numpy as np
-from scipy.optimize import fmin, minimize
 import os, sys
 from tqdm import tqdm
-import warnings 
+import warnings
 import zipfile
 
 warnings.simplefilter('ignore')
@@ -45,10 +45,11 @@ fp = "/".join(sys.argv[0].split('/')[:-1])
 
 # Global Variables
 models = ['static','dynamic','pstatic','pdynamic','all']
-switch_methods = ['simdrop','multimodal','norms_associative','norms_categorical', 'delta', 'multimodaldelta', 'all']
+switch_methods = ['simdrop','multimodal','norms_associative','norms_categorical', 'delta', 'multimodaldelta', 'slope_difference', 'pei', 'all']
+
 
 #Methods
-def retrieve_data(path, domain):
+def retrieve_data(path, domain, time_type='cumulative', time_units='s'):
     """
     1. Verify that data path exists
 
@@ -56,7 +57,7 @@ def retrieve_data(path, domain):
     if os.path.exists(path) == False:
         ex_str = "Provided path to data \"{path}\" does not exist. Please specify a proper path".format(path=path)
         raise Exception(ex_str)
-    data = prepareData(path, domain)
+    data = prepareData(path, domain, time_type=time_type, time_units=time_units)
     return data
 
 def get_lexical_data(domain):
@@ -82,101 +83,110 @@ def calculate_model(model, history_vars, switch_names, switch_vecs):
     """
     1. Check if specified model is valid
     2. Return a set of model functions to pass
+
+    Deduplicates identical switch vectors across all methods/parameters so that
+    minimize() is only called once per unique binary sequence.
     """
     model_name = []
     model_results = []
     if model not in models:
         ex_str = "Specified model is invalid. Model must be one of the following: {models}".format(models=models)
         raise Exception(ex_str)
+
+    # Cache for deduplicating identical switch vectors.
+    # Keys: tuple(switch_vec); Values: dict of model_type -> result tuple
+    _switch_cache = {}
+
     if model == models[0] or model == models[4]:
         r1 = np.random.rand()
         r2 = np.random.rand()
 
-        v = minimize(forage.model_static, [r1,r2], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1])).x
-        beta_df = float(v[0]) # Optimized weight for frequency cue
-        beta_ds = float(v[1]) # Optimized weight for similarity cue
-        
-        nll, nll_vec = forage.model_static_report([beta_df, beta_ds], history_vars[2], history_vars[3], history_vars[0], history_vars[1])
+        result = minimize(forage.model_static, [r1,r2], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1]))
+        beta_df = float(result.x[0]) # Optimized weight for frequency cue
+        beta_ds = float(result.x[1]) # Optimized weight for similarity cue
         model_name.append('forage_static')
-        model_results.append((beta_df, beta_ds, nll, nll_vec))
+        model_results.append((beta_df, beta_ds, float(result.fun)))
     if model == models[1] or model == models[4]:
         for i, switch_vec in enumerate(switch_vecs):
-            r1 = np.random.rand()
-            r2 = np.random.rand()
-
-            v = minimize(forage.model_dynamic, [r1,r2], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1], switch_vec)).x
-            beta_df = float(v[0]) # Optimized weight for frequency cue
-            beta_ds = float(v[1]) # Optimized weight for similarity cue
-            
-            nll, nll_vec = forage.model_dynamic_report([beta_df, beta_ds], history_vars[2], history_vars[3], history_vars[0], history_vars[1],switch_vec)
+            key = tuple(switch_vec)
+            if key not in _switch_cache:
+                _switch_cache[key] = {}
+            if 'dynamic' not in _switch_cache[key]:
+                r1 = np.random.rand()
+                r2 = np.random.rand()
+                result = minimize(forage.model_dynamic, [r1,r2], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1], switch_vec))
+                beta_df = float(result.x[0])
+                beta_ds = float(result.x[1])
+                _switch_cache[key]['dynamic'] = (beta_df, beta_ds, float(result.fun))
             model_name.append('forage_dynamic_' + switch_names[i])
-            model_results.append((beta_df, beta_ds, nll, nll_vec))
+            model_results.append(_switch_cache[key]['dynamic'])
     if model == models[2] or model == models[4]:
         r1 = np.random.rand()
         r2 = np.random.rand()
         r3 = np.random.rand()
-        v = minimize(forage.model_static_phon, [r1,r2,r3], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1], history_vars[4],history_vars[5])).x
-        beta_df = float(v[0]) # Optimized weight for frequency cue
-        beta_ds = float(v[1]) # Optimized weight for similarity cue
-        beta_dp = float(v[2]) # Optimized weight for phonological cue
-
-        nll, nll_vec = forage.model_static_phon_report([beta_df, beta_ds, beta_dp], history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5])
+        result = minimize(forage.model_static_phon, [r1,r2,r3], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1], history_vars[4],history_vars[5]))
+        beta_df = float(result.x[0]) # Optimized weight for frequency cue
+        beta_ds = float(result.x[1]) # Optimized weight for similarity cue
+        beta_dp = float(result.x[2]) # Optimized weight for phonological cue
         model_name.append('forage_phonologicalstatic')
-        model_results.append((beta_df, beta_ds, beta_dp, nll, nll_vec))
+        model_results.append((beta_df, beta_ds, beta_dp, float(result.fun)))
     if model == models[3] or model == models[4]:
         for i, switch_vec in enumerate(switch_vecs):
-            # Global Dynamic Phonological Model
-            r1 = np.random.rand()
-            r2 = np.random.rand()
-            r3 = np.random.rand()
-            v = minimize(forage.model_dynamic_phon, [r1,r2,r3], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5], switch_vec,'global')).x
-            beta_df = float(v[0]) # Optimized weight for frequency cue
-            beta_ds = float(v[1]) # Optimized weight for similarity cue
-            beta_dp = float(v[2]) # Optimized weight for phonological cue
-            
-            nll, nll_vec = forage.model_dynamic_phon_report([beta_df, beta_ds,beta_dp], history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5],switch_vec,'global')
-            model_name.append('forage_phonologicaldynamicglobal_' + switch_names[i])
-            model_results.append((beta_df, beta_ds, beta_dp, nll, nll_vec))
-    
-            # Local Dynamic Phonological Model
-            r1 = np.random.rand()
-            r2 = np.random.rand()
-            r3 = np.random.rand()
-            v = minimize(forage.model_dynamic_phon, [r1,r2,r3], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5], switch_vec,'local')).x
-            beta_df = float(v[0]) # Optimized weight for frequency cue
-            beta_ds = float(v[1]) # Optimized weight for similarity cue
-            beta_dp = float(v[2]) # Optimized weight for phonological cue
-            
-            nll, nll_vec = forage.model_dynamic_phon_report([beta_df, beta_ds,beta_dp], history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5],switch_vec,'local')
-            model_name.append('forage_phonologicaldynamiclocal_' + switch_names[i])
-            model_results.append((beta_df, beta_ds, beta_dp, nll, nll_vec))
-    
-            # Switch Dynamic Phonological Model
-            r1 = np.random.rand()
-            r2 = np.random.rand()
-            r3 = np.random.rand()
-            v = minimize(forage.model_dynamic_phon, [r1,r2,r3], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5], switch_vec,'switch')).x
-            beta_df = float(v[0]) # Optimized weight for frequency cue
-            beta_ds = float(v[1]) # Optimized weight for similarity cue
-            beta_dp = float(v[2]) # Optimized weight for phonological cue
-            
-            nll, nll_vec = forage.model_dynamic_phon_report([beta_df, beta_ds,beta_dp], history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5],switch_vec,'switch')
-            model_name.append('forage_phonologicaldynamicswitch_' + switch_names[i])
+            key = tuple(switch_vec)
+            if key not in _switch_cache:
+                _switch_cache[key] = {}
 
-            model_results.append((beta_df, beta_ds, beta_dp, nll, nll_vec))
-    
+            # Global Dynamic Phonological Model
+            if 'pdynamic_global' not in _switch_cache[key]:
+                r1 = np.random.rand()
+                r2 = np.random.rand()
+                r3 = np.random.rand()
+                result = minimize(forage.model_dynamic_phon, [r1,r2,r3], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5], switch_vec,'global'))
+                beta_df = float(result.x[0])
+                beta_ds = float(result.x[1])
+                beta_dp = float(result.x[2])
+                _switch_cache[key]['pdynamic_global'] = (beta_df, beta_ds, beta_dp, float(result.fun))
+            model_name.append('forage_phonologicaldynamicglobal_' + switch_names[i])
+            model_results.append(_switch_cache[key]['pdynamic_global'])
+
+            # Local Dynamic Phonological Model
+            if 'pdynamic_local' not in _switch_cache[key]:
+                r1 = np.random.rand()
+                r2 = np.random.rand()
+                r3 = np.random.rand()
+                result = minimize(forage.model_dynamic_phon, [r1,r2,r3], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5], switch_vec,'local'))
+                beta_df = float(result.x[0])
+                beta_ds = float(result.x[1])
+                beta_dp = float(result.x[2])
+                _switch_cache[key]['pdynamic_local'] = (beta_df, beta_ds, beta_dp, float(result.fun))
+            model_name.append('forage_phonologicaldynamiclocal_' + switch_names[i])
+            model_results.append(_switch_cache[key]['pdynamic_local'])
+
+            # Switch Dynamic Phonological Model
+            if 'pdynamic_switch' not in _switch_cache[key]:
+                r1 = np.random.rand()
+                r2 = np.random.rand()
+                r3 = np.random.rand()
+                result = minimize(forage.model_dynamic_phon, [r1,r2,r3], args=(history_vars[2], history_vars[3], history_vars[0], history_vars[1],history_vars[4],history_vars[5], switch_vec,'switch'))
+                beta_df = float(result.x[0])
+                beta_ds = float(result.x[1])
+                beta_dp = float(result.x[2])
+                _switch_cache[key]['pdynamic_switch'] = (beta_df, beta_ds, beta_dp, float(result.fun))
+            model_name.append('forage_phonologicaldynamicswitch_' + switch_names[i])
+            model_results.append(_switch_cache[key]['pdynamic_switch'])
+
     # Unoptimized Model
     model_name.append('forage_random_baseline')
-    nll_baseline, nll_baseline_vec = forage.model_static_report(beta = [0,0], freql = history_vars[2], freqh = history_vars[3], siml = history_vars[0], simh = history_vars[1])
-    model_results.append((0, 0, nll_baseline, nll_baseline_vec))
+    nll_baseline = forage.model_static([0,0], history_vars[2], history_vars[3], history_vars[0], history_vars[1])
+    model_results.append((0, 0, float(nll_baseline)))
     return model_name, model_results
 
-def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity, norms,domain, alpha = np.arange(0, 1.1, 0.1), rise = np.arange(0, 1.25, 0.25), fall = np.arange(0, 1.25, 0.25)):
+def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity, norms, domain, times=None, alpha = np.arange(0, 1.1, 0.1), rise = np.arange(0, 1.25, 0.25), fall = np.arange(0, 1.25, 0.25), pei_beta = np.arange(0, 1.1, 0.1), pei_prior = np.arange(0.1, 1.0, 0.1)):
     '''
     1. Check if specified switch model is valid
     2. Return set of switches, including parameter value, if required
 
-    switch_methods = ['simdrop','multimodal','norms_associative', 'norms_categorical', 'delta','multimodaldelta','all']
+    switch_methods = ['simdrop','multimodal','norms_associative', 'norms_categorical', 'delta','multimodaldelta', 'slope_difference', 'pei', 'all']
     '''
     switch_names = []
     switch_vecs = []
@@ -185,27 +195,27 @@ def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity,
         ex_str = "Specified switch method is invalid. Switch method must be one of the following: {switch}".format(switch=switch_methods)
         raise Exception(ex_str)
 
-    if switch == switch_methods[0] or switch == switch_methods[6]:
+    if switch == switch_methods[0] or switch == switch_methods[8]:
         switch_names.append(switch_methods[0])
         switch_vecs.append(switch_simdrop(fluency_list, semantic_similarity))
 
-    if switch == switch_methods[1] or switch == switch_methods[6]:
+    if switch == switch_methods[1] or switch == switch_methods[8]:
         for i, a in enumerate(alpha):
             a = round(a, 1)
             switch_names.append('multimodal_alpha={alpha}'.format(alpha=a))
             switch_vecs.append(switch_multimodal(fluency_list, semantic_similarity, phon_similarity, a))
 
-    if (switch == switch_methods[2] or switch == switch_methods[6]) and domain in ['animals','foods']:
-        
+    if (switch == switch_methods[2] or switch == switch_methods[8]) and domain in ['animals','foods']:
+
         if domain == 'animals':
             switch_names.append("norms_associative")
             switch_vecs.append(switch_norms_associative(fluency_list,norms[0]))
         else:
             switch_names.append("norms_associative")
             switch_vecs.append(switch_norms_associative(fluency_list,norms[1]))
-    
-    if switch == switch_methods[3] or switch == switch_methods[6] and domain in ['animals','foods']:
-        
+
+    if switch == switch_methods[3] or switch == switch_methods[8] and domain in ['animals','foods']:
+
         if domain == 'animals':
             switch_names.append("norms_categorical")
             switch_vecs.append(switch_norms_categorical(fluency_list,norms[0]))
@@ -213,15 +223,15 @@ def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity,
             switch_names.append("norms_categorical")
             switch_vecs.append(switch_norms_categorical(fluency_list,norms[1]))
 
-    if switch == switch_methods[4] or switch == switch_methods[6]:
+    if switch == switch_methods[4] or switch == switch_methods[8]:
         for i, r in enumerate(rise):
             for j, f in enumerate(fall):
                 r = round(r, 1)
                 f = round(f, 1)
                 switch_names.append("delta_rise={rise}_fall={fall}".format(rise=r,fall=f))
                 switch_vecs.append(switch_delta(fluency_list, semantic_similarity, r, f))
-    
-    if switch == switch_methods[5] or switch == switch_methods[6]:
+
+    if switch == switch_methods[5] or switch == switch_methods[8]:
         for i, a in enumerate(alpha):
             for i, r in enumerate(rise):
                 for j, f in enumerate(fall):
@@ -232,82 +242,213 @@ def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity,
                     switch_names.append("multimodaldelta_alpha={alpha}_rise={rise}_fall={fall}".format(alpha=a,rise=r,fall=f))
                     switch_vecs.append(switch_multimodaldelta(fluency_list, semantic_similarity, phon_similarity, r, f, a))
 
-    return switch_names, switch_vecs
+    # Precompute slope differences once (used by slope_difference, PEI, and lexical output)
+    precomputed_slope_diffs = None
+    if times is not None:
+        _, precomputed_slope_diffs = switch_slope_difference(fluency_list, times)
 
-def run_model(data, model_type, switch_type, domain):
-    # Get Lexical Data needed for executing methods
-    norms, similarity_matrix, phon_matrix, frequency_list, labels = get_lexical_data(domain)
-    forager_results = []
-    # Run through each fluency list in dataset
-    for i, (subj, fl_list) in enumerate(tqdm(data)):
-        print("\nRunning Model for Subject {subj}".format(subj=subj))
-        import time
-        start_time = time.time()
-        # Get History Variables 
-        history_vars = create_history_variables(fl_list, labels, similarity_matrix, frequency_list, phon_matrix)
-        
-        # Calculate Switch Vector(s)
-        switch_names, switch_vecs = calculate_switch(switch_type, fl_list, history_vars[0],   history_vars[4], norms, domain)
+    if switch == switch_methods[6] or switch == switch_methods[8]:
+        if times is None:
+            if switch == switch_methods[6]:
+                raise Exception("Slope difference method requires timing data. Please provide cumulative response times in seconds via the 'times' parameter.")
+            # skip when running 'all' without timing data
+        else:
+            switch_names.append("slope_difference")
+            decisions = [2]
+            for i in range(len(precomputed_slope_diffs)):
+                decisions.append(1 if precomputed_slope_diffs[i] < 0 else 0)
+            switch_vecs.append(decisions)
 
-        #Execute Individual Model(s) and get result(s)
-        model_names, model_results = calculate_model(model_type,history_vars, switch_names, switch_vecs)
+    if switch == switch_methods[7] or switch == switch_methods[8]:
+        if times is None:
+            if switch == switch_methods[7]:
+                raise Exception("PEI method requires timing data. Please provide cumulative response times in seconds via the 'times' parameter.")
+            # skip when running 'all' without timing data
+        else:
+            for i, a in enumerate(alpha):
+                for j, b in enumerate(pei_beta):
+                    for k, p in enumerate(pei_prior):
+                        a = round(a, 1)
+                        b = round(b, 1)
+                        p = round(p, 1)
+                        switch_names.append("pei_alpha={alpha}_beta={beta}_prior={prior}".format(alpha=a, beta=b, prior=p))
+                        switch_vecs.append(switch_pei(fluency_list, times, semantic_similarity, phon_similarity, slope_diffs=precomputed_slope_diffs, alpha=a, beta=b, prior_probability=p))
 
-        #Create Model Output Results DataFrame
-        for i, model in enumerate(model_names):
-            model_dict = dict()
-            model_dict['Subject'] = subj
-            model_dict['Model'] = model
-            model_dict['Beta_Frequency'] = model_results[i][0]
-            model_dict['Beta_Semantic'] = model_results[i][1]
-            # print(results[i])
-            # sys.exit()
-            if len(model_results[i]) == 4:
-                model_dict['Beta_Phonological'] = None
-                model_dict['Negative_Log_Likelihood_Optimized'] = model_results[i][2]
-            if len(model_results[i]) == 5:
-                model_dict['Beta_Phonological'] = model_results[i][2]
-                model_dict['Negative_Log_Likelihood_Optimized'] = model_results[i][3]
-            forager_results.append(model_dict)
-    forager_results = pd.DataFrame(forager_results)
-        
-    return forager_results
-    
-def run_lexical(data, domain):
-    # Get Lexical Data needed for executing methods
-    norms, similarity_matrix, phon_matrix, frequency_list, labels = get_lexical_data(domain)
-    lexical_results = []
-    for i, (subj, fl_list) in enumerate(tqdm(data)):
-        history_vars = create_history_variables(fl_list, labels, similarity_matrix, frequency_list, phon_matrix)
-        lexical_df = pd.DataFrame()
-        lexical_df['Subject'] = len(fl_list) * [subj]
-        lexical_df['Fluency_Item'] = fl_list
-        lexical_df['Semantic_Similarity'] = history_vars[0]
-        lexical_df['Frequency_Value'] = history_vars[2]
-        lexical_df['Phonological_Similarity'] = history_vars[4]
-        lexical_results.append(lexical_df)
-    lexical_results = pd.concat(lexical_results,ignore_index=True)
-    return lexical_results
+    return switch_names, switch_vecs, precomputed_slope_diffs
 
-def run_switches(data,switch_type, domain):
-    norms, similarity_matrix, phon_matrix, frequency_list, labels = get_lexical_data(domain)
-    switch_results = []
-    for i, (subj, fl_list) in enumerate(tqdm(data)):
-        history_vars = create_history_variables(fl_list, labels, similarity_matrix, frequency_list, phon_matrix)
-        switch_names, switch_vecs = calculate_switch(switch_type, fl_list, history_vars[0], history_vars[4], norms, domain)
-    
-        switch_df = []
+def _physical_cpu_count():
+    """Return the number of physical CPU cores (cross-platform)."""
+    try:
+        import subprocess
+        if sys.platform == 'linux':
+            out = subprocess.check_output(
+                ['lscpu', '-p=Core'], text=True)
+            # Count unique core IDs (lines not starting with '#')
+            cores = set(line.strip() for line in out.splitlines()
+                        if line.strip() and not line.startswith('#'))
+            if cores:
+                return len(cores)
+        elif sys.platform == 'darwin':
+            out = subprocess.check_output(
+                ['sysctl', '-n', 'hw.physicalcpu'], text=True)
+            return int(out.strip())
+        elif sys.platform == 'win32':
+            out = subprocess.check_output(
+                ['wmic', 'cpu', 'get', 'NumberOfCores'], text=True)
+            cores = [int(x) for x in out.split() if x.isdigit()]
+            if cores:
+                return sum(cores)
+    except Exception:
+        pass
+    # Fallback: assume hyperthreading (2 threads per core)
+    logical = os.cpu_count() or 1
+    return max(1, logical // 2)
+
+
+def _process_subject(item, labels, similarity_matrix, frequency_list, phon_matrix,
+                     norms, domain, switch_type, model_type):
+    """Process a single subject: compute lexical, switch, and model results.
+
+    This is a top-level function so it can be pickled for multiprocessing.
+    """
+    subj, fl_list = item[0], item[1]
+    fl_times = item[2] if len(item) == 3 else None
+
+    # Compute history variables once per subject
+    history_vars = create_history_variables(fl_list, labels, similarity_matrix, frequency_list, phon_matrix)
+
+    # Lexical results
+    lexical_df = pd.DataFrame()
+    lexical_df['Subject'] = len(fl_list) * [subj]
+    lexical_df['Fluency_Item'] = fl_list
+    lexical_df['Semantic_Similarity'] = history_vars[0]
+    lexical_df['Frequency_Value'] = history_vars[2]
+    lexical_df['Phonological_Similarity'] = history_vars[4]
+
+    # Add timing columns if timing data is available
+    if fl_times is not None:
+        cumulative = np.array(fl_times)
+        lexical_df['Cumulative_IRT'] = cumulative
+        irt = np.empty(len(cumulative))
+        irt[0] = cumulative[0]
+        irt[1:] = np.diff(cumulative)
+        lexical_df['IRT'] = irt
+
+    switch_dfs = []
+    model_dicts = []
+
+    # Switch results (computed once, reused by models)
+    if switch_type is not None:
+        switch_names, switch_vecs, slope_diffs = calculate_switch(
+            switch_type, fl_list, history_vars[0], history_vars[4],
+            norms, domain, times=fl_times)
+
+        # Add slope differences to lexical results (from precomputed values)
+        if fl_times is not None:
+            sd_col = np.empty(len(fl_list))
+            sd_col[0] = np.nan
+            if slope_diffs is not None and len(slope_diffs) > 0:
+                sd_col[1:] = slope_diffs
+            else:
+                sd_col[1:] = np.nan
+            lexical_df['Slope_Difference'] = sd_col
+
         for j, switch in enumerate(switch_vecs):
             df = pd.DataFrame()
             df['Subject'] = len(switch) * [subj]
             df['Fluency_Item'] = fl_list
             df['Switch_Value'] = switch
             df['Switch_Method'] = switch_names[j]
-            switch_df.append(df)
-    
-        switch_df = pd.concat(switch_df, ignore_index=True)
-        switch_results.append(switch_df)
-    switch_results = pd.concat(switch_results, ignore_index=True)
-    return switch_results
+            switch_dfs.append(df)
+
+        # Model results (reuse switch_names/switch_vecs from above)
+        if model_type is not None:
+            model_names, model_results = calculate_model(
+                model_type, history_vars, switch_names, switch_vecs)
+
+            for k, model in enumerate(model_names):
+                model_dict = dict()
+                model_dict['Subject'] = subj
+                model_dict['Model'] = model
+                model_dict['Beta_Frequency'] = model_results[k][0]
+                model_dict['Beta_Semantic'] = model_results[k][1]
+                if len(model_results[k]) == 3:
+                    model_dict['Beta_Phonological'] = None
+                    model_dict['Negative_Log_Likelihood_Optimized'] = model_results[k][2]
+                if len(model_results[k]) == 4:
+                    model_dict['Beta_Phonological'] = model_results[k][2]
+                    model_dict['Negative_Log_Likelihood_Optimized'] = model_results[k][3]
+                model_dicts.append(model_dict)
+
+    return lexical_df, switch_dfs, model_dicts
+
+
+def run_pipeline(data, domain, switch_type=None, model_type=None, parallel=False, n_workers=None):
+    """Single-pass pipeline that computes lexical, switch, and model results.
+
+    Loads lexical data once and processes subjects in parallel using
+    multiprocessing when --parallel is enabled and there are multiple subjects.
+
+    Args:
+        data: list of tuples (subj, fl_list[, fl_times]) from retrieve_data.
+        domain: lexical domain (e.g. 'animals').
+        switch_type: switch method name, or None to skip switches.
+        model_type: model name, or None to skip models.
+        parallel: if True, process subjects in parallel using multiprocessing.
+        n_workers: number of parallel workers. None = number of physical CPUs.
+
+    Returns:
+        tuple: (lexical_results, switch_results, model_results) as DataFrames.
+            switch_results and model_results are None when their corresponding
+            type argument is None.
+    """
+    norms, similarity_matrix, phon_matrix, frequency_list, labels = get_lexical_data(domain)
+
+    lexical_list = []
+    switch_list = []
+    model_list = []
+
+    use_parallel = parallel and len(data) > 1
+
+    if use_parallel:
+        if n_workers is None:
+            n_workers = min(_physical_cpu_count(), len(data))
+        print(f"Processing {len(data)} subjects using {n_workers} parallel workers...")
+
+        from functools import partial
+        from concurrent.futures import as_completed
+        worker_fn = partial(_process_subject,
+                            labels=labels, similarity_matrix=similarity_matrix,
+                            frequency_list=frequency_list, phon_matrix=phon_matrix,
+                            norms=norms, domain=domain,
+                            switch_type=switch_type, model_type=model_type)
+
+        with ProcessPoolExecutor(max_workers=n_workers) as executor:
+            future_to_idx = {executor.submit(worker_fn, item): idx
+                             for idx, item in enumerate(data)}
+            results = [None] * len(data)
+            for future in tqdm(as_completed(future_to_idx), total=len(data)):
+                idx = future_to_idx[future]
+                results[idx] = future.result()
+
+        for lexical_df, switch_dfs, model_dicts in results:
+            lexical_list.append(lexical_df)
+            switch_list.extend(switch_dfs)
+            model_list.extend(model_dicts)
+    else:
+        for i, item in enumerate(tqdm(data)):
+            lexical_df, switch_dfs, model_dicts = _process_subject(
+                item, labels, similarity_matrix, frequency_list, phon_matrix,
+                norms, domain, switch_type, model_type)
+            lexical_list.append(lexical_df)
+            switch_list.extend(switch_dfs)
+            model_list.extend(model_dicts)
+
+    lexical_results = pd.concat(lexical_list, ignore_index=True)
+    switch_results = pd.concat(switch_list, ignore_index=True) if switch_list else None
+    forager_results = pd.DataFrame(model_list) if model_list else None
+
+    return lexical_results, switch_results, forager_results
 
 
 def indiv_desc_stats(lexical_results, switch_results = None):
@@ -414,6 +555,10 @@ parser.add_argument('--pipeline',type=str, help='specifies which part of pipelin
 parser.add_argument('--model', type=str, help='specifies foraging model to use')
 parser.add_argument('--switch', type=str, help='specifies switch model to use')
 parser.add_argument('--domain', type=str, help='specifies domain to use')
+parser.add_argument('--time_type', type=str, default='cumulative', help="type of timing data: 'cumulative' or 'irt' (inter-response time). Default: cumulative")
+parser.add_argument('--time_units', type=str, default='s', help="units of timing data: 's' (seconds) or 'ms' (milliseconds). Default: s")
+parser.add_argument('--parallel', action='store_true', help='enable multiprocessing to process subjects in parallel (switches and models pipelines)')
+parser.add_argument('--n_workers', type=int, default=None, help='number of parallel workers (default: number of physical CPU cores). Requires --parallel')
 
 args = parser.parse_args()
 
@@ -435,7 +580,7 @@ oname = os.path.join(output_dir, file_name)
 
 
 if args.pipeline == 'evaluate_data':
-    data, replacement_df, processed_df = retrieve_data(args.data, args.domain)
+    data, replacement_df, processed_df = retrieve_data(args.data, args.domain, time_type=args.time_type, time_units=args.time_units)
     with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
         # Save the first DataFrame as a CSV file inside the zip
         with zipf.open('evaluation_results.csv', 'w') as csvf:
@@ -457,9 +602,9 @@ if args.pipeline == 'evaluate_data':
 
 elif args.pipeline == 'lexical':
     # Retrieve the Data for Getting Lexical Info
-    data, replacement_df, processed_df = retrieve_data(args.data, args.domain)
-    # Run subroutine for getting strictly the similarity & frequency values 
-    lexical_results = run_lexical(data, args.domain)
+    data, replacement_df, processed_df = retrieve_data(args.data, args.domain, time_type=args.time_type, time_units=args.time_units)
+    # Run subroutine for getting strictly the similarity & frequency values
+    lexical_results, _, _ = run_pipeline(data, args.domain)
     ind_stats = indiv_desc_stats(lexical_results)
     with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
         # Save the first DataFrame as a CSV file inside the zip
@@ -497,11 +642,10 @@ elif args.pipeline == 'switches':
     # Run subroutine for getting strictly switch outputs 
     # Run subroutine for getting model outputs
     print("Checking Data ...")
-    data, replacement_df, processed_df = retrieve_data(args.data, args.domain)
-    print("Retrieving Lexical Data ...")
-    lexical_results = run_lexical(data, args.domain)
-    print("Obtaining Switch Designations ...")
-    switch_results = run_switches(data,args.switch, args.domain)
+    data, replacement_df, processed_df = retrieve_data(args.data, args.domain, time_type=args.time_type, time_units=args.time_units)
+    print("Running Pipeline ...")
+    lexical_results, switch_results, _ = run_pipeline(data, args.domain, switch_type=args.switch,
+        parallel=args.parallel, n_workers=args.n_workers)
     ind_stats = indiv_desc_stats(lexical_results, switch_results)
     agg_stats = agg_desc_stats(switch_results)
     with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
@@ -512,7 +656,7 @@ elif args.pipeline == 'switches':
         # Save the second DataFrame as a CSV file inside the zip
         with zipf.open('processed_data.csv', 'w') as csvf:
             processed_df.to_csv(csvf, index=False)
-        
+
         # Save vocab as a CSV file inside the zip
         with zipf.open('forager_vocab.csv', 'w') as csvf:
             vocabpath = 'data/lexical_data/' + args.domain + '/vocab.csv'
@@ -522,16 +666,17 @@ elif args.pipeline == 'switches':
         # save lexical results
 
         with zipf.open('lexical_results.csv','w') as csvf:
-            lexical_results.to_csv(csvf, index=False) 
-        
+            lexical_results.to_csv(csvf, index=False)
+
         # save switch results
-        with zipf.open('switch_results.csv','w') as csvf:
-            switch_results.to_csv(csvf, index=False) 
+        with zipf.open('switch_results.csv', 'w') as csvf:
+            switch_results.to_csv(csvf, index=False)
+        print(f"File 'switch_results.csv' containing switch results saved in '{oname}'")
 
         # save individual descriptive statistics
         with zipf.open('individual_descriptive_stats.csv', 'w') as csvf:
             ind_stats.to_csv(csvf, index=False)
-        
+
         # save aggregate descriptive statistics
         with zipf.open('aggregate_descriptive_stats.csv', 'w') as csvf:
             agg_stats.to_csv(csvf, index=False)
@@ -539,8 +684,7 @@ elif args.pipeline == 'switches':
         print(f"File 'evaluation_results.csv' detailing the changes made to the dataset has been saved in '{oname}'")
         print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
         print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
-        print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")        
-        print(f"File 'switch_results.csv' containing designated switch methods and switch values of fluency list data saved in '{oname}'")
+        print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")
         print(f"File 'individual_descriptive_stats.csv' containing individual-level statistics saved in '{oname}'")
         print(f"File 'aggregate_descriptive_stats.csv' containing the overall group-level statistics saved in '{oname}'")
 
@@ -556,13 +700,11 @@ elif args.pipeline == 'models':
         parser.error(f"Please specify a proper switch method (e.g. {switch_methods})")
     # Run subroutine for getting model outputs
     print("Checking Data ...")
-    data, replacement_df, processed_df = retrieve_data(args.data, args.domain)
-    print("Retrieving Lexical Data ...")
-    lexical_results = run_lexical(data, args.domain)
-    print("Obtaining Switch Designations ...")
-    switch_results = run_switches(data,args.switch, args.domain)
-    print("Running Forager Models...")
-    forager_results = run_model(data, args.model, args.switch, args.domain)
+    data, replacement_df, processed_df = retrieve_data(args.data, args.domain, time_type=args.time_type, time_units=args.time_units)
+    print("Running Pipeline ...")
+    lexical_results, switch_results, forager_results = run_pipeline(
+        data, args.domain, switch_type=args.switch, model_type=args.model,
+        parallel=args.parallel, n_workers=args.n_workers)
 
     ind_stats = indiv_desc_stats(lexical_results, switch_results)
     agg_stats = agg_desc_stats(switch_results, forager_results)
@@ -584,11 +726,12 @@ elif args.pipeline == 'models':
         with zipf.open('lexical_results.csv','w') as csvf:
             lexical_results.to_csv(csvf, index=False) 
         # save switch results
-        with zipf.open('switch_results.csv','w') as csvf:
-            switch_results.to_csv(csvf, index=False) 
+        with zipf.open('switch_results.csv', 'w') as csvf:
+            switch_results.to_csv(csvf, index=False)
+        print(f"File 'switch_results.csv' containing switch results saved in '{oname}'")
         # save model results
         with zipf.open('model_results.csv','w') as csvf:
-            forager_results.to_csv(csvf, index=False) 
+            forager_results.to_csv(csvf, index=False)
         # save individual descriptive statistics
         with zipf.open('individual_descriptive_stats.csv', 'w') as csvf:
             ind_stats.to_csv(csvf, index=False)
@@ -600,7 +743,6 @@ elif args.pipeline == 'models':
         print(f"File 'processed_data.csv' containing the processed dataset used in the forager pipeline saved in '{oname}'")
         print(f"File 'forager_vocab.csv' containing the full vocabulary used by forager saved in '{oname}'")
         print(f"File 'lexical_results.csv' containing similarity and frequency values of fluency list data saved in '{oname}'")
-        print(f"File 'switch_results.csv' containing designated switch methods and switch values of fluency list data saved in '{oname}'")
         print(f"File 'model_results.csv' containing model level NLL results of provided fluency data saved in '{oname}'")
         print(f"File 'individual_descriptive_stats.csv' containing individual-level statistics saved in '{oname}'")
         print(f"File 'aggregate_descriptive_stats.csv' containing the overall group-level statistics saved in '{oname}'")

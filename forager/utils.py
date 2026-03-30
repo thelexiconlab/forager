@@ -27,21 +27,23 @@ def exclude(word,df):
     df.reset_index(drop=True, inplace=True)
     return None
 
-# takes in a path to a data file to be read as a CSV, the first row will be assumed as a header 
+# takes in a path to a data file to be read as a CSV or TXT, the first row will be assumed as a header
 # accepted delimiters include commas, tabs, semicolons, pipes, and spaces
-def prepareData(path, domain):
+# columns are detected by header name (case-insensitive): SID, entry, timepoint (optional), time (optional)
+def prepareData(path, domain, time_type='cumulative', time_units='s'):
     ### LOAD BEHAVIORAL DATA ###
     df = pd.read_csv(path, header=0, engine='python', sep=None, encoding='utf-8-sig')
-    if len(df.columns) > 2:
-        three_col = input("Use the third column of this data file as a time point? Type 'y' for yes or 'n' for no: ")
-        if three_col == "y":
-            df = df.iloc[:, :4]
-            df.columns = ['SID', 'entry', 'timepoint']
-        else:
-            df = df.iloc[:, :3]
-            df.columns = ['SID', 'entry']
-    else:
-        df.columns = ['SID', 'entry']
+    col_map = _detect_columns(df)
+    # Rename detected columns to canonical names
+    df = df.rename(columns={v: k for k, v in col_map.items()})
+    col_map = {k: k for k in col_map}
+
+    detected = list(col_map.keys())
+    print(f"Detected columns: {detected}")
+    if 'timepoint' in col_map:
+        print("  -> Will group lists by 'timepoint'.")
+    if 'time' in col_map:
+        print(f"  -> Timing data detected (time_type='{time_type}', time_units='{time_units}').")
 
     # load labels
     labels = pd.read_csv('data/lexical_data/' + domain + '/USE_frequencies.csv', names=['word', 'logct'], header=None) 
@@ -104,55 +106,36 @@ def prepareData(path, domain):
         print("We have found reasonable replacements for " + str(replacement_count)+ " item(s) in your data. \n\n")
         if exclude_count>0:
             print(str(exclude_count) + " items were excluded across all lists.\n")
-        elif unk_count>0: 
+        elif unk_count>0:
             print(str(unk_count) + " items were assigned a random vector across all lists.\n")
         elif trunc_count>0:
             print("Lists were truncated at " + str(trunc_count) + " items across all lists.\n")
-        
+
         # Stratify data into fluency lists
-        data = []
-        if 'timepoint' in df.columns:
-            lists = df.groupby(["SID", "timepoint"])
-        else: 
-            lists = df.groupby("SID")
-        
-        for sub, frame in lists:
-            list = frame["entry"].values.tolist()
-            subj_data = (sub, list)
-            data.append(subj_data)    
+        data = _build_data_list(df, col_map, time_type, time_units)
         return data, replacement_df, df
-    
+
     else:
         print("Success! We have found exact matches for all items in your data. \n\n")
         replacement_df = df.copy()
         replacement_df['evaluation'] = "FOUND"
-        # Add the column corresponding to the replacement column , set it all to the same value   
-        data = []
-        if 'timepoint' in df.columns:
-            lists = df.groupby(["SID", "timepoint"])
-        else: 
-            lists = df.groupby("SID")
-        
-        for sub, frame in lists:
-            list = frame["entry"].values.tolist()
-            subj_data = (sub, list)
-            data.append(subj_data)
-        
+        data = _build_data_list(df, col_map, time_type, time_units)
         return data, replacement_df, df
 
-def prepareData_colab(path):
+def prepareData_colab(path, time_type='cumulative', time_units='s'):
     ### LOAD BEHAVIORAL DATA ###
     df = pd.read_csv(path, header=0, engine='python', sep=None, encoding='utf-8-sig')
-    if len(df.columns) > 2:
-        three_col = input("Use the third column of this data file as a time point? Type 'y' for yes or 'n' for no: ")
-        if three_col == "y":
-            df = df.iloc[:, :4]
-            df.columns = ['SID', 'entry', 'timepoint']
-        else:
-            df = df.iloc[:, :3]
-            df.columns = ['SID', 'entry']
-    else:
-        df.columns = ['SID', 'entry']
+    col_map = _detect_columns(df)
+    # Rename detected columns to canonical names
+    df = df.rename(columns={v: k for k, v in col_map.items()})
+    col_map = {k: k for k in col_map}
+
+    detected = list(col_map.keys())
+    print(f"Detected columns: {detected}")
+    if 'timepoint' in col_map:
+        print("  -> Will group lists by 'timepoint'.")
+    if 'time' in col_map:
+        print(f"  -> Timing data detected (time_type='{time_type}', time_units='{time_units}').")
 
     # load labels
     labels = pd.read_csv("data/lexical_data/USE_frequencies.csv", names=['word', 'logct', 'ct']) 
@@ -215,41 +198,121 @@ def prepareData_colab(path):
         print("We have found reasonable replacements for " + str(replacement_count)+ " item(s) in your data. \n\n")
         if exclude_count>0:
             print(str(exclude_count) + " items were excluded across all lists.\n")
-        elif unk_count>0: 
+        elif unk_count>0:
             print(str(unk_count) + " items were assigned a random vector across all lists.\n")
         elif trunc_count>0:
             print("Lists were truncated at " + str(trunc_count) + " items across all lists.\n")
-        
+
         # Stratify data into fluency lists
-        data = []
-        if 'timepoint' in df.columns:
-            lists = df.groupby(["SID", "timepoint"])
-        else: 
-            lists = df.groupby("SID")
-        
-        for sub, frame in lists:
-            list = frame["entry"].values.tolist()
-            subj_data = (sub, list)
-            data.append(subj_data)    
+        data = _build_data_list(df, col_map, time_type, time_units)
         return data, replacement_df, df
-    
+
     else:
         print("Success! We have found exact matches for all items in your data. \n\n")
         replacement_df = df.copy()
         replacement_df['evaluation'] = "FOUND"
-        # Add the column corresponding to the replacement column , set it all to the same value   
-        data = []
-        if 'timepoint' in df.columns:
-            lists = df.groupby(["SID", "timepoint"])
-        else: 
-            lists = df.groupby("SID")
-        
-        for sub, frame in lists:
-            list = frame["entry"].values.tolist()
-            subj_data = (sub, list)
-            data.append(subj_data)
-        
+        data = _build_data_list(df, col_map, time_type, time_units)
         return data, replacement_df, df
 
 
+_ALIASES = {
+    'SID': ['sid', 'id', 'subject', 'participant'],
+    'entry': ['entry', 'item', 'word', 'response'],
+    'timepoint': ['timepoint'],
+    'time': ['time', 'rt', 'response_time'],
+}
 
+def _detect_columns(df):
+    '''
+        Map DataFrame column names to canonical roles using case-insensitive matching.
+        Works with any delimited file format (CSV, TXT, TSV, etc.) as long as a header
+        row is present. Supports common aliases for each column role.
+
+        Args:
+            df (DataFrame): Raw DataFrame from pd.read_csv.
+
+        Returns:
+            dict: Maps canonical names ('SID', 'entry', and optionally 'timepoint', 'time')
+                to the actual column name strings found in df.
+
+        Raises:
+            ValueError: If required columns 'SID' or 'entry' are not found.
+    '''
+    lowered = {col.strip().lower(): col for col in df.columns}
+    found = {}
+    for canonical, aliases in _ALIASES.items():
+        for alias in aliases:
+            if alias in lowered:
+                found[canonical] = lowered[alias]
+                break
+
+    missing = [c for c in ('SID', 'entry') if c not in found]
+    if missing:
+        raise ValueError(
+            f"Required column(s) not found in data file: {missing}. "
+            f"Columns present: {list(df.columns)}")
+    return found
+
+
+def _build_data_list(df, col_map, time_type='cumulative', time_units='s'):
+    '''
+        Build the data list from a processed DataFrame.
+
+        Args:
+            df (DataFrame): Processed DataFrame with canonical column names.
+            col_map (dict): Mapping from canonical names to column names in df.
+            time_type (str): Passed to prepare_times if 'time' column is present.
+            time_units (str): Passed to prepare_times if 'time' column is present.
+
+        Returns:
+            list: Tuples of (subj, word_list) or (subj, word_list, time_list).
+    '''
+    has_timepoint = 'timepoint' in col_map
+    has_time = 'time' in col_map
+
+    if has_timepoint:
+        groups = df.groupby([col_map['SID'], col_map['timepoint']])
+    else:
+        groups = df.groupby(col_map['SID'])
+
+    data = []
+    for sub, frame in groups:
+        word_list = frame[col_map['entry']].values.tolist()
+        if has_time:
+            raw_times = frame[col_map['time']].values.tolist()
+            time_list = prepare_times(raw_times, time_type, time_units).tolist()
+            data.append((sub, word_list, time_list))
+        else:
+            data.append((sub, word_list))
+    return data
+
+
+def prepare_times(times, time_type="cumulative", time_units="s"):
+    '''
+        Convert timing data to cumulative seconds.
+
+        Args:
+            times (list or array): Response times for each word.
+            time_type (str): "cumulative" or "irt" (inter-response time). Default: "cumulative".
+            time_units (str): "s" (seconds) or "ms" (milliseconds). Default: "s".
+
+        Returns:
+            np.ndarray: Cumulative times in seconds.
+
+        Raises:
+            ValueError: If time_type or time_units are invalid.
+    '''
+    if time_type not in ("cumulative", "irt"):
+        raise ValueError(f"time_type must be 'cumulative' or 'irt', got '{time_type}'")
+    if time_units not in ("s", "ms"):
+        raise ValueError(f"time_units must be 's' or 'ms', got '{time_units}'")
+
+    times = np.array(times, dtype=float)
+
+    if time_units == "ms":
+        times = times / 1000.0
+
+    if time_type == "irt":
+        times = np.cumsum(times)
+
+    return times

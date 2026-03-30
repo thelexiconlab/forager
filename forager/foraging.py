@@ -31,88 +31,97 @@ class forage:
         Static Foraging Model following proposed approach in Hills, T. T., Jones, M. N., & Todd, P. M. (2012).
             Optimal Foraging in Semantic Memory.
 
-             
-            Args: 
+
+            Args:
                 beta (tuple, size: 2): saliency parameter(s) encoding (beta_frequency, beta_semantic).
                 freql (list, size: L): frequency list containing frequency value of corresponding items.
-                freqh (list, size: L): frequency history list of containing frequency value list up 
+                freqh (list, size: L): frequency history list of containing frequency value list up
                     to current point.
                 siml (list, size: L): similarity list containing similarity value of corresponding items
-                simh (list, size: L): similarity history list of containing similarity value list up 
+                simh (list, size: L): similarity history list of containing similarity value list up
                     to current point.
 
-            Returns: 
-                ct (np.float): negative log-likelihood to be minimized in parameter fit 
+            Returns:
+                ct (np.float): negative log-likelihood to be minimized in parameter fit
         '''
-        ct = 0
+        freql_arr = np.asarray(freql)
+        siml_arr = np.asarray(siml)
+        simh_arr = np.asarray(simh)
 
-        for k in range(0, len(freql)):
-            if k == 0:
-                # P of item based on frequency alone (freq of this item / freq of all items)
-                numrat = pow(freql[k],beta[0])
-                denrat = sum(pow(freqh[k],beta[0]))
-            
-            else:    
-                # if not first item then its probability is based on its similarity to prev item AND frequency
-                # P of item based on frequency and similarity
-                numrat = pow(freql[k],beta[0]) * pow(siml[k],beta[1])
-                denrat = sum(pow(freqh[k],beta[0]) * pow(simh[k],beta[1]))
-                
-            ct += - np.log(numrat/denrat)
+        # freqh is the same array for every k; compute powered version once
+        freq_pow_all = np.power(freqh[0], beta[0])
+        freql_pow = np.power(freql_arr, beta[0])
+        siml_pow = np.power(siml_arr, beta[1])
+        simh_pow = np.power(simh_arr, beta[1])
 
-        return ct
+        # First item: frequency only
+        freq_den = np.sum(freq_pow_all)
+        log_p0 = -np.log(freql_pow[0] / freq_den)
+
+        # Remaining items: frequency * similarity
+        num = freql_pow[1:] * siml_pow[1:]
+        den = np.sum(freq_pow_all * simh_pow[1:], axis=1)
+        log_rest = -np.log(num / den)
+
+        return log_p0 + np.sum(log_rest)
         
     def model_dynamic(beta, freql, freqh, siml, simh, switchvals):
-        ''' 
+        '''
         Dynamic Foraging Model based on Hills, T. T., Jones, M. N., & Todd, P. M. (2012).
             Optimal Foraging in Semantic Memory.
 
-            Description: This model computes the likelihood of each given item in the fluency list based 
+            Description: This model computes the likelihood of each given item in the fluency list based
             on two cues: semantic similarity (local)  and frequency (global). The likelihood is computed
-            based on the product of semantic similarity and frequency until a switch is detected, at which 
-            point the likelihood is computed based on frequency (with the exception of the first item, whose 
+            based on the product of semantic similarity and frequency until a switch is detected, at which
+            point the likelihood is computed based on frequency (with the exception of the first item, whose
             likelihood is computed based on frequency).
 
-            Args: 
+            Args:
                 beta (tuple, size: 2): saliency parameter(s) encoding (beta_frequency, beta_semantic).
                 freql (list, size: L): frequency list obtained via create_history_variables
                 freqh (list, size: L arrays of size N): frequency history list obtained via create_history_variables
                 siml (list, size: L ): semantic similarity list obtained via create_history_variables
                 simh (list, size: L arrays of size N ): similarity history list obtained via create_history_variables
                 switchvals (list, size: L ): list of switch values for each item in the fluency list.
-            Returns: 
-                ct (np.float): negative log-likelihood to be minimized in parameter fit 
+            Returns:
+                ct (np.float): negative log-likelihood to be minimized in parameter fit
         '''
-        ct = 0
+        freql_arr = np.asarray(freql)
+        siml_arr = np.asarray(siml)
+        simh_arr = np.asarray(simh)
+        sw = np.asarray(switchvals)
 
-        for k in range(0, len(freql)):
-            if k == 0:
-                # P of item based on frequency alone (freq of this item / freq of all items)
-                numrat = pow(freql[k],beta[0])
-                denrat = sum(pow(freqh[k],beta[0]))
-            
-            elif switchvals[k]==1: ## "dip" based on sim-drop
-                # If similarity dips, P of item is based on frequency 
-                numrat = pow(freql[k],beta[0]) 
-                denrat = sum(pow(freqh[k],beta[0]))
+        freq_pow_all = np.power(freqh[0], beta[0])
+        freq_den = np.sum(freq_pow_all)
+        freql_pow = np.power(freql_arr, beta[0])
+        siml_pow = np.power(siml_arr, beta[1])
+        simh_pow = np.power(simh_arr, beta[1])
 
-            else:    
-                # if not first item then its probability is based on its similarity to prev item AND frequency
-                # P of item based on frequency and similarity
-                numrat = pow(freql[k],beta[0]) * pow(siml[k],beta[1])
-                denrat = sum(pow(freqh[k],beta[0]) * pow(simh[k],beta[1]))
-                
-            ct += - np.log(numrat/denrat)
+        L = len(freql_arr)
+        log_probs = np.empty(L)
 
-        return ct
+        # First item and switch items: frequency only
+        is_freq_only = np.zeros(L, dtype=bool)
+        is_freq_only[0] = True
+        is_freq_only[1:] = (sw[1:] == 1)
+        log_probs[is_freq_only] = -np.log(freql_pow[is_freq_only] / freq_den)
+
+        # Cluster items: frequency * similarity
+        is_cluster = ~is_freq_only
+        if np.any(is_cluster):
+            num = freql_pow[is_cluster] * siml_pow[is_cluster]
+            den = np.sum(freq_pow_all * simh_pow[is_cluster], axis=1)
+            log_probs[is_cluster] = -np.log(num / den)
+
+        return np.sum(log_probs)
 
     def model_static_phon(beta, freql, freqh, siml, simh, phonl, phonh):
         '''
-            Description: 
+            Description:
                 This model is an adapted version of static foraging model proposed by Hills, T. T., Jones, M. N., & Todd, P. M. (2012)
-                that incorporates phonological similarity. This model computes the likelihood of each given item 
-                in the fluency list based on three cues: semantic similarity, phonological similarity, and frequency.             
-            Args: 
+                that incorporates phonological similarity. This model computes the likelihood of each given item
+                in the fluency list based on three cues: semantic similarity, phonological similarity, and frequency.
+            Args:
                 beta (tuple, size: 3): saliency parameter(s) encoding (beta_frequency, beta_semantic, beta_phon).
                 freql (list, size: L): frequency list containing frequency value of corresponding items.
                 freqh (list, size: L arrays of size N): frequency history list of containing frequency value list up to current point.
@@ -120,40 +129,49 @@ class forage:
                 simh (list, size: L arrays of size N): similarity history list obtained via create_history_variables
                 phonl (list, size: L): phonological similarity list obtained via create_history_variables
                 phonh (list, size: ): phonological cue history list obtained via create_history_variables
-            Returns: 
-                ct (np.float): negative log-likelihood to be minimized in parameter fit 
+            Returns:
+                ct (np.float): negative log-likelihood to be minimized in parameter fit
         '''
-        ct = 0
+        freql_arr = np.asarray(freql)
+        siml_arr = np.asarray(siml)
+        simh_arr = np.asarray(simh)
+        phonl_arr = np.asarray(phonl)
+        phonh_arr = np.asarray(phonh)
 
-        for k in range(0, len(freql)):
-            if k == 0:
-                # P of item based on frequency alone (freq of this item / freq of all items)
-                numrat = pow(freql[k],beta[0])
-                denrat = sum(pow(freqh[k],beta[0]))            
-            else:    
-                numrat = pow(freql[k],beta[0]) * pow(phonl[k],beta[2]) * pow(siml[k],beta[1])
-                denrat = sum(pow(freqh[k],beta[0]) * pow(phonh[k],beta[2])* pow(simh[k],beta[1]))
+        freq_pow_all = np.power(freqh[0], beta[0])
+        freq_den = np.sum(freq_pow_all)
+        freql_pow = np.power(freql_arr, beta[0])
+        siml_pow = np.power(siml_arr, beta[1])
+        simh_pow = np.power(simh_arr, beta[1])
+        phonl_pow = np.power(phonl_arr, beta[2])
+        phonh_pow = np.power(phonh_arr, beta[2])
 
-            ct += - np.log(numrat/denrat)
+        # First item: frequency only
+        log_p0 = -np.log(freql_pow[0] / freq_den)
 
-        return ct
+        # Remaining items: frequency * similarity * phonological
+        num = freql_pow[1:] * siml_pow[1:] * phonl_pow[1:]
+        den = np.sum(freq_pow_all * simh_pow[1:] * phonh_pow[1:], axis=1)
+        log_rest = -np.log(num / den)
+
+        return log_p0 + np.sum(log_rest)
 
     def model_dynamic_phon(beta, freql, freqh, siml, simh, phonl, phonh, switchvals, phoncue):
         '''
-            Description: 
+            Description:
                 This model is an adapted version of dynamic foraging model proposed by Hills, T. T., Jones, M. N., & Todd, P. M. (2012)
-                that incorporates phonological similarity in three different ways. This model computes the likelihood of each given item 
-                in the fluency list based  on three cues: semantic similarity (local), phonological similarity (local/global/switch), and frequency (global). 
+                that incorporates phonological similarity in three different ways. This model computes the likelihood of each given item
+                in the fluency list based  on three cues: semantic similarity (local), phonological similarity (local/global/switch), and frequency (global).
                 Depending on the value of phoncue, the likelihood is computed based on a combination of semantic similarity,
-                phonological similarity, and frequency. 
-                - If phoncue is "local", then the likelihood is computed based on semantic similarity, phonological similarity, and frequency 
+                phonological similarity, and frequency.
+                - If phoncue is "local", then the likelihood is computed based on semantic similarity, phonological similarity, and frequency
                     until a switch is detected at which point the likelihood is computed based on only frequency
                 - If phoncue is "global", then the likelihood is computed based on all three cues during both non-switch transitions, and based on frequency
                     and phonological similarity for switch transitions.
                 - If phoncue is "switch", then the likelihood is computed based on phonological similarity and frequency during switch transitions
                     and only based on semantic similarity and frequency during non-switch transitions
-            
-            Args: 
+
+            Args:
                 beta (tuple, size: 3): saliency parameter(s) encoding (beta_frequency, beta_semantic, beta_phon).
                 freql (list, size: L): frequency list containing frequency value of corresponding items.
                 freqh (list, size: L arrays of size N): frequency history list of containing frequency value list up to current point.
@@ -163,41 +181,77 @@ class forage:
                 phonl (list, size: L): phonological similarity list obtained via create_history_variables
                 phonh (list, size: ): phonological cue history list obtained via create_history_variables
                 phoncue (str): Determines how to use phonological cue: "global", "local", or "switch"
-            Returns: 
-                ct (np.float): negative log-likelihood to be minimized in parameter fit 
+            Returns:
+                ct (np.float): negative log-likelihood to be minimized in parameter fit
             Raises:
                 Exception: if phoncue is not one of the three options ("global", "local", or "switch")
         '''
         if phoncue not in ["global","local","switch"]:
             raise Exception("To use dynamic phonological cue, you must pass a valid parameter value from possible list of values: ['global','local','switch']")
 
-        ct = 0
+        freql_arr = np.asarray(freql)
+        siml_arr = np.asarray(siml)
+        simh_arr = np.asarray(simh)
+        phonl_arr = np.asarray(phonl)
+        phonh_arr = np.asarray(phonh)
+        sw = np.asarray(switchvals)
 
-        for k in range(0, len(freql)):
-            if k == 0:
-                # P of item based on frequency alone (freq of this item / freq of all items)
-                numrat = pow(freql[k],beta[0])
-                denrat = sum(pow(freqh[k],beta[0]))
-            
-            elif switchvals[k]==1: # a switch has been detected
-                if phoncue in ["global","switch"]:
-                    numrat = pow(freql[k],beta[0]) * pow(phonl[k],beta[2]) 
-                    denrat = sum(pow(freqh[k],beta[0]) * pow(phonh[k],beta[2]) )
-                else:
-                    numrat = pow(freql[k],beta[0]) 
-                    denrat = sum(pow(freqh[k],beta[0]))
+        freq_pow_all = np.power(freqh[0], beta[0])
+        freq_den = np.sum(freq_pow_all)
+        freql_pow = np.power(freql_arr, beta[0])
+        siml_pow = np.power(siml_arr, beta[1])
+        simh_pow = np.power(simh_arr, beta[1])
+        phonl_pow = np.power(phonl_arr, beta[2])
+        phonh_pow = np.power(phonh_arr, beta[2])
 
-            else:    
-                if phoncue in ["local","global"]:
-                    numrat = pow(freql[k],beta[0])*pow(phonl[k],beta[2])*pow(siml[k],beta[1])
-                    denrat = sum(pow(freqh[k],beta[0])*pow(phonh[k],beta[2])*pow(simh[k],beta[1]))
-                else:
-                    numrat = pow(freql[k],beta[0]) * pow(siml[k],beta[1])
-                    denrat = sum(pow(freqh[k],beta[0]) * pow(simh[k],beta[1]))
-                
-            ct += - np.log(numrat/denrat)
+        L = len(freql_arr)
+        log_probs = np.empty(L)
 
-        return ct
+        # First item: frequency only
+        log_probs[0] = -np.log(freql_pow[0] / freq_den)
+
+        # Classify remaining items
+        is_switch = (sw[1:] == 1)
+        is_cluster = ~is_switch
+
+        if phoncue == "global":
+            # Switch: freq * phon; Cluster: freq * sim * phon
+            idx_sw = np.where(is_switch)[0] + 1
+            if len(idx_sw) > 0:
+                num_sw = freql_pow[idx_sw] * phonl_pow[idx_sw]
+                den_sw = np.sum(freq_pow_all * phonh_pow[idx_sw], axis=1)
+                log_probs[idx_sw] = -np.log(num_sw / den_sw)
+            idx_cl = np.where(is_cluster)[0] + 1
+            if len(idx_cl) > 0:
+                num_cl = freql_pow[idx_cl] * siml_pow[idx_cl] * phonl_pow[idx_cl]
+                den_cl = np.sum(freq_pow_all * simh_pow[idx_cl] * phonh_pow[idx_cl], axis=1)
+                log_probs[idx_cl] = -np.log(num_cl / den_cl)
+
+        elif phoncue == "local":
+            # Switch: freq only; Cluster: freq * sim * phon
+            idx_sw = np.where(is_switch)[0] + 1
+            if len(idx_sw) > 0:
+                log_probs[idx_sw] = -np.log(freql_pow[idx_sw] / freq_den)
+            idx_cl = np.where(is_cluster)[0] + 1
+            if len(idx_cl) > 0:
+                num_cl = freql_pow[idx_cl] * siml_pow[idx_cl] * phonl_pow[idx_cl]
+                den_cl = np.sum(freq_pow_all * simh_pow[idx_cl] * phonh_pow[idx_cl], axis=1)
+                log_probs[idx_cl] = -np.log(num_cl / den_cl)
+
+        else:  # phoncue == "switch"
+            # Switch: freq * phon; Cluster: freq * sim
+            idx_sw = np.where(is_switch)[0] + 1
+            if len(idx_sw) > 0:
+                num_sw = freql_pow[idx_sw] * phonl_pow[idx_sw]
+                den_sw = np.sum(freq_pow_all * phonh_pow[idx_sw], axis=1)
+                log_probs[idx_sw] = -np.log(num_sw / den_sw)
+            idx_cl = np.where(is_cluster)[0] + 1
+            if len(idx_cl) > 0:
+                num_cl = freql_pow[idx_cl] * siml_pow[idx_cl]
+                den_cl = np.sum(freq_pow_all * simh_pow[idx_cl], axis=1)
+                log_probs[idx_cl] = -np.log(num_cl / den_cl)
+
+        return np.sum(log_probs)
 
 
 

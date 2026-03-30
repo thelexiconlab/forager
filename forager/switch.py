@@ -1,8 +1,10 @@
 import numpy as np
 from scipy import stats
+from scipy.optimize import least_squares
 import statistics
 import difflib
 import pandas as pd
+import warnings
 
 '''
 Methods for calculating switches in Semantic Foraging methods.
@@ -23,7 +25,15 @@ Methods for calculating switches in Semantic Foraging methods.
 
         (5) Delta Similarity: A method for predicting switches proposed by Nancy Lundin in her dissertation to bypass limitations
             of simdrop model, and allow for consecutive switches, and accounts for small dips in similarity that simdrop may
-            deem a switch, which may actually be due to "noise" 
+            deem a switch, which may actually be due to "noise"
+
+        (6) Slope Difference: A method that fits an exponential model to cumulative word count vs response time,
+            and predicts a switch when the actual retrieval rate falls below the predicted rate.
+            Requires cumulative response times in seconds.
+
+        (7) Probabilistic Evidence Integration (PEI): A Bayesian method that combines similarity-based evidence
+            with temporal evidence from the slope difference method using log-odds integration.
+            Requires cumulative response times in seconds and at least one similarity measure.
 
     Output Format: 
         Each switch method should preserve the same length/general format for returing switch values, 
@@ -336,6 +346,177 @@ def switch_multimodaldelta(fluency_list, semantic_similarity, phonological_simil
         previousState = currentState
 
     return switchVector
+
+def _robust_zscore(values):
+    '''
+        Robust z-scores using median and MAD (scaled by 1.4826).
+        Falls back to mean/std for arrays of length 2.
+
+        Args:
+            values (array-like): Raw values.
+
+        Returns:
+            np.ndarray: Robust z-scores.
+    '''
+    values = np.asarray(values, dtype=float)
+
+    if len(values) <= 1:
+        return np.zeros(len(values))
+
+    if len(values) == 2:
+        mean_val = np.mean(values)
+        std_val = np.std(values, ddof=0)
+        if std_val < 1e-10:
+            return np.zeros(len(values))
+        return (values - mean_val) / std_val
+
+    center = np.median(values)
+    mad = np.median(np.abs(values - center))
+
+    if mad < 1e-10:
+        return np.zeros(len(values))
+
+    robust_std = 1.4826 * mad
+    return (values - center) / robust_std
+
+
+def switch_slope_difference(fluency_list, times):
+    '''
+        Slope Difference Switch Method. Fits an exponential model to cumulative word count
+        vs response time, and predicts a switch when the actual retrieval rate falls below
+        the predicted rate (negative slope difference).
+
+        Args:
+            fluency_list (list, size = L): fluency list to predict switches on
+            times (list, size = L): cumulative response times in seconds for each word
+
+        Returns:
+            tuple: (decisions, slope_diffs) where:
+                - decisions: list, size L, of switches (0 = no switch, 1 = switch, 2 = boundary case)
+                - slope_diffs: np.ndarray of slope differences between actual and predicted
+                  retrieval rates (empty array on failure or if list is too short)
+    '''
+    warnings.filterwarnings('ignore', 'overflow')
+    times = np.array(times, dtype=float)
+
+    if len(fluency_list) < 3:
+        return [2] * len(fluency_list), np.array([])
+
+    data = pd.DataFrame({
+        'word': fluency_list,
+        'time': times,
+        'count': range(1, len(fluency_list) + 1),
+    })
+
+    def exp_func(params, t):
+        c, m = params
+        return c * (1 - np.exp(-m * t))
+
+    def exp_derivative(params, t):
+        c, m = params
+        return c * m * np.exp(-m * t)
+
+    def residuals(params, t, y):
+        return exp_func(params, t) - y
+
+    try:
+        start_params = [max(data['count']), 0.1]
+        model = least_squares(residuals, start_params,
+                              args=(data['time'].values, data['count'].values))
+
+        midpoint_times = (data['time'].iloc[1:].values +
+                          data['time'].iloc[:-1].values) / 2
+
+        actual_slopes = np.diff(data['count']) / np.diff(data['time'])
+        predicted_slopes = exp_derivative(model.x, midpoint_times)
+        slope_diffs = actual_slopes - predicted_slopes
+
+        decisions = [2]
+        for i in range(len(slope_diffs)):
+            decisions.append(1 if slope_diffs[i] < 0 else 0)
+
+        return decisions, slope_diffs
+
+    except Exception:
+        return [2] + [0] * (len(fluency_list) - 1), np.array([])
+
+
+def switch_pei(fluency_list, times, semantic_similarity=None, phonological_similarity=None,
+               slope_diffs=None, alpha=0.8, beta=0.5, prior_probability=0.5):
+    '''
+        Probabilistic Evidence Integration (PEI) method for identifying switches.
+        Combines similarity-based evidence with temporal evidence from the slope
+        difference method using Bayesian integration in log-odds space.
+
+        Args:
+            fluency_list (list, size = L): fluency list to predict switches on
+            times (list, size = L): cumulative response times in seconds for each word
+            semantic_similarity (list, size = L, optional): semantic similarities between
+                consecutive items. At least one of semantic_similarity or phonological_similarity
+                must be provided.
+            phonological_similarity (list, size = L, optional): phonological similarities
+                between consecutive items.
+            slope_diffs (np.ndarray): precomputed slope differences from
+                switch_slope_difference.
+            alpha (float): weight for semantic vs phonological similarity (0-1).
+                alpha=1.0 uses semantic only, alpha=0.0 phonological only. Default: 0.8.
+            beta (float): weight for similarity vs temporal evidence (0-1).
+                beta=1.0 uses similarity only, beta=0.0 uses slope difference only. Default: 0.5.
+            prior_probability (float): prior probability of clustering (0-1).
+                Default: 0.5 (uninformative).
+
+        Returns:
+            a list, size L, of switches, where 0 = no switch, 1 = switch, 2 = boundary case
+
+        Raises:
+            ValueError: if neither similarity type is provided, or if parameters are outside valid range.
+    '''
+    if semantic_similarity is None and phonological_similarity is None:
+        raise ValueError(
+            "At least one of 'semantic_similarity' or "
+            "'phonological_similarity' must be provided")
+
+    if not 0 <= alpha <= 1:
+        raise ValueError(f"alpha must be in [0, 1], got {alpha}")
+    if not 0 <= beta <= 1:
+        raise ValueError(f"beta must be in [0, 1], got {beta}")
+    if not 0 < prior_probability < 1:
+        raise ValueError(
+            f"prior_probability must be in (0, 1), got {prior_probability}")
+
+    if len(fluency_list) < 3:
+        return [2] * len(fluency_list)
+
+    if slope_diffs is None or len(slope_diffs) == 0:
+        return [2] * len(fluency_list)
+
+    # Combined similarity (skip first element, which is a placeholder)
+    if semantic_similarity is not None and phonological_similarity is not None:
+        combined_similarity = (
+            alpha * np.array(semantic_similarity[1:]) +
+            (1 - alpha) * np.array(phonological_similarity[1:]))
+    elif semantic_similarity is not None:
+        combined_similarity = np.array(semantic_similarity[1:])
+    else:
+        combined_similarity = np.array(phonological_similarity[1:])
+
+    # Standardize evidence via robust z-scores
+    similarity_evidence = _robust_zscore(combined_similarity)
+    slope_evidence = _robust_zscore(slope_diffs)
+
+    # Probabilistic integration in log-odds space
+    prior_log_odds = np.log(prior_probability / (1 - prior_probability))
+
+    posterior_log_odds = (prior_log_odds +
+                         beta * similarity_evidence +
+                         (1 - beta) * slope_evidence)
+
+    # Sigmoid transform and binary decision
+    posterior_probs = 1 / (1 + np.exp(-posterior_log_odds))
+    decisions = (posterior_probs < 0.5).astype(int)
+
+    return [2] + decisions.tolist()
+
 
 ### SAMPLE RUN CODE ###
 # normspath =  '../data/norms/animals_snafu_scheme_vocab.csv'
