@@ -27,6 +27,19 @@ def exclude(word,df):
     df.reset_index(drop=True, inplace=True)
     return None
 
+def remove_consecutive_repeats(df, replacement_df):
+    # function to remove consecutive repeats of a word in a participant's fluency list
+    prev_entry = df.groupby(df['SID'])['entry'].shift(1)
+    is_repeat = (df['entry'] == prev_entry).values
+    global repeat_count
+    repeat_count = is_repeat.sum()
+
+    if repeat_count > 0:
+        repeat_indices = df.loc[is_repeat, 'og_idx']
+        replacement_df.loc[replacement_df.index.isin(repeat_indices), ['evaluation', 'replacement']] = "EXCLUDE"
+    df.drop(df.index[is_repeat], inplace=True)
+    df.reset_index(drop=True, inplace=True)
+
 # takes in a path to a data file to be read as a CSV or TXT, the first row will be assumed as a header
 # accepted delimiters include commas, tabs, semicolons, pipes, and spaces
 # columns are detected by header name (case-insensitive): SID, entry, timepoint (optional), time (optional)
