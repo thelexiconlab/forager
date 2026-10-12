@@ -47,10 +47,9 @@ fp = "/".join(sys.argv[0].split('/')[:-1])
 models = ['static','dynamic','pstatic','pdynamic','all']
 switch_methods = ['simdrop','multimodal','norms_associative','norms_categorical', 'delta', 'multimodaldelta', 'slope_difference', 'pei', 'all']
 
-# Default parameter grids for parametric switch methods, rounded to one decimal as in previous
-# versions (note: this makes the rise/fall grid [0.0, 0.2, 0.5, 0.8, 1.0])
+# Default parameter grids for parametric switch methods (rounded to remove floating point noise)
 alpha_grid = [round(a, 1) for a in np.arange(0, 1.1, 0.1)]
-rise_fall_grid = [round(r, 1) for r in np.arange(0, 1.25, 0.25)]
+rise_fall_grid = [round(r, 2) for r in np.arange(0, 1.25, 0.25)]
 pei_beta_grid = [round(b, 1) for b in np.arange(0, 1.1, 0.1)]
 pei_prior_grid = [round(p, 1) for p in np.arange(0.1, 1.0, 0.1)]
 

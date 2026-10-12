@@ -27,11 +27,12 @@ Workflow:
 fp = "/".join(sys.argv[0].split('/')[:-1])
 
 
+# the Colab notebook analyzes animals data, stored in data/lexical_data/animals/
 normspath = 'data/norms/animals_snafu_scheme_vocab.csv'
-similaritypath =  'data/lexical_data/USE_semantic_matrix.csv'
-frequencypath =  'data/lexical_data/USE_frequencies.csv'
-phonpath = 'data/lexical_data/USE_phonological_matrix.csv'
-vocabpath = 'data/lexical_data/vocab.csv'
+similaritypath =  'data/lexical_data/animals/USE_semantic_matrix.csv'
+frequencypath =  'data/lexical_data/animals/USE_frequencies.csv'
+phonpath = 'data/lexical_data/animals/USE_phonological_matrix.csv'
+vocabpath = 'data/lexical_data/animals/vocab.csv'
 
 # Global Variables
 models = ['static','dynamic','pstatic','pdynamic','all']
@@ -343,8 +344,9 @@ def run_pipeline(data, switch_type=None, model_type=None):
 
 
 def indiv_desc_stats(lexical_results, switch_results = None):
-    metrics = lexical_results[['Subject', 'Semantic_Similarity', 'Frequency_Value', 'Phonological_Similarity']]
-    metrics.replace(.0001, np.nan, inplace=True)
+    metrics = lexical_results[['Subject', 'Semantic_Similarity', 'Frequency_Value', 'Phonological_Similarity']].copy()
+    # the first item of each list has placeholder similarities (.0001); other .0001 values are real (e.g. no phonological overlap)
+    metrics.loc[metrics.groupby('Subject').head(1).index, ['Semantic_Similarity', 'Phonological_Similarity']] = np.nan
     grouped = metrics.groupby('Subject').agg(['mean', 'std'])
     grouped.columns = ['{}_{}'.format(col[0], col[1]) for col in grouped.columns]
     grouped.reset_index(inplace=True)
