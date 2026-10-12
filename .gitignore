@@ -133,3 +133,7 @@ dmypy.json
 
 # Mac Files
 .DS_Store
+
+# Generated outputs (run_foraging.py results, phonological wordbreak caches)
+output/
+*.pkl
