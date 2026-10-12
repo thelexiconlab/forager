@@ -39,7 +39,7 @@ Currently this includes:
 
 ### frequency.py
 
-This contains functions pertaining to pinging the API for Google Books ngrams, and getting frequency values.
+This contains functions for getting word frequency values (Zipf frequencies) with the `wordfreq` package.
 
 ### utils.py
 

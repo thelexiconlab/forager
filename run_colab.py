@@ -1,6 +1,6 @@
 from scipy.optimize import minimize
 from forager.foraging import forage
-from forager.switch import switch_delta, switch_multimodal, switch_simdrop, switch_norms_associative, switch_norms_categorical, switch_slope_difference, switch_pei
+from forager.switch import switch_delta, switch_multimodal, switch_simdrop, switch_norms_associative, switch_norms_categorical, switch_slope_difference, switch_pei, cluster_lengths
 from forager.cues import create_history_variables
 from forager.utils import prepareData_colab
 import pandas as pd
@@ -27,11 +27,12 @@ Workflow:
 fp = "/".join(sys.argv[0].split('/')[:-1])
 
 
+# the Colab notebook analyzes animals data, stored in data/lexical_data/animals/
 normspath = 'data/norms/animals_snafu_scheme_vocab.csv'
-similaritypath =  'data/lexical_data/USE_semantic_matrix.csv'
-frequencypath =  'data/lexical_data/USE_frequencies.csv'
-phonpath = 'data/lexical_data/USE_phonological_matrix.csv'
-vocabpath = 'data/lexical_data/vocab.csv'
+similaritypath =  'data/lexical_data/animals/USE_semantic_matrix.csv'
+frequencypath =  'data/lexical_data/animals/USE_frequencies.csv'
+phonpath = 'data/lexical_data/animals/USE_phonological_matrix.csv'
+vocabpath = 'data/lexical_data/animals/vocab.csv'
 
 # Global Variables
 models = ['static','dynamic','pstatic','pdynamic','all']
@@ -160,15 +161,19 @@ def calculate_model(model, history_vars, switch_names, switch_vecs):
     model_results.append((0, 0, float(nll_baseline)))
     return model_name, model_results
 
-def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity, norms, times=None, alpha = np.arange(0, 1.1, 0.1), rise = np.arange(0, 1.25, 0.25), fall = np.arange(0, 1.25, 0.25), pei_beta = np.arange(0, 1.1, 0.1), pei_prior = np.arange(0.1, 1.0, 0.1)):
+def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity, norms, times=None, alpha = np.arange(0, 1.1, 0.1), rise = np.arange(0, 1.25, 0.25), fall = np.arange(0, 1.25, 0.25), pei_beta = np.arange(0, 1.1, 0.1), pei_prior = np.arange(0.1, 1.0, 0.1), return_probabilities = False):
     '''
     1. Check if specified switch model is valid
     2. Return set of switches, including parameter value, if required
 
     switch_methods = ['simdrop','multimodal','norms_associative', 'norms_categorical', 'delta', 'slope_difference', 'pei', 'all']
+
+    return_probabilities: if True, also return a list aligned with switch_vecs holding the PEI
+        posterior P(cluster) array for PEI vectors and None for other methods.
     '''
     switch_names = []
     switch_vecs = []
+    switch_probs = []
 
     if switch not in switch_methods:
         ex_str = "Specified switch method is invalid. Switch method must be one of the following: {switch}".format(switch=switch_methods)
@@ -227,8 +232,14 @@ def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity,
                         b = round(b, 1)
                         p = round(p, 1)
                         switch_names.append("pei_alpha={alpha}_beta={beta}_prior={prior}".format(alpha=a, beta=b, prior=p))
-                        switch_vecs.append(switch_pei(fluency_list, times, semantic_similarity, phon_similarity, slope_diffs=precomputed_slope_diffs, alpha=a, beta=b, prior_probability=p))
+                        decisions, probs = switch_pei(fluency_list, times, semantic_similarity, phon_similarity, slope_diffs=precomputed_slope_diffs, alpha=a, beta=b, prior_probability=p, return_probabilities=True)
+                        switch_vecs.append(decisions)
+                        switch_probs.append(probs)
 
+    if return_probabilities:
+        # PEI vectors are appended last; all other methods have no probabilities
+        switch_probs = [None] * (len(switch_vecs) - len(switch_probs)) + switch_probs
+        return switch_names, switch_vecs, precomputed_slope_diffs, switch_probs
     return switch_names, switch_vecs, precomputed_slope_diffs
 
 def run_pipeline(data, switch_type=None, model_type=None):
@@ -281,9 +292,9 @@ def run_pipeline(data, switch_type=None, model_type=None):
 
         # Switch results (computed once, reused by models)
         if switch_type is not None:
-            switch_names, switch_vecs, slope_diffs = calculate_switch(
+            switch_names, switch_vecs, slope_diffs, switch_probs = calculate_switch(
                 switch_type, fl_list, history_vars[0], history_vars[4],
-                norms, times=fl_times)
+                norms, times=fl_times, return_probabilities=True)
 
             # Add slope differences to lexical results (from precomputed values)
             if fl_times is not None:
@@ -301,6 +312,8 @@ def run_pipeline(data, switch_type=None, model_type=None):
                 df['Fluency_Item'] = fl_list
                 df['Switch_Value'] = switch
                 df['Switch_Method'] = switch_names[j]
+                # posterior P(cluster) for PEI rows, NaN for other methods
+                df['PEI_Cluster_Probability'] = switch_probs[j] if switch_probs[j] is not None else np.nan
                 switch_list.append(df)
 
             # Model results (reuse switch_names/switch_vecs from above)
@@ -331,8 +344,9 @@ def run_pipeline(data, switch_type=None, model_type=None):
 
 
 def indiv_desc_stats(lexical_results, switch_results = None):
-    metrics = lexical_results[['Subject', 'Semantic_Similarity', 'Frequency_Value', 'Phonological_Similarity']]
-    metrics.replace(.0001, np.nan, inplace=True)
+    metrics = lexical_results[['Subject', 'Semantic_Similarity', 'Frequency_Value', 'Phonological_Similarity']].copy()
+    # the first item of each list has placeholder similarities (.0001); other .0001 values are real (e.g. no phonological overlap)
+    metrics.loc[metrics.groupby('Subject').head(1).index, ['Semantic_Similarity', 'Phonological_Similarity']] = np.nan
     grouped = metrics.groupby('Subject').agg(['mean', 'std'])
     grouped.columns = ['{}_{}'.format(col[0], col[1]) for col in grouped.columns]
     grouped.reset_index(inplace=True)
@@ -355,19 +369,11 @@ def indiv_desc_stats(lexical_results, switch_results = None):
         cluster_size_sd = []
         for sub, fl_list in switch_results.groupby(["Subject", "Switch_Method"]):
             switch_method = sub[1]
-            cluster_lengths = []
-            num_switches = 0
-            ct = 0
-            for x in fl_list['Switch_Value'].values:
-                ct += 1
-                if x == 1:
-                    num_switches += 1
-                    cluster_lengths.append(ct)
-                    ct = 0
-            if ct != 0:
-                cluster_lengths.append(ct)
-            avg = sum(cluster_lengths) / len(cluster_lengths)
-            sd = np.std(cluster_lengths)
+            switch_values = fl_list['Switch_Value'].values
+            lengths = cluster_lengths(switch_values)
+            num_switches = int((switch_values == 1).sum())
+            avg = sum(lengths) / len(lengths)
+            sd = np.std(lengths)
             switch_methods.append(switch_method)
             num_switches_arr.append(num_switches)
             cluster_size_mean.append(avg)

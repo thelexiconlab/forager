@@ -138,7 +138,7 @@ def prepareData_colab(path, time_type='cumulative', time_units='s'):
         print(f"  -> Timing data detected (time_type='{time_type}', time_units='{time_units}').")
 
     # load labels
-    labels = pd.read_csv("data/lexical_data/USE_frequencies.csv", names=['word', 'logct', 'ct']) 
+    labels = pd.read_csv("data/lexical_data/animals/USE_frequencies.csv", names=['word', 'logct']) 
 
     # set all replacements to actual word for all words in labels as the default
     replacements = {word: word for word in labels['word'].values}

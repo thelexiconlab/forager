@@ -27,10 +27,11 @@ def test_create_history_variables():
     assert len(freq_list) == len(freq_history)
     assert len(phon_list) == len(phon_history)
 
-def test_create_semantic_matrix():
+def test_create_semantic_matrix(tmp_path):
     if not os.path.exists(path_to_embeddings):
         pytest.skip("Embeddings file not found")
-    semantic_matrix = create_semantic_matrix(path_to_embeddings, lexical_folder)
+    # write the generated matrix to a temporary folder, not over the packaged lexical data
+    semantic_matrix = create_semantic_matrix(path_to_embeddings, str(tmp_path))
     diagonal = np.diag(semantic_matrix)
     # check that the diagonal is all 1s and the range of the matrix is [-1,1]
     assert diagonal.sum() == len(diagonal) and np.all(semantic_matrix) <= 1 and np.all(semantic_matrix) >= -1
@@ -44,8 +45,8 @@ def test_wordbreak():
     w = "hello"
     assert phonology_funcs.wordbreak(w)[0] == ['HH', 'AH0', 'L', 'OW1']
 
-def test_create_phonological_matrix():
-    phon_matrix = phonology_funcs.create_phonological_matrix(labels[:5], lexical_folder)
+def test_create_phonological_matrix(tmp_path):
+    phon_matrix = phonology_funcs.create_phonological_matrix(labels[:5], str(tmp_path))
     diagonal = np.diag(phon_matrix)
     # check that diagonal is 1 and range of matrix is [0,1]
     assert diagonal.sum() == len(diagonal) and np.all(phon_matrix) <= 1 and np.all(phon_matrix) >= 0

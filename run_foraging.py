@@ -47,6 +47,12 @@ fp = "/".join(sys.argv[0].split('/')[:-1])
 models = ['static','dynamic','pstatic','pdynamic','all']
 switch_methods = ['simdrop','multimodal','norms_associative','norms_categorical', 'delta', 'multimodaldelta', 'slope_difference', 'pei', 'all']
 
+# Default parameter grids for parametric switch methods (rounded to remove floating point noise)
+alpha_grid = [round(a, 1) for a in np.arange(0, 1.1, 0.1)]
+rise_fall_grid = [round(r, 2) for r in np.arange(0, 1.25, 0.25)]
+pei_beta_grid = [round(b, 1) for b in np.arange(0, 1.1, 0.1)]
+pei_prior_grid = [round(p, 1) for p in np.arange(0.1, 1.0, 0.1)]
+
 
 #Methods
 def retrieve_data(path, domain, time_type='cumulative', time_units='s'):
@@ -181,15 +187,26 @@ def calculate_model(model, history_vars, switch_names, switch_vecs):
     model_results.append((0, 0, float(nll_baseline)))
     return model_name, model_results
 
-def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity, norms, domain, times=None, alpha = np.arange(0, 1.1, 0.1), rise = np.arange(0, 1.25, 0.25), fall = np.arange(0, 1.25, 0.25), pei_beta = np.arange(0, 1.1, 0.1), pei_prior = np.arange(0.1, 1.0, 0.1)):
+def _param(x):
+    # remove floating point noise from grid values (e.g. 0.30000000000000004) without rounding user-specified values
+    return float(round(x, 10))
+
+def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity, norms, domain, times=None, alpha = alpha_grid, rise = rise_fall_grid, fall = rise_fall_grid, pei_beta = pei_beta_grid, pei_prior = pei_prior_grid, pei_alpha = None, return_probabilities = False):
     '''
     1. Check if specified switch model is valid
     2. Return set of switches, including parameter value, if required
 
     switch_methods = ['simdrop','multimodal','norms_associative', 'norms_categorical', 'delta','multimodaldelta', 'slope_difference', 'pei', 'all']
+
+    pei_alpha: alpha values for PEI; defaults to `alpha` when None.
+    return_probabilities: if True, also return a list aligned with switch_vecs holding the PEI
+        posterior P(cluster) array for PEI vectors and None for other methods.
     '''
     switch_names = []
     switch_vecs = []
+    switch_probs = []
+    if pei_alpha is None:
+        pei_alpha = alpha
 
     if switch not in switch_methods:
         ex_str = "Specified switch method is invalid. Switch method must be one of the following: {switch}".format(switch=switch_methods)
@@ -201,7 +218,7 @@ def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity,
 
     if switch == switch_methods[1] or switch == switch_methods[8]:
         for i, a in enumerate(alpha):
-            a = round(a, 1)
+            a = _param(a)
             switch_names.append('multimodal_alpha={alpha}'.format(alpha=a))
             switch_vecs.append(switch_multimodal(fluency_list, semantic_similarity, phon_similarity, a))
 
@@ -226,8 +243,8 @@ def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity,
     if switch == switch_methods[4] or switch == switch_methods[8]:
         for i, r in enumerate(rise):
             for j, f in enumerate(fall):
-                r = round(r, 1)
-                f = round(f, 1)
+                r = _param(r)
+                f = _param(f)
                 switch_names.append("delta_rise={rise}_fall={fall}".format(rise=r,fall=f))
                 switch_vecs.append(switch_delta(fluency_list, semantic_similarity, r, f))
 
@@ -235,10 +252,9 @@ def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity,
         for i, a in enumerate(alpha):
             for i, r in enumerate(rise):
                 for j, f in enumerate(fall):
-                    # round a, r, f to 1 decimal places
-                    a = round(a, 1)
-                    r = round(r, 1)
-                    f = round(f, 1)
+                    a = _param(a)
+                    r = _param(r)
+                    f = _param(f)
                     switch_names.append("multimodaldelta_alpha={alpha}_rise={rise}_fall={fall}".format(alpha=a,rise=r,fall=f))
                     switch_vecs.append(switch_multimodaldelta(fluency_list, semantic_similarity, phon_similarity, r, f, a))
 
@@ -265,15 +281,21 @@ def calculate_switch(switch, fluency_list, semantic_similarity, phon_similarity,
                 raise Exception("PEI method requires timing data. Please provide cumulative response times in seconds via the 'times' parameter.")
             # skip when running 'all' without timing data
         else:
-            for i, a in enumerate(alpha):
+            for i, a in enumerate(pei_alpha):
                 for j, b in enumerate(pei_beta):
                     for k, p in enumerate(pei_prior):
-                        a = round(a, 1)
-                        b = round(b, 1)
-                        p = round(p, 1)
+                        a = _param(a)
+                        b = _param(b)
+                        p = _param(p)
                         switch_names.append("pei_alpha={alpha}_beta={beta}_prior={prior}".format(alpha=a, beta=b, prior=p))
-                        switch_vecs.append(switch_pei(fluency_list, times, semantic_similarity, phon_similarity, slope_diffs=precomputed_slope_diffs, alpha=a, beta=b, prior_probability=p))
+                        decisions, probs = switch_pei(fluency_list, times, semantic_similarity, phon_similarity, slope_diffs=precomputed_slope_diffs, alpha=a, beta=b, prior_probability=p, return_probabilities=True)
+                        switch_vecs.append(decisions)
+                        switch_probs.append(probs)
 
+    if return_probabilities:
+        # PEI vectors are appended last; all other methods have no probabilities
+        switch_probs = [None] * (len(switch_vecs) - len(switch_probs)) + switch_probs
+        return switch_names, switch_vecs, precomputed_slope_diffs, switch_probs
     return switch_names, switch_vecs, precomputed_slope_diffs
 
 def _physical_cpu_count():
@@ -306,10 +328,12 @@ def _physical_cpu_count():
 
 
 def _process_subject(item, labels, similarity_matrix, frequency_list, phon_matrix,
-                     norms, domain, switch_type, model_type):
+                     norms, domain, switch_type, model_type, switch_params=None):
     """Process a single subject: compute lexical, switch, and model results.
 
     This is a top-level function so it can be pickled for multiprocessing.
+    switch_params: optional dict of parameter values passed to calculate_switch
+    (alpha, rise, fall, pei_alpha, pei_beta, pei_prior).
     """
     subj, fl_list = item[0], item[1]
     fl_times = item[2] if len(item) == 3 else None
@@ -339,9 +363,10 @@ def _process_subject(item, labels, similarity_matrix, frequency_list, phon_matri
 
     # Switch results (computed once, reused by models)
     if switch_type is not None:
-        switch_names, switch_vecs, slope_diffs = calculate_switch(
+        switch_names, switch_vecs, slope_diffs, switch_probs = calculate_switch(
             switch_type, fl_list, history_vars[0], history_vars[4],
-            norms, domain, times=fl_times)
+            norms, domain, times=fl_times, return_probabilities=True,
+            **(switch_params or {}))
 
         # Add slope differences to lexical results (from precomputed values)
         if fl_times is not None:
@@ -359,6 +384,8 @@ def _process_subject(item, labels, similarity_matrix, frequency_list, phon_matri
             df['Fluency_Item'] = fl_list
             df['Switch_Value'] = switch
             df['Switch_Method'] = switch_names[j]
+            # posterior P(cluster) for PEI rows, NaN for other methods
+            df['PEI_Cluster_Probability'] = switch_probs[j] if switch_probs[j] is not None else np.nan
             switch_dfs.append(df)
 
         # Model results (reuse switch_names/switch_vecs from above)
@@ -383,7 +410,7 @@ def _process_subject(item, labels, similarity_matrix, frequency_list, phon_matri
     return lexical_df, switch_dfs, model_dicts
 
 
-def run_pipeline(data, domain, switch_type=None, model_type=None, parallel=False, n_workers=None):
+def run_pipeline(data, domain, switch_type=None, model_type=None, parallel=False, n_workers=None, switch_params=None):
     """Single-pass pipeline that computes lexical, switch, and model results.
 
     Loads lexical data once and processes subjects in parallel using
@@ -396,6 +423,8 @@ def run_pipeline(data, domain, switch_type=None, model_type=None, parallel=False
         model_type: model name, or None to skip models.
         parallel: if True, process subjects in parallel using multiprocessing.
         n_workers: number of parallel workers. None = number of physical CPUs.
+        switch_params: optional dict of parameter values for parametric switch methods
+            (alpha, rise, fall, pei_alpha, pei_beta, pei_prior). Omitted keys use the default grids.
 
     Returns:
         tuple: (lexical_results, switch_results, model_results) as DataFrames.
@@ -421,7 +450,8 @@ def run_pipeline(data, domain, switch_type=None, model_type=None, parallel=False
                             labels=labels, similarity_matrix=similarity_matrix,
                             frequency_list=frequency_list, phon_matrix=phon_matrix,
                             norms=norms, domain=domain,
-                            switch_type=switch_type, model_type=model_type)
+                            switch_type=switch_type, model_type=model_type,
+                            switch_params=switch_params)
 
         with ProcessPoolExecutor(max_workers=n_workers) as executor:
             future_to_idx = {executor.submit(worker_fn, item): idx
@@ -439,7 +469,7 @@ def run_pipeline(data, domain, switch_type=None, model_type=None, parallel=False
         for i, item in enumerate(tqdm(data)):
             lexical_df, switch_dfs, model_dicts = _process_subject(
                 item, labels, similarity_matrix, frequency_list, phon_matrix,
-                norms, domain, switch_type, model_type)
+                norms, domain, switch_type, model_type, switch_params)
             lexical_list.append(lexical_df)
             switch_list.extend(switch_dfs)
             model_list.extend(model_dicts)
@@ -480,21 +510,11 @@ def indiv_desc_stats(lexical_results, switch_results = None):
         cluster_size_sd = []
         for sub, fl_list in switch_results.groupby(["Subject", "Switch_Method"]):
             switch_method = sub[1]
-            cluster_lengths = []
-            num_switches = 0
-            ct = 0
-            for x in fl_list['Switch_Value'].values:
-                ct += 1
-                if x == 1:
-                    num_switches += 1
-                    ct = ct-1
-                    cluster_lengths.append(ct)
-                    ct = 1
-            if ct != 0:
-                cluster_lengths.append(ct)
-            
-            avg = sum(cluster_lengths) / len(cluster_lengths)
-            sd = np.std(cluster_lengths)
+            switch_values = fl_list['Switch_Value'].values
+            lengths = cluster_lengths(switch_values)
+            num_switches = int((switch_values == 1).sum())
+            avg = sum(lengths) / len(lengths)
+            sd = np.std(lengths)
             switch_methods.append(switch_method)
             num_switches_arr.append(num_switches)
             cluster_size_mean.append(avg)
@@ -559,8 +579,28 @@ parser.add_argument('--time_type', type=str, default='cumulative', help="type of
 parser.add_argument('--time_units', type=str, default='s', help="units of timing data: 's' (seconds) or 'ms' (milliseconds). Default: s")
 parser.add_argument('--parallel', action='store_true', help='enable multiprocessing to process subjects in parallel (switches and models pipelines)')
 parser.add_argument('--n_workers', type=int, default=None, help='number of parallel workers (default: number of physical CPU cores). Requires --parallel')
+parser.add_argument('--alpha', type=float, default=None, help='fix alpha for multimodal and multimodaldelta switch methods, in [0, 1] (default: grid 0.0-1.0)')
+parser.add_argument('--rise', type=float, default=None, help='fix rise threshold for delta and multimodaldelta switch methods, in [0, 1] (default: grid)')
+parser.add_argument('--fall', type=float, default=None, help='fix fall threshold for delta and multimodaldelta switch methods, in [0, 1] (default: grid)')
+parser.add_argument('--pei_alpha', type=float, default=None, help='fix PEI alpha (semantic vs phonological weight), in [0, 1] (default: grid 0.0-1.0)')
+parser.add_argument('--pei_beta', type=float, default=None, help='fix PEI beta (similarity vs timing weight), in [0, 1] (default: grid 0.0-1.0)')
+parser.add_argument('--pei_prior', type=float, default=None, help='fix PEI prior probability of clustering, in (0, 1) (default: grid 0.1-0.9)')
 
 args = parser.parse_args()
+
+# Parameter values for parametric switch methods: a given flag fixes that parameter, an omitted one keeps its full grid
+switch_params = {'alpha': alpha_grid, 'rise': rise_fall_grid, 'fall': rise_fall_grid,
+                 'pei_alpha': alpha_grid, 'pei_beta': pei_beta_grid, 'pei_prior': pei_prior_grid}
+for name in switch_params:
+    value = getattr(args, name)
+    if value is None:
+        continue
+    if name == 'pei_prior':
+        if not 0 < value < 1:
+            parser.error(f"--pei_prior must be in (0, 1), got {value}")
+    elif not 0 <= value <= 1:
+        parser.error(f"--{name} must be in [0, 1], got {value}")
+    switch_params[name] = [value]
 
 if os.path.exists('output') == False:
     os.mkdir('output')
@@ -645,7 +685,7 @@ elif args.pipeline == 'switches':
     data, replacement_df, processed_df = retrieve_data(args.data, args.domain, time_type=args.time_type, time_units=args.time_units)
     print("Running Pipeline ...")
     lexical_results, switch_results, _ = run_pipeline(data, args.domain, switch_type=args.switch,
-        parallel=args.parallel, n_workers=args.n_workers)
+        parallel=args.parallel, n_workers=args.n_workers, switch_params=switch_params)
     ind_stats = indiv_desc_stats(lexical_results, switch_results)
     agg_stats = agg_desc_stats(switch_results)
     with zipfile.ZipFile(oname, 'w', zipfile.ZIP_DEFLATED) as zipf:
@@ -704,7 +744,7 @@ elif args.pipeline == 'models':
     print("Running Pipeline ...")
     lexical_results, switch_results, forager_results = run_pipeline(
         data, args.domain, switch_type=args.switch, model_type=args.model,
-        parallel=args.parallel, n_workers=args.n_workers)
+        parallel=args.parallel, n_workers=args.n_workers, switch_params=switch_params)
 
     ind_stats = indiv_desc_stats(lexical_results, switch_results)
     agg_stats = agg_desc_stats(switch_results, forager_results)
@@ -764,6 +804,11 @@ else:
 ## other possible arguments for --switch include: 'simdrop', 'multimodal', 'norms_associative','norms_categorical', 'delta' ##
 
 # python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch all
+
+## Sample execution to obtain PEI switch designations for a single parameter combination ##
+## omitting --pei_alpha, --pei_beta or --pei_prior runs the full grid for that parameter ##
+
+# python run_foraging.py --data data/fluency_lists/animals_timings_Lundin_et_al_2023.csv --pipeline switches --switch pei --domain animals --pei_alpha 0.8 --pei_beta 0.9 --pei_prior 0.5
 
 ## Sample execution to obtain model results ##
 ## 'all' model will run all models ##

@@ -16,10 +16,10 @@ To install the broader package, including command-line interfacable programs alo
 
     1. Clone this github repository to a home directory of your choice``        git clone https://github.com/thelexiconlab/forager.git        ``
 
-    2. In current home directory, execute:``        pip install forager -r forager/requirements.txt        ``
+    2. Change into the cloned repository and install the requirements:``        cd forager && pip install -r requirements.txt        ``
 
-    3. To utilize the package, you can now change your current working directory to the forager package, and execute the run_foraging.py file to utilize the command line interface
-    ``        cd forager         python run_foraging.py --data <datapath> --pipeline <usecase> --model <modelname> --switch <switchmethod> --domain <domainname>         ``
+    3. From the repository folder, execute the run_foraging.py file to utilize the command line interface
+    ``        python run_foraging.py --data <datapath> --pipeline <usecase> --model <modelname> --switch <switchmethod> --domain <domainname>         ``
 
 ### Alternative Installation
 
@@ -30,9 +30,9 @@ We also provide a conda environment yaml file for those who wish to use the pack
 
 ## Installation Requirements
 
-Requires Python 3.8
+Requires Python 3.8 or later (tested with Python 3.8 and 3.11).
 
-Requirements:
+Requirements (see `requirements.txt`):
 
 - nltk>=3.6
 - numpy>=1.20
@@ -40,7 +40,6 @@ Requirements:
 - pytest>=6.2
 - scipy>=1.6
 - requests>=2.25
-- urllib>=1.26
 - tqdm>=4.59
 
 ## Input File Format
@@ -123,6 +122,10 @@ In order to utilize the package, there are a few key parameters that must be sat
 
     9. n_workers (optional): The --n_workers flag specifies the number of parallel workers (default: number of physical CPU cores). Requires --parallel
 
+    10. pei_alpha, pei_beta, pei_prior (optional): The --pei_alpha, --pei_beta and --pei_prior flags fix the corresponding PEI parameter to a single value. Each flag that is omitted keeps the full grid for that parameter (alpha and beta: 0.0 to 1.0 in steps of 0.1; prior: 0.1 to 0.9 in steps of 0.1), so passing all three runs a single PEI configuration. alpha and beta must be in [0, 1]; prior (the prior probability of clustering) must be in (0, 1)
+
+    11. alpha, rise, fall (optional): The --alpha flag fixes alpha for the multimodal and multimodaldelta methods, and the --rise and --fall flags fix the thresholds for the delta and multimodaldelta methods. Each flag that is omitted keeps the full grid for that parameter (alpha: 0.0 to 1.0 in steps of 0.1; rise and fall: 0.0 to 1.0 in steps of 0.25). All values must be in [0, 1]
+
 Below are sample executions to execute the code, on example data we provide with our package:
 
 1. Running the `evaluate_data` branch of the pipeline
@@ -144,6 +147,11 @@ Below are sample executions to execute the code, on example data we provide with
    # all switch methods
    python run_foraging.py --data data/fluency_lists/psyrev_data.txt --pipeline switches --switch all --domain animals
 
+   # PEI with a single parameter combination (requires timing data)
+   python run_foraging.py --data data/fluency_lists/animals_timings_Lundin_et_al_2023.csv --pipeline switches --switch pei --domain animals --pei_alpha 0.8 --pei_beta 0.9 --pei_prior 0.5
+
+   # PEI with alpha and prior fixed, over the full beta grid
+   python run_foraging.py --data data/fluency_lists/animals_timings_Lundin_et_al_2023.csv --pipeline switches --switch pei --domain animals --pei_alpha 0.8 --pei_prior 0.5
    ```
 4. Running the `models` pipeline
 
@@ -177,14 +185,14 @@ Different output files are generated when forager is run, based on the use case:
   - `forager_vocab.csv`: This file contains the vocabulary used by *forager* to conduct the evaluation. We provide this file so that users can make changes to their data if needed before they proceed with other analyses.
 - **Get Lexical Values**: If the user selects this option, the following files will be available for download via a `.zip` file:
 
-  - `lexical_results.csv`: This file contains item-wise lexical metrics (semantic similarity, phonological similarity, and word frequency). The semantic and phonological similarities indicate the similarity between the previous item and current item (the first item will have an arbitrary value of .0001),  whereas the frequency values indicate the frequency of the current item in the English language (obtained via Google N-grams). When timing data is provided, this file also includes: `Cumulative_IRT` (cumulative response time in seconds), `IRT` (inter-response time in seconds, where the first item's IRT equals its cumulative time), and `Slope_Difference` (the difference between actual and predicted retrieval rates from an exponential fit; NaN for the first item).
+  - `lexical_results.csv`: This file contains item-wise lexical metrics (semantic similarity, phonological similarity, and word frequency). The semantic and phonological similarities indicate the similarity between the previous item and current item (the first item will have an arbitrary value of .0001),  whereas the frequency values indicate the frequency of the current item in the English language (Zipf frequency from the `wordfreq` package). When timing data is provided, this file also includes: `Cumulative_IRT` (cumulative response time in seconds), `IRT` (inter-response time in seconds, where the first item's IRT equals its cumulative time), and `Slope_Difference` (the difference between actual and predicted retrieval rates from an exponential fit; NaN for the first item).
   - `individual_descriptive_stats.csv`: This file contains some aggregate metrics at the participant level such as total number of items produced, as well as means/SDs of semantic similarity, phonological similarity, and word frequency.
   - The three files from the evaluation phase
 - **Get Switches**: If the user selects this option, the following files will be available for download via a `.zip` file:
 
-  - `switch_results.csv`: This file contains the item-level cluster/switch designations for each method. A switch is indicated by a 1, and a cluster is indicated by a 0. A value of 2 either denotes the first item in the list or the last item(s) for switch methods that rely on previous/subsequent items (i.e., no switch/cluster prediction can be made).
+  - `switch_results.csv`: This file contains the item-level cluster/switch designations for each method. A switch is indicated by a 1, and a cluster is indicated by a 0. A value of 2 either denotes the first item in the list or the last item(s) for switch methods that rely on previous/subsequent items (i.e., no switch/cluster prediction can be made). The `PEI_Cluster_Probability` column contains, for PEI rows, the posterior probability that the item continues a cluster, P(cluster); the probability of a switch is 1 − P(cluster), and an item is coded as a switch when P(cluster) < 0.5. The column is empty (NaN) for the first item of each list, for PEI boundary cases (code 2), and for rows of all other switch methods.
   - `lexical_results.csv`: This file will be identical to the one generated in the **Get Lexical Values** option.
-  - `individual_descriptive_stats.csv`: In addition to the metrics available from lexical results (mean/SD of lexical values and number of items), this file will also contain the total number of switches and mean cluster size for each switch method.
+  - `individual_descriptive_stats.csv`: In addition to the metrics available from lexical results (mean/SD of lexical values and number of items), this file will also contain the total number of switches and the mean/SD of cluster size for each switch method. A switch item starts a new cluster, so it counts towards the next cluster, not the previous one.
   - `aggregate_descriptive_stats.csv`: This file will contain mean/SD for the number of switches (aggregated across all participants) for each switch method.
   - The three files from the evaluation phase
 - **Get Models**: If the user selects this option, they will be redirected to a Colab notebook, where they can upload their data and run the models. In addition to the files generated in the **Get Switches** option, the following files will be available for download via a `.zip` file:
@@ -224,7 +232,7 @@ The source code for these methods can be found inside `forager/switch.py`. We cu
 - Slope Difference
   - the slope difference switching method (``slope_difference``) fits an exponential model to cumulative word count vs response time, and predicts a switch when the actual retrieval rate falls below the predicted rate (negative slope difference). This method was implemented following the procedure described in Bushnell et al. (2022). It requires cumulative response times in seconds, specified via a timing column in the input data.
 - Probabilistic Evidence Integration (PEI)
-  - the PEI switching method (``pei``) is a Bayesian method that combines similarity-based evidence with temporal evidence from the slope difference method using log-odds integration. It requires cumulative response times in seconds and at least one similarity measure (semantic, phonological, or both). The method uses an alpha parameter to weight semantic vs. phonological similarity and a beta parameter to weight similarity-based vs. temporal evidence.
+  - the PEI switching method (``pei``) is a Bayesian method that combines similarity-based evidence with temporal evidence from the slope difference method using log-odds integration. It requires cumulative response times in seconds and at least one similarity measure (semantic, phonological, or both). The method uses an alpha parameter to weight semantic vs. phonological similarity, a beta parameter to weight similarity-based vs. temporal evidence, and a prior parameter, the prior probability of clustering. An item is coded as a switch when its posterior probability of clustering is below 0.5; this posterior is reported in the `PEI_Cluster_Probability` column of `switch_results.csv`.
 
 ### Cues (Semantic, Phonological, and Frequency Matrix) Generation
 
@@ -240,7 +248,7 @@ Phonological Matrix Generation
 
 Frequency Data Generation
 
-- A table of item frequencies is generated by obtaining raw counts for each item in the embedding labels from the Google Books Ngram Dataset via the PhraseFinder API. The raw counts are log transformed, and these log counts are the metrics used later by the models.
+- A table of item frequencies is generated with the `wordfreq` package (see `forager/frequency.py`): each item in the embedding labels gets its Zipf frequency (a log10 scale), and items with a frequency of 0 are set to 0.0001. These values are the frequency metrics used later by the models.
 
 History Variabile Creation:
 
@@ -268,7 +276,7 @@ The source code for this data preprocessing method can be found inside `forager/
 - It takes in a path to a delimited data file (CSV, TXT, TSV, etc.). The first row is assumed to be a header. Columns are mapped by header name (case-insensitive), not by position. Required columns are `SID` (participant ID) and `entry` (response item). Optional columns are `timepoint` (for grouping multiple lists per participant) and `time` (response times for timing-based switch methods). Accepted delimiters include commas, tabs, semicolons, pipes, and spaces.
 - When a `time` column is present, the timing format and units can be specified via the `--time_type` (`cumulative` or `irt`) and `--time_units` (`s` or `ms`) flags. Timing data is required for the `slope_difference` and `pei` switch methods.
 - The function checks for any items outside of the vocabulary set used in the lexical metrics (OOV items). If a reasonable replacement is found for an OOV item, the item will be automatically replaced with the closest match.
-- To handle all other OOV words, the user will be given three options. First, they can *truncate* the fluency list at the first occurrence of such a word. Second, they can *exclude* any such words but continue with the rest of the list, as if that word was never produced. Third, the word can be assigned a mean semantic vector (denoted by *UNK* in the vocabulary), mean phonological similarity, and 0.0001 frequency.
+- To handle all other OOV words, the user will be given three options. First, they can *truncate* the fluency list at the first occurrence of such a word. Second, they can *exclude* any such words but continue with the rest of the list, as if that word was never produced. Third, the word can be assigned a mean semantic vector (denoted by *UNK* in the vocabulary), mean phonological similarity, and 0.0001 frequency. The *UNK* entry is included in the lexical data of all three domains.
 - A file outlining the edits made to the original data will be saved. The fluency data is then reformatted into a list of tuples, each containing the participant ID and the corresponding fluency list.
 
 ## Development Notes
