@@ -343,8 +343,9 @@ def run_pipeline(data, switch_type=None, model_type=None):
 
 
 def indiv_desc_stats(lexical_results, switch_results = None):
-    metrics = lexical_results[['Subject', 'Semantic_Similarity', 'Frequency_Value', 'Phonological_Similarity']]
-    metrics.replace(.0001, np.nan, inplace=True)
+    metrics = lexical_results[['Subject', 'Semantic_Similarity', 'Frequency_Value', 'Phonological_Similarity']].copy()
+    # the first item of each list has placeholder similarities (.0001); other .0001 values are real (e.g. no phonological overlap)
+    metrics.loc[metrics.groupby('Subject').head(1).index, ['Semantic_Similarity', 'Phonological_Similarity']] = np.nan
     grouped = metrics.groupby('Subject').agg(['mean', 'std'])
     grouped.columns = ['{}_{}'.format(col[0], col[1]) for col in grouped.columns]
     grouped.reset_index(inplace=True)
