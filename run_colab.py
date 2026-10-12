@@ -27,11 +27,12 @@ Workflow:
 fp = "/".join(sys.argv[0].split('/')[:-1])
 
 
+# the Colab notebook analyzes animals data, stored in data/lexical_data/animals/
 normspath = 'data/norms/animals_snafu_scheme_vocab.csv'
-similaritypath =  'data/lexical_data/USE_semantic_matrix.csv'
-frequencypath =  'data/lexical_data/USE_frequencies.csv'
-phonpath = 'data/lexical_data/USE_phonological_matrix.csv'
-vocabpath = 'data/lexical_data/vocab.csv'
+similaritypath =  'data/lexical_data/animals/USE_semantic_matrix.csv'
+frequencypath =  'data/lexical_data/animals/USE_frequencies.csv'
+phonpath = 'data/lexical_data/animals/USE_phonological_matrix.csv'
+vocabpath = 'data/lexical_data/animals/vocab.csv'
 
 # Global Variables
 models = ['static','dynamic','pstatic','pdynamic','all']
