@@ -124,7 +124,7 @@ In order to utilize the package, there are a few key parameters that must be sat
 
     10. pei_alpha, pei_beta, pei_prior (optional): The --pei_alpha, --pei_beta and --pei_prior flags fix the corresponding PEI parameter to a single value. Each flag that is omitted keeps the full grid for that parameter (alpha and beta: 0.0 to 1.0 in steps of 0.1; prior: 0.1 to 0.9 in steps of 0.1), so passing all three runs a single PEI configuration. alpha and beta must be in [0, 1]; prior (the prior probability of clustering) must be in (0, 1)
 
-    11. alpha, rise, fall (optional): The --alpha flag fixes alpha for the multimodal and multimodaldelta methods, and the --rise and --fall flags fix the thresholds for the delta and multimodaldelta methods. Each flag that is omitted keeps the full grid for that parameter. All values must be in [0, 1]
+    11. alpha, rise, fall (optional): The --alpha flag fixes alpha for the multimodal and multimodaldelta methods, and the --rise and --fall flags fix the thresholds for the delta and multimodaldelta methods. Each flag that is omitted keeps the full grid for that parameter (alpha: 0.0 to 1.0 in steps of 0.1; rise and fall: 0.0 to 1.0 in steps of 0.25). All values must be in [0, 1]
 
 Below are sample executions to execute the code, on example data we provide with our package:
 
