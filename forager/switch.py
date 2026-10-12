@@ -442,7 +442,8 @@ def switch_slope_difference(fluency_list, times):
 
 
 def switch_pei(fluency_list, times, semantic_similarity=None, phonological_similarity=None,
-               slope_diffs=None, alpha=0.8, beta=0.5, prior_probability=0.5):
+               slope_diffs=None, alpha=0.8, beta=0.5, prior_probability=0.5,
+               return_probabilities=False):
     '''
         Probabilistic Evidence Integration (PEI) method for identifying switches.
         Combines similarity-based evidence with temporal evidence from the slope
@@ -464,9 +465,15 @@ def switch_pei(fluency_list, times, semantic_similarity=None, phonological_simil
                 beta=1.0 uses similarity only, beta=0.0 uses slope difference only. Default: 0.5.
             prior_probability (float): prior probability of clustering (0-1).
                 Default: 0.5 (uninformative).
+            return_probabilities (bool): if True, also return the posterior probability
+                of clustering for each item. Default: False.
 
         Returns:
-            a list, size L, of switches, where 0 = no switch, 1 = switch, 2 = boundary case
+            a list, size L, of switches, where 0 = no switch, 1 = switch, 2 = boundary case.
+            If return_probabilities is True, a tuple (decisions, probabilities) where
+            probabilities is an np.ndarray, size L, of posterior P(cluster) values
+            (NaN for the first item and for boundary cases). An item is a switch
+            when its P(cluster) < 0.5; P(switch) = 1 - P(cluster).
 
         Raises:
             ValueError: if neither similarity type is provided, or if parameters are outside valid range.
@@ -484,11 +491,11 @@ def switch_pei(fluency_list, times, semantic_similarity=None, phonological_simil
         raise ValueError(
             f"prior_probability must be in (0, 1), got {prior_probability}")
 
-    if len(fluency_list) < 3:
-        return [2] * len(fluency_list)
-
-    if slope_diffs is None or len(slope_diffs) == 0:
-        return [2] * len(fluency_list)
+    if len(fluency_list) < 3 or slope_diffs is None or len(slope_diffs) == 0:
+        decisions = [2] * len(fluency_list)
+        if return_probabilities:
+            return decisions, np.full(len(fluency_list), np.nan)
+        return decisions
 
     # Combined similarity (skip first element, which is a placeholder)
     if semantic_similarity is not None and phonological_similarity is not None:
@@ -513,9 +520,34 @@ def switch_pei(fluency_list, times, semantic_similarity=None, phonological_simil
 
     # Sigmoid transform and binary decision
     posterior_probs = 1 / (1 + np.exp(-posterior_log_odds))
-    decisions = (posterior_probs < 0.5).astype(int)
+    decisions = [2] + (posterior_probs < 0.5).astype(int).tolist()
 
-    return [2] + decisions.tolist()
+    if return_probabilities:
+        return decisions, np.concatenate(([np.nan], posterior_probs))
+    return decisions
+
+
+def cluster_lengths(switch_values):
+    '''
+        Lengths of the clusters implied by a switch vector. A switch (1) starts a new
+        cluster at that item; clusters (0) and boundary cases (2) extend the current one.
+
+        Args:
+            switch_values (list, size = L): switch values (0 = no switch, 1 = switch, 2 = boundary case)
+
+        Returns:
+            a list of cluster lengths, which sum to L
+    '''
+    lengths = []
+    ct = 0
+    for x in switch_values:
+        if x == 1 and ct > 0:
+            lengths.append(ct)
+            ct = 0
+        ct += 1
+    if ct > 0:
+        lengths.append(ct)
+    return lengths
 
 
 ### SAMPLE RUN CODE ###
