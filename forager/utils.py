@@ -83,7 +83,16 @@ def prepareData(path, domain, time_type='cumulative', time_units='s'):
                 # get closest match in vocab and check edit distance
                 closest_word = difflib.get_close_matches(word, labels['word'].values,1)
 
-                if len(closest_word)>0 and nltk.edit_distance(word, closest_word[0]) <= 2:
+                # create word length variable 
+                word_length = len(word)
+
+                # set threshold for edit distance based on word length
+                if word_length >= 10:
+                    threshold = 3
+                else:
+                    threshold = 2
+
+                if len(closest_word)>0 and nltk.edit_distance(word, closest_word[0]) <= threshold:
                     replacements[word] = closest_word[0]
                 elif choice == "e":
                     # exclude this word from the list
