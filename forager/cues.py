@@ -311,7 +311,22 @@ class phonology_funcs:
         
         if phon_matrix.shape[0] != phon_matrix.shape[1]:
             raise ValueError("Phonological matrix is not square")
-    
+
+def compress_matrix(cuetype, domain):
+    '''
+        Description:
+            Takes in a similarity matrix and reduces each value up to 3 decimal places
+        Args:
+            (1) df: similarity matrix (NxN np.array)
+        Returns: 
+            (1) compressed_matrix: lower triangular matrix (NxN np.array)
+    '''
+    # if sem = then USE_semantic_matrix.csv, if phon = then USE_phonological_matrix.csv
+    df = pd.read_csv(f'../data/lexical_data/{domain}/USE_{cuetype}_matrix.csv', header=None)
+    compressed_matrix = np.round(df, 3)
+    # write compressed_matrix to csv without header or index
+    compressed_matrix.to_csv(f'../data/lexical_data/{domain}/USE_{cuetype}_matrix_compressed.csv', header=False, index=False)
+    return compressed_matrix
 
 ### SAMPLE RUN CODE ###
 #create_semantic_matrix('../data/lexical_data/USE_embeddings.csv')
@@ -321,3 +336,6 @@ class phonology_funcs:
 
 # phonology_funcs.get_phonological_similarity('able seaman', 'accounts payable')
 # phonology_funcs.check_phon_matrix('../data/lexical_data/occupations/')
+
+# compress_matrix('semantic', 'occupations')
+# compress_matrix('phonological', 'occupations')

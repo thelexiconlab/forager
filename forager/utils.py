@@ -53,9 +53,10 @@ def prepareData(path, domain, time_type='cumulative', time_units='s'):
 
     # get values from df 
     values = df['entry'].values
-    
     # loop through values to find which ones are not in file
     oov = [w for w in values if w not in labels['word'].values]
+    # remove nan from oov
+    oov = [w for w in oov if pd.notnull(w)]
     if len(oov) > 0:
         replacement_df = df.copy()
         print("We did not find exact matches for " + str(len(oov)) + " items in our vocabulary. Any items for which we find a reasonable match will be automatically replaced. For all other OOV items, you may:")
@@ -66,7 +67,7 @@ def prepareData(path, domain, time_type='cumulative', time_units='s'):
                 print("Entry invalid. Try again.") 
                 continue
 
-            for word in set(oov):
+            for word in set(oov):                
                 # get closest match in vocab and check edit distance
                 closest_word = difflib.get_close_matches(word, labels['word'].values,1)
 
