@@ -77,6 +77,15 @@ def prepareData(path, domain, time_type='cumulative', time_units='s'):
     .str.lower()
     .str.replace(r"[^a-z]", "", regex=True)
 )
+     # Remove single-letter entries
+    single_letter_count = 0
+    single_letter_indices = []
+    for i, entry in enumerate(df['entry']):
+        if len(entry) <= 1:
+            single_letter_count += 1
+            single_letter_indices.append(i)
+    df.drop(df.index[single_letter_indices], inplace=True)
+    df.reset_index(drop=True, inplace=True)
     
     # loop through values to find which ones are not in file
     oov = [w for w in values if w not in labels['word'].values]
