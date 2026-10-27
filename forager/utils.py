@@ -77,6 +77,11 @@ def prepareData(path, domain, time_type='cumulative', time_units='s'):
     .str.lower()
     .str.replace(r"[^a-z]", "", regex=True)
 )
+    # Create copy of df to store replacement information
+    replacement_df = df.copy()
+    # Create original index column 
+    df['og_idx'] = df.index
+
      # Remove single-letter entries
     single_letter_count = 0
     single_letter_indices = []
@@ -90,7 +95,6 @@ def prepareData(path, domain, time_type='cumulative', time_units='s'):
     # loop through values to find which ones are not in file
     oov = [w for w in values if w not in labels['word'].values]
     if len(oov) > 0:
-        replacement_df = df.copy()
         print("We did not find exact matches for " + str(len(oov)) + " items in our vocabulary. Any items for which we find a reasonable match will be automatically replaced. For all other OOV items, you may:")
         while True:
             choice = input("type 'e' to exclude these words from the fluency lists but continue with the rest of the list, \ntype 't' to truncate each fluency list at the first occurrence of such a word, \nor type 'r' to assign a mean semantic/phonological vector and random frequency to any such word and continue with the rest of the list. \nThen, press enter. \n")
@@ -140,12 +144,21 @@ def prepareData(path, domain, time_type='cumulative', time_units='s'):
         replacement_df.loc[(replacement_df['entry'] != replacement_df['evaluation']) & (~replacement_df['evaluation'].isin(['UNK', 'EXCLUDE', 'TRUNCATE'])), 'evaluation'] = 'REPLACE'
         # also for the column 'evaluation', if entry matches evaluation, replace with 'found'
         replacement_df.loc[(replacement_df['entry'] == replacement_df['evaluation']), 'evaluation'] = 'FOUND'
+         # mark single-letter entries and similar entries as excluded in replacement_df
+        replacement_df.loc[replacement_df.index.isin(single_letter_indices), ['evaluation', 'replacement']] = "EXCLUDE"
+
+        # Call remove_consecutive _repeats before counting exclusions
+        remove_consecutive_repeats(df, replacement_df)
         
         exclude_count = (replacement_df["evaluation"] == "EXCLUDE").sum()
         unk_count = (replacement_df["evaluation"] == "UNK").sum()
         trunc_count = (replacement_df["evaluation"] == "TRUNCATE").sum()
         replacement_count = (replacement_df["evaluation"] == "REPLACE").sum()
         print("We have found reasonable replacements for " + str(replacement_count)+ " item(s) in your data. \n\n")
+        if single_letter_count > 0:
+            print(f"\nWe removed {single_letter_count} single-letter entries from the data.\n")
+        if repeat_count > 0:
+            print(f"We removed {repeat_count} consecutive repeats from the data.\n")
         if exclude_count>0:
             print(str(exclude_count) + " items were excluded across all lists.\n")
         elif unk_count>0:
