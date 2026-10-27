@@ -51,6 +51,9 @@ def prepareData(path, domain, time_type='cumulative', time_units='s'):
     df = df.rename(columns={v: k for k, v in col_map.items()})
     col_map = {k: k for k in col_map}
 
+    # drop any rows with missing values in the 'entry' or 'SID' columns
+    df.dropna(subset=['entry', 'SID'], inplace=True)
+
     detected = list(col_map.keys())
     print(f"Detected columns: {detected}")
     if 'timepoint' in col_map:
@@ -66,6 +69,14 @@ def prepareData(path, domain, time_type='cumulative', time_units='s'):
 
     # get values from df 
     values = df['entry'].values
+
+    # Clean input entries (no spaces)
+    df['entry'] = (
+    df['entry']
+    .astype(str)
+    .str.lower()
+    .str.replace(r"[^a-z]", "", regex=True)
+)
     
     # loop through values to find which ones are not in file
     oov = [w for w in values if w not in labels['word'].values]
